@@ -11,7 +11,6 @@
 <body>
 <x-dc>
 <helmet>
-  <script src="smooth-scroll.js?v=6" data-wrapper="[data-ks-scroll]"></script>
   <title>Listing | Jackson Kesecker, Realtor®</title>
   <link rel="icon" type="image/png" href="assets/favicon-dark.png" media="(prefers-color-scheme: dark)">
   <link rel="icon" type="image/png" href="assets/favicon-light.png" media="(prefers-color-scheme: light)">
@@ -1301,6 +1300,15 @@ findAllMatches('Share').filter((s) => !s.closest('[data-ihf-own], [data-ihf-acti
       },
     };
   };
+  _ksPreload = (() => {
+    if (typeof window === 'undefined' || window.__ksRcPre) return;
+    window.__ksRcPre = true;
+    const load = () => {
+      if (window.grecaptcha || document.querySelector('script[data-ks-recaptcha]')) return;
+      const s = document.createElement('script'); s.src = 'https://www.google.com/recaptcha/api.js?render=6Ldt-s0tAAAAAHKHMZoNKfYDRnjbYp7jfkhix9MQ'; s.dataset.ksRecaptcha = '1'; document.head.appendChild(s);
+    };
+    document.addEventListener('focusin', (e) => { const t = e.composedPath ? e.composedPath()[0] : e.target; if (t && t.closest && t.closest('form')) load(); }, true);
+  })();
   _ksSubmit = (data) => new Promise((resolve) => {
     const KEY = '6Ldt-s0tAAAAAHKHMZoNKfYDRnjbYp7jfkhix9MQ';
     const URL = 'https://script.google.com/macros/s/AKfycbz-txrCbgzj4U78dBOSrFZMrT9qN3D0XV2ZcEua_6g_LB3VLNKkSk-NoUJHxEOvapY9ww/exec';
@@ -1308,7 +1316,7 @@ findAllMatches('Share').filter((s) => !s.closest('[data-ihf-own], [data-ihf-acti
     const send = (token) => {
       if (done) return;
       done = true;
-      fetch(URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({}, data, { token: token || '', url: location.href })) })
+      fetch(URL, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({}, data, { token: token || '', url: location.href })) })
         .then((r) => r.json()).then(resolve).catch(() => resolve({ ok: false, error: 'network' }));
     };
     const go = () => { try { window.grecaptcha.ready(() => window.grecaptcha.execute(KEY, { action: data.form || 'contact' }).then(send, () => send(''))); } catch (e) { send(''); } };
@@ -1434,10 +1442,10 @@ findAllMatches('Share').filter((s) => !s.closest('[data-ihf-own], [data-ihf-acti
         if (s.tourSending) return;
                 const fd = new FormData(e.currentTarget);
         if (String(fd.get('phone') || '').replace(/\D/g, '').length !== 10) { this.setState({ tourPhoneErr: 'Please enter a 10-digit phone number.', tourPhoneErrOn: true }); return; }
-        this.setState({ tourSending: true, tourError: '' });
+        this.setState({ tourSending: false, tourSent: true, tourError: '' });
         this._ksSubmit({ form: 'tour', name: fd.get('name'), phone: fd.get('phone'), email: fd.get('email'), message: fd.get('message'), website: fd.get('website'), listing }).then((r) => {
-          if (r && r.ok) this.setState({ tourSending: false, tourSent: true });
-          else this.setState({ tourSending: false, tourError: 'Something went wrong. Please call or text (831) 821-0398.' });
+          if (r && r.ok) return;
+          this.setState({ tourSending: false, tourSent: false, tourError: 'Something went wrong. Please call or text (831) 821-0398.' });
         });
       },
     };
