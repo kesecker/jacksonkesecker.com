@@ -258,11 +258,11 @@
       <h2 data-ks-scaled="1" ref="{{ revealRefTestimonials }}" style="font-size: clamp(28px, 4.83vw, 41px); font-weight: 600; margin: 0; letter-spacing: -0.01em; color: #ffffff; text-transform: none; {{ revealTestimonials }}">{{ t.testimonialsHeading }}</h2>
     </div>
     <div style="position: relative; width: 100%;">
-      <button onClick="{{ scrollMarqueeLeft }}" aria-label="Previous" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); z-index: 5; width: 56px; height: 56px; border-radius: 50%; border: none; background: #000000; padding: 0; cursor: pointer; opacity: 1; transition: background 0.25s ease;" style-hover="background: #1a1a1a;">
-        <span style="position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; margin-top: -10px; margin-left: -6px; border-top: 3px solid #ffffff; border-left: 3px solid #ffffff; transform: rotate(-45deg);"></span>
+      <button onClick="{{ scrollMarqueeLeft }}" aria-label="Previous" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); z-index: 5; width: 56px; height: 56px; border-radius: 50%; border: none; background: #000000; padding: 0; cursor: pointer; opacity: 1; transition: background 0.25s ease; display: flex; align-items: center; justify-content: center;" style-hover="background: #1a1a1a;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><path d="M15 18l-6-6 6-6"></path></svg>
       </button>
-      <button onClick="{{ scrollMarqueeRight }}" aria-label="Next" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); z-index: 5; width: 56px; height: 56px; border-radius: 50%; border: none; background: #000000; padding: 0; cursor: pointer; opacity: 1; transition: background 0.25s ease;" style-hover="background: #1a1a1a;">
-        <span style="position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; margin-top: -10px; margin-left: -14px; border-top: 3px solid #ffffff; border-right: 3px solid #ffffff; transform: rotate(45deg);"></span>
+      <button onClick="{{ scrollMarqueeRight }}" aria-label="Next" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); z-index: 5; width: 56px; height: 56px; border-radius: 50%; border: none; background: #000000; padding: 0; cursor: pointer; opacity: 1; transition: background 0.25s ease; display: flex; align-items: center; justify-content: center;" style-hover="background: #1a1a1a;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><path d="M9 18l6-6-6-6"></path></svg>
       </button>
       <div id="testimonials-viewport" ref="{{ marqueeViewportRef }}" style="overflow: hidden; width: 100%; padding: 0 64px; box-sizing: border-box;">
       <div ref="{{ marqueeTrackRef }}" style="display: flex; gap: 28px; width: max-content; will-change: transform; backface-visibility: hidden; transform-style: preserve-3d;">
@@ -1352,25 +1352,37 @@ class Component extends DCLogic {
   };
 
   scrollMarquee = (dir) => {
-    const viewportW = this.marqueeViewportEl ? this.marqueeViewportEl.clientWidth : this.marqueeCardW * 3 + 128;
-    const contentW = viewportW - 128;
-    const cardHalf = 190;
-    const trackXAtCenter = contentW / 2 - this.marqueeOffset;
-    const nearestIndex = Math.round((trackXAtCenter - cardHalf) / this.marqueeCardW);
-    const targetIndex = nearestIndex + dir;
-    const targetTrackX = targetIndex * this.marqueeCardW + cardHalf;
-    this.marqueeOffset = contentW / 2 - targetTrackX;
-    while (this.marqueeOffset <= -this.marqueeSetW) this.marqueeOffset += this.marqueeSetW;
-    while (this.marqueeOffset > 0) this.marqueeOffset -= this.marqueeSetW;
-    this.marqueePaused = true;
-    if (this.marqueeTrackEl) {
-      this.marqueeTrackEl.style.transition = this.carouselTransition;
-      this.marqueeTrackEl.style.transform = 'translate3d(' + this.marqueeOffset + 'px,0,0)';
+    const vp = this.marqueeViewportEl, track = this.marqueeTrackEl;
+    if (!vp || !track || !track.children.length) return;
+    const vr = vp.getBoundingClientRect();
+    const mid = vr.left + vr.width / 2;
+    if (track.style.transition && track.style.transition !== 'none') {
+      const m = new DOMMatrixReadOnly(getComputedStyle(track).transform);
+      this.marqueeOffset = m.m41;
+      track.style.transition = 'none';
+      track.style.transform = 'translate3d(' + this.marqueeOffset + 'px,0,0)';
     }
+    const cards = Array.from(track.children).filter((c) => c.getBoundingClientRect().width > 0);
+    const centers = cards.map((c) => { const r = c.getBoundingClientRect(); return r.left + r.width / 2; });
+    let nearest = 0, best = Infinity;
+    centers.forEach((x, i) => { const d = Math.abs(x - mid); if (d < best) { best = d; nearest = i; } });
+    let target = nearest + dir;
+    if (dir > 0 && centers[nearest] > mid + 2) target = nearest;
+    if (dir < 0 && centers[nearest] < mid - 2) target = nearest;
+    target = Math.max(0, Math.min(centers.length - 1, target));
+    this.marqueeOffset = Math.round(this.marqueeOffset + (mid - centers[target]));
+    this.marqueePaused = true;
+    void track.offsetWidth;
+    track.style.transition = 'transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)';
+    track.style.transform = 'translate3d(' + this.marqueeOffset + 'px,0,0)';
     clearTimeout(this.marqueeTransitionTimer);
     this.marqueeTransitionTimer = setTimeout(() => {
-      if (this.marqueeTrackEl) this.marqueeTrackEl.style.transition = 'none';
-    }, 2800);
+      track.style.transition = 'none';
+      let o = this.marqueeOffset;
+      while (o <= -this.marqueeSetW) o += this.marqueeSetW;
+      while (o > 0) o -= this.marqueeSetW;
+      if (o !== this.marqueeOffset) { this.marqueeOffset = o; track.style.transform = 'translate3d(' + o + 'px,0,0)'; }
+    }, 750);
     clearTimeout(this.marqueeResumeTimer);
     this.marqueeResumeTimer = setTimeout(() => { this.marqueePaused = false; }, 4000);
   };
