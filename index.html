@@ -1346,41 +1346,61 @@ class Component extends DCLogic {
     if (dt == null) dt = 0.016;
     if (!this.marqueePaused) {
       this.marqueeOffset -= (this.marqueeSetW / 220) * dt;
+      if (!this._mqMeasured || (this._mqMeasureAt || 0) < performance.now() - 1500) { this._mqMeasure(); this._mqMeasured = true; this._mqMeasureAt = performance.now(); }
       if (this.marqueeOffset <= -this.marqueeSetW) this.marqueeOffset += this.marqueeSetW;
       if (this.marqueeTrackEl) this.marqueeTrackEl.style.transform = 'translate3d(' + this.marqueeOffset + 'px,0,0)';
     }
   };
 
+  _mqMeasure = () => {
+    const track = this.marqueeTrackEl;
+    if (!track || track.children.length < 2) return;
+    const kids = track.children, half = Math.floor(kids.length / 2);
+    if (half >= 1 && kids[half]) { const w = kids[half].offsetLeft - kids[0].offsetLeft; if (w > 0) this.marqueeSetW = w; }
+    if (kids[1]) { const st = kids[1].offsetLeft - kids[0].offsetLeft; if (st > 0) this.marqueeCardW = st; }
+  };
+  _mqNorm = (o) => { const W = this.marqueeSetW; if (!(W > 0)) return o; while (o <= -W) o += W; while (o > 0) o -= W; return o; };
   scrollMarquee = (dir) => {
     const vp = this.marqueeViewportEl, track = this.marqueeTrackEl;
     if (!vp || !track || !track.children.length) return;
+    this._mqMeasure();
     const vr = vp.getBoundingClientRect();
     const mid = vr.left + vr.width / 2;
-    if (track.style.transition && track.style.transition !== 'none') {
-      const m = new DOMMatrixReadOnly(getComputedStyle(track).transform);
-      this.marqueeOffset = m.m41;
-      track.style.transition = 'none';
-      track.style.transform = 'translate3d(' + this.marqueeOffset + 'px,0,0)';
+    const animating = this._mqAnimating && this._mqTarget != null;
+    if (!animating) {
+      if (track.style.transition && track.style.transition !== 'none') {
+        const m = new DOMMatrixReadOnly(getComputedStyle(track).transform);
+        this.marqueeOffset = m.m41;
+        track.style.transition = 'none';
+        track.style.transform = 'translate3d(' + this.marqueeOffset + 'px,0,0)';
+      }
+      const cards = Array.from(track.children);
+      let nearest = 0, best = Infinity, nx = 0;
+      cards.forEach((c, i) => { const r = c.getBoundingClientRect(); if (!r.width) return; const x = r.left + r.width / 2; const d = Math.abs(x - mid); if (d < best) { best = d; nearest = i; nx = x; } });
+      this._mqBase = this.marqueeOffset + (mid - nx);
+      this._mqTarget = 0;
+      if (dir > 0 && nx > mid + 2) this._mqTarget = -1;
+      if (dir < 0 && nx < mid - 2) this._mqTarget = 1;
     }
-    const cards = Array.from(track.children).filter((c) => c.getBoundingClientRect().width > 0);
-    const centers = cards.map((c) => { const r = c.getBoundingClientRect(); return r.left + r.width / 2; });
-    let nearest = 0, best = Infinity;
-    centers.forEach((x, i) => { const d = Math.abs(x - mid); if (d < best) { best = d; nearest = i; } });
-    let target = nearest + dir;
-    if (dir > 0 && centers[nearest] > mid + 2) target = nearest;
-    if (dir < 0 && centers[nearest] < mid - 2) target = nearest;
-    target = Math.max(0, Math.min(centers.length - 1, target));
-    this.marqueeOffset = Math.round(this.marqueeOffset + (mid - centers[target]));
+    this._mqTarget += dir;
+    let off = Math.round(this._mqBase - this._mqTarget * this.marqueeCardW);
+    const W = this.marqueeSetW;
+    if (W > 0 && !animating) {
+      while (off > 0) { off -= W; this._mqBase -= W; }
+      while (off < -2 * W + vr.width) { off += W; this._mqBase += W; }
+      if (this.marqueeOffset - off > W / 2 && off + W <= 0) { off += W; this._mqBase += W; track.style.transition = 'none'; this.marqueeOffset += 0; }
+    }
+    this.marqueeOffset = off;
     this.marqueePaused = true;
+    this._mqAnimating = true;
     void track.offsetWidth;
     track.style.transition = 'transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)';
-    track.style.transform = 'translate3d(' + this.marqueeOffset + 'px,0,0)';
+    track.style.transform = 'translate3d(' + off + 'px,0,0)';
     clearTimeout(this.marqueeTransitionTimer);
     this.marqueeTransitionTimer = setTimeout(() => {
       track.style.transition = 'none';
-      let o = this.marqueeOffset;
-      while (o <= -this.marqueeSetW) o += this.marqueeSetW;
-      while (o > 0) o -= this.marqueeSetW;
+      this._mqAnimating = false; this._mqTarget = null;
+      const o = this._mqNorm(this.marqueeOffset);
       if (o !== this.marqueeOffset) { this.marqueeOffset = o; track.style.transform = 'translate3d(' + o + 'px,0,0)'; }
     }, 750);
     clearTimeout(this.marqueeResumeTimer);
