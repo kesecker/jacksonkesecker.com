@@ -6,21 +6,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com" data-early-fonts>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=block">
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..800;1,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap">
   <script src="image-slot.js"></script>
   <link rel="icon" type="image/png" href="assets/favicon-dark.png" media="(prefers-color-scheme: dark)">
   <link rel="icon" type="image/png" href="assets/favicon-light.png" media="(prefers-color-scheme: light)">
   <link rel="icon" type="image/png" href="assets/favicon-light.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=block" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=block" rel="stylesheet">
   <style>
     :root {
-      --rh-font: 'Inter', system-ui, sans-serif;
+      --rh-font: 'Montserrat', system-ui, sans-serif;
       --rh-accent: #1a1a1a;
       --rh-accent-hover: #000000;
       --rh-accent-light: #ededed;
@@ -37,7 +38,7 @@
     html, body { margin: 0; overflow-x: hidden; background: var(--rh-bg); letter-spacing: 0.015em; }
     a { color: var(--rh-accent); text-decoration: none; }
     a:hover { color: var(--rh-accent-hover); }
-    .vc-eyebrow { font-family: var(--rh-font); font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--rh-accent); }
+    .vc-eyebrow { font-family: var(--rh-font); font-size: 13px; font-weight: 600; letter-spacing: 0.02em; text-transform: none; color: var(--rh-accent); }
     @media (max-width: 900px) {
       #about-content { flex-direction: column-reverse !important; text-align: center !important; padding-left: 36px !important; padding-right: 36px !important; }
       #about-text-block { align-items: center !important; text-align: center !important; }
@@ -46,7 +47,8 @@
   <style>
     button[aria-label="Menu"], #nav-burger-fixed { transition: opacity 0.3s ease; }
     body:has(div[style*="z-index: 2147483005"]) button[aria-label="Menu"], body:has(div[style*="z-index: 2147483005"]) #nav-burger-fixed { opacity: 0 !important; pointer-events: none !important; }
-    html body *:not(svg):not(path) { font-family: 'Inter', system-ui, sans-serif !important; }
+    html body *:not(svg):not(path) { font-family: 'Montserrat', system-ui, sans-serif !important; }
+    html:root body h1, html:root body h2, html:root body h3, html:root body h4, html:root body h5, html:root body h6, html:root body h1 *, html:root body h2 *, html:root body h3 *, html:root body h4 *, html:root body h5 *, html:root body h6 *, html:root body .vc-eyebrow, html:root body .vc-eyebrow *, html:root body [data-ks-subtitle], html:root body [data-ks-subtitle] * { font-family: 'Playfair Display', Georgia, serif !important; }
     html:has(div[style*="z-index: 2147483005"]), html:has(div[style*="z-index: 2147483005"]) body, html:has(div[style*="z-index: 2147483005"]) [data-ks-scroll], div[style*="z-index: 2147483005"] { scrollbar-width: none !important; -ms-overflow-style: none !important; }
     html:has(div[style*="z-index: 2147483005"])::-webkit-scrollbar, html:has(div[style*="z-index: 2147483005"]) body::-webkit-scrollbar, html:has(div[style*="z-index: 2147483005"]) [data-ks-scroll]::-webkit-scrollbar, div[style*="z-index: 2147483005"]::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
     [data-ks-x], [data-ks-x] svg path, [data-ks-x] svg line { transition: color 0.3s ease, stroke 0.3s ease !important; }
@@ -69,15 +71,15 @@
       <img src="assets/key-landing-logo.png" alt="Jackson Kesecker Realtor" style="height: 34px; width: auto;">
     </a>
     <div data-ks-navlinks="1" style="display: flex; align-items: center; gap: clamp(14px, 2.4vw, 26px); flex: 1; padding-left: clamp(8px, 2vw, 28px);">
-      <a target="_self" href="https://jacksonkesecker.com/" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 2px;" style-hover="color: #ffffff; background-size: 100% 100%;">Home</a>
+      <a target="_self" href="https://jacksonkesecker.com/" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 2px;" style-hover="color: #ffffff; background-size: 100% 100%;">Home</a>
       <span style="font-size: 15px; line-height: 1; display: flex; align-items: center; color: #ffffff;">•</span>
-      <a href="../listings" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 2px;" style-hover="color: #ffffff; background-size: 100% 100%;">Search</a>
+      <a href="../listings" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 2px;" style-hover="color: #ffffff; background-size: 100% 100%;">Search</a>
       <span style="font-size: 15px; line-height: 1; display: flex; align-items: center; color: #ffffff;">•</span>
-      <a href="../communities" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 2px;" style-hover="color: #ffffff; background-size: 100% 100%;">Communities</a>
+      <a href="../communities" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 2px;" style-hover="color: #ffffff; background-size: 100% 100%;">Communities</a>
       <span style="font-size: 15px; line-height: 1; display: flex; align-items: center; color: #ffffff;">•</span>
-      <a aria-current="page" href="../about" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: #ffffff; text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 100% 100%; padding-bottom: 2px;" style-hover="color: #ffffff; background-size: 100% 100%;">About</a>
+      <a aria-current="page" href="../about" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: #ffffff; text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 100% 100%; padding-bottom: 2px;" style-hover="color: #ffffff; background-size: 100% 100%;">About</a>
       <span style="font-size: 15px; line-height: 1; display: flex; align-items: center; color: #ffffff;">•</span>
-      <a href="#" onClick="{{ openContactModal }}" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 2px;" style-hover="color: #ffffff; background-size: 100% 100%;">Contact</a>
+      <a href="#" onClick="{{ openContactModal }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 2px;" style-hover="color: #ffffff; background-size: 100% 100%;">Contact</a>
     </div>
     <button onClick="{{ toggleNavMenu }}" aria-label="Menu" style="flex-shrink: 0; width: 44px; height: 44px; margin-right: -6px; background: transparent; border: none; border-radius: 50%; cursor: pointer; padding: 0 0 0 8px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 6px; box-sizing: border-box; position: relative; isolation: isolate; z-index: 2147483001;">
       <span style="display: block; width: 26px; height: 2px; border-radius: 1px; background: #ffffff; transform: perspective(200px) {{ navBurgerTransform }}; transform-origin: left center; transition: transform 0.4s ease;"></span>
@@ -87,11 +89,11 @@
     <sc-if value="{{ navMenuOpen }}" hint-placeholder-val="{{ false }}">
       <div onClick="{{ closeNavMenu }}" style="position: fixed; inset: 0; z-index: 2147483000; background: rgba(0,0,0,0.88); animation: {{ navOverlayAnim }};">
         <div onClick="{{ stopNavProp }}" style="position: absolute; top: 128px; right: clamp(20px, 5vw, 64px); min-width: 280px; display: flex; flex-direction: column; align-items: flex-end; gap: clamp(26px, 4.2vh, 46px); animation: {{ navCardAnim }};">
-          <a href="https://jacksonkesecker.com/" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Home</a>
-          <a href="https://jacksonkesecker.com/listings" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Search</a>
-          <a href="https://jacksonkesecker.com/communities" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Communities</a>
-          <a href="https://jacksonkesecker.com/about" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">About</a>
-          <a href="#" target="_self" onClick="{{ navMenuContact }}" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Contact</a>
+          <a href="https://jacksonkesecker.com/" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Home</a>
+          <a href="https://jacksonkesecker.com/listings" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Search</a>
+          <a href="https://jacksonkesecker.com/communities" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Communities</a>
+          <a href="https://jacksonkesecker.com/about" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">About</a>
+          <a href="#" target="_self" onClick="{{ navMenuContact }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Contact</a>
         </div>
       </div>
     </sc-if>
@@ -101,7 +103,7 @@
   <div style="display: flex; flex-direction: column;">
     <div id="about-content" style="max-width: 1160px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 64px 36px 72px; display: flex; align-items: flex-start; justify-content: center; gap: 56px; flex-wrap: wrap;">
       <div id="about-text-block" style="flex: 1 1 460px; min-width: 280px; max-width: 620px; display: flex; flex-direction: column; align-items: flex-start; text-align: left; gap: 18px;">
-        <h1 style="font-size: clamp(28px, 4.4vw, 44px); font-weight: 600; margin: 0 0 6px; letter-spacing: -0.01em; text-transform: uppercase;">Jackson Kesecker</h1>
+        <h1 style="font-size: clamp(28px, 4.4vw, 44px); font-weight: 600; margin: 0 0 6px; letter-spacing: -0.01em; text-transform: none;">Jackson Kesecker</h1>
         <p style="font-size: 16px; line-height: 1.75; color: var(--rh-text-secondary); margin: 0; text-wrap: pretty;">Jackson was born in Monterey and raised in Soledad, in the heart of the Salinas Valley. He is an 11th-generation Monterey County resident, and his family's history here is part of why he does this work. From the agricultural fields of the valley floor, surrounded by prominent mountain ranges, to the beaches and views of the Monterey Peninsula, he knows this county as a neighbor and not just as a market.</p>
         <p style="font-size: 16px; line-height: 1.75; color: var(--rh-text-secondary); margin: 0; text-wrap: pretty;">After graduating from Palma School in Salinas, Jackson earned his Associate of Arts at Hartnell College, then a Bachelor's degree in Political Science with a Pre-Law concentration and a minor in Music from Cal Poly San Luis Obispo. That training shows up in his work: he reads contracts closely, asks the right questions, explains complicated terms in plain language, and advocates clearly for his clients at the negotiating table.</p>
         <p style="font-size: 16px; line-height: 1.75; color: var(--rh-text-secondary); margin: 0; text-wrap: pretty;">Buying or selling a home is one of the biggest financial decisions you'll make, and Jackson believes it deserves an agent who understands the local neighborhoods and economy. For sellers, that means pricing grounded in current market data, marketing that shows a home at its best, and skilled negotiation through closing. For buyers, it means a focused search, honest input on price and condition, and steady guidance from the first showing to the keys. He proudly serves clients in English and Spanish.</p>
@@ -125,7 +127,7 @@
           <div style="display: grid; overflow: hidden; min-width: 0;">
           <sc-for list="{{ tSizers }}" as="sz" hint-placeholder-count="0">
             <div aria-hidden="true" style="grid-area: 1 / 1; visibility: hidden; pointer-events: none; display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%;">
-              <h2 style="font-size: clamp(20px, 2.8vw, 26px); font-weight: 600; margin: 0; letter-spacing: -0.01em; text-transform: uppercase; color: var(--rh-text-primary); text-wrap: balance;">{{ sz.headline }}</h2>
+              <h2 style="font-size: clamp(20px, 2.8vw, 26px); font-weight: 600; margin: 0; letter-spacing: -0.01em; text-transform: none; color: var(--rh-text-primary); text-wrap: balance;">{{ sz.headline }}</h2>
               <sc-for list="{{ sz.paras }}" as="sp" hint-placeholder-count="0">
                 <p style="font-size: 16px; line-height: 1.75; color: var(--rh-text-secondary); margin: 0; text-wrap: pretty;">{{ sp }}</p>
               </sc-for>
@@ -136,7 +138,7 @@
             </div>
           </sc-for>
           <div style="grid-area: 1 / 1; align-self: center; display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; opacity: {{ tOpacity }}; transform: {{ tTransform }}; transition: {{ tTransition }};">
-          <h2 style="font-size: clamp(20px, 2.8vw, 26px); font-weight: 600; margin: 0; letter-spacing: -0.01em; text-transform: uppercase; color: var(--rh-text-primary); text-wrap: balance;">{{ tHeadline }}</h2>
+          <h2 style="font-size: clamp(20px, 2.8vw, 26px); font-weight: 600; margin: 0; letter-spacing: -0.01em; text-transform: none; color: var(--rh-text-primary); text-wrap: balance;">{{ tHeadline }}</h2>
           <sc-for list="{{ tParas }}" as="para" hint-placeholder-count="1">
             <p style="font-size: 16px; line-height: 1.75; color: var(--rh-text-secondary); margin: 0; text-wrap: pretty;">{{ para }}</p>
           </sc-for>
@@ -157,7 +159,7 @@
     <div aria-hidden="true" style="position: fixed; inset: 0; background-image: url('uploads/Pinnacles.png'); background-size: cover; background-position: center; will-change: transform; pointer-events: none;"></div>
     <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 55%, #000000 100%);"></div>
     <div style="position: absolute; left: 50%; top: 150px; transform: translateX(-50%); width: 100%; max-width: 640px; padding: 0 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px; text-align: center;">
-      <h2 style="font-size: clamp(22px, 3.8vw, 30px); font-weight: 600; color: #ffffff; margin: 0; letter-spacing: -0.01em; text-transform: uppercase; text-shadow: 0 2px 12px rgba(0,0,0,0.55);">Work with Jackson</h2>
+      <h2 style="font-size: clamp(22px, 3.8vw, 30px); font-weight: 600; color: #ffffff; margin: 0; letter-spacing: -0.01em; text-transform: none; text-shadow: 0 2px 12px rgba(0,0,0,0.55);">Work with Jackson</h2>
       <p style="font-size: 15px; line-height: 1.75; color: rgba(255,255,255,0.92); margin: 28px 0 0; text-shadow: 0 1px 8px rgba(0,0,0,0.6);">With deep roots in Monterey County and a passion for service, I would be privileged and thrilled to work with you in making one of the most important decisions in your life.</p>
       <p style="font-size: 15px; line-height: 1.75; color: rgba(255,255,255,0.92); margin: 0; text-shadow: 0 1px 8px rgba(0,0,0,0.6);">Buying and selling property is not simply a transaction — it's a significant life event. That's why you need a trusted advisor with you every step of the way to make your personalized experience seamless and even enjoyable.</p>
       <p style="font-size: 15px; line-height: 1.75; color: rgba(255,255,255,0.92); margin: 0; text-shadow: 0 1px 8px rgba(0,0,0,0.6);">No matter your situation today, click below to get in touch with me. I'm excited to meet you.</p>
