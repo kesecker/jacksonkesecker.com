@@ -38,7 +38,7 @@
     html, body { margin: 0; overflow-x: hidden; background: var(--rh-bg); letter-spacing: 0.015em; }
     a { color: var(--rh-accent); text-decoration: none; }
     a:hover { color: var(--rh-accent-hover); }
-    .vc-eyebrow { font-family: var(--rh-font); font-size: 13px; font-weight: 600; letter-spacing: 0.02em; text-transform: none; color: var(--rh-accent); }
+    .vc-eyebrow { font-family: var(--rh-font); font-size: 15px; font-weight: 600; letter-spacing: 0.02em; text-transform: none; color: var(--rh-accent); }
     @media (max-width: 900px) {
       #about-content { flex-direction: column-reverse !important; text-align: center !important; padding-left: 36px !important; padding-right: 36px !important; }
       #about-text-block { align-items: center !important; text-align: center !important; }
@@ -103,7 +103,7 @@
   <div style="display: flex; flex-direction: column;">
     <div id="about-content" style="max-width: 1160px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 64px 36px 72px; display: flex; align-items: flex-start; justify-content: center; gap: 56px; flex-wrap: wrap;">
       <div id="about-text-block" style="flex: 1 1 460px; min-width: 280px; max-width: 620px; display: flex; flex-direction: column; align-items: flex-start; text-align: left; gap: 18px;">
-        <h1 style="font-size: clamp(28px, 4.4vw, 44px); font-weight: 600; margin: 0 0 6px; letter-spacing: -0.01em; text-transform: none;">Jackson Kesecker</h1>
+        <h1 data-ks-scaled="1" style="font-size: clamp(32px, 5.06vw, 51px); font-weight: 600; margin: 0 0 6px; letter-spacing: -0.01em; text-transform: none;">Jackson Kesecker</h1>
         <p style="font-size: 16px; line-height: 1.75; color: var(--rh-text-secondary); margin: 0; text-wrap: pretty;">Jackson was born in Monterey and raised in Soledad, in the heart of the Salinas Valley. He is an 11th-generation Monterey County resident, and his family's history here is part of why he does this work. From the agricultural fields of the valley floor, surrounded by prominent mountain ranges, to the beaches and views of the Monterey Peninsula, he knows this county as a neighbor and not just as a market.</p>
         <p style="font-size: 16px; line-height: 1.75; color: var(--rh-text-secondary); margin: 0; text-wrap: pretty;">After graduating from Palma School in Salinas, Jackson earned his Associate of Arts at Hartnell College, then a Bachelor's degree in Political Science with a Pre-Law concentration and a minor in Music from Cal Poly San Luis Obispo. That training shows up in his work: he reads contracts closely, asks the right questions, explains complicated terms in plain language, and advocates clearly for his clients at the negotiating table.</p>
         <p style="font-size: 16px; line-height: 1.75; color: var(--rh-text-secondary); margin: 0; text-wrap: pretty;">Buying or selling a home is one of the biggest financial decisions you'll make, and Jackson believes it deserves an agent who understands the local neighborhoods and economy. For sellers, that means pricing grounded in current market data, marketing that shows a home at its best, and skilled negotiation through closing. For buyers, it means a focused search, honest input on price and condition, and steady guidance from the first showing to the keys. He proudly serves clients in English and Spanish.</p>
@@ -127,7 +127,7 @@
           <div style="display: grid; overflow: hidden; min-width: 0;">
           <sc-for list="{{ tSizers }}" as="sz" hint-placeholder-count="0">
             <div aria-hidden="true" style="grid-area: 1 / 1; visibility: hidden; pointer-events: none; display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%;">
-              <h2 style="font-size: clamp(20px, 2.8vw, 26px); font-weight: 600; margin: 0; letter-spacing: -0.01em; text-transform: none; color: var(--rh-text-primary); text-wrap: balance;">{{ sz.headline }}</h2>
+              <h2 data-ks-scaled="1" style="font-size: clamp(23px, 3.22vw, 30px); font-weight: 600; margin: 0; letter-spacing: -0.01em; text-transform: none; color: var(--rh-text-primary); text-wrap: balance;">{{ sz.headline }}</h2>
               <sc-for list="{{ sz.paras }}" as="sp" hint-placeholder-count="0">
                 <p style="font-size: 16px; line-height: 1.75; color: var(--rh-text-secondary); margin: 0; text-wrap: pretty;">{{ sp }}</p>
               </sc-for>
@@ -138,7 +138,7 @@
             </div>
           </sc-for>
           <div style="grid-area: 1 / 1; align-self: center; display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; opacity: {{ tOpacity }}; transform: {{ tTransform }}; transition: {{ tTransition }};">
-          <h2 style="font-size: clamp(20px, 2.8vw, 26px); font-weight: 600; margin: 0; letter-spacing: -0.01em; text-transform: none; color: var(--rh-text-primary); text-wrap: balance;">{{ tHeadline }}</h2>
+          <h2 data-ks-scaled="1" style="font-size: clamp(23px, 3.22vw, 30px); font-weight: 600; margin: 0; letter-spacing: -0.01em; text-transform: none; color: var(--rh-text-primary); text-wrap: balance;">{{ tHeadline }}</h2>
           <sc-for list="{{ tParas }}" as="para" hint-placeholder-count="1">
             <p style="font-size: 16px; line-height: 1.75; color: var(--rh-text-secondary); margin: 0; text-wrap: pretty;">{{ para }}</p>
           </sc-for>
@@ -159,7 +159,7 @@
     <div aria-hidden="true" style="position: fixed; inset: 0; background-image: url('uploads/Pinnacles.png'); background-size: cover; background-position: center; will-change: transform; pointer-events: none;"></div>
     <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 55%, #000000 100%);"></div>
     <div style="position: absolute; left: 50%; top: 150px; transform: translateX(-50%); width: 100%; max-width: 640px; padding: 0 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px; text-align: center;">
-      <h2 style="font-size: clamp(22px, 3.8vw, 30px); font-weight: 600; color: #ffffff; margin: 0; letter-spacing: -0.01em; text-transform: none; text-shadow: 0 2px 12px rgba(0,0,0,0.55);">Work with Jackson</h2>
+      <h2 data-ks-scaled="1" style="font-size: clamp(25px, 4.37vw, 35px); font-weight: 600; color: #ffffff; margin: 0; letter-spacing: -0.01em; text-transform: none; text-shadow: 0 2px 12px rgba(0,0,0,0.55);">Work with Jackson</h2>
       <p style="font-size: 15px; line-height: 1.75; color: rgba(255,255,255,0.92); margin: 28px 0 0; text-shadow: 0 1px 8px rgba(0,0,0,0.6);">With deep roots in Monterey County and a passion for service, I would be privileged and thrilled to work with you in making one of the most important decisions in your life.</p>
       <p style="font-size: 15px; line-height: 1.75; color: rgba(255,255,255,0.92); margin: 0; text-shadow: 0 1px 8px rgba(0,0,0,0.6);">Buying and selling property is not simply a transaction — it's a significant life event. That's why you need a trusted advisor with you every step of the way to make your personalized experience seamless and even enjoyable.</p>
       <p style="font-size: 15px; line-height: 1.75; color: rgba(255,255,255,0.92); margin: 0; text-shadow: 0 1px 8px rgba(0,0,0,0.6);">No matter your situation today, click below to get in touch with me. I'm excited to meet you.</p>

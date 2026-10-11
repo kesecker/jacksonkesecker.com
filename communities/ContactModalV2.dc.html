@@ -8,10 +8,11 @@
 <body>
 <x-dc>
 <helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..800;1,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
   <style>
-    :root { --rh-font: 'Inter', system-ui, sans-serif; --rh-accent: #1a1a1a; --rh-accent-hover: #000000; }
+    :root { --rh-font: 'Montserrat', system-ui, sans-serif; --rh-accent: #1a1a1a; --rh-accent-hover: #000000; }
     @keyframes modal-fade-in { from { opacity: 0; } to { opacity: 1; } }
     @keyframes modal-fade-out { from { opacity: 1; } to { opacity: 0; } }
     @keyframes modal-scale-in { from { opacity: 0; transform: scale(0.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
@@ -24,10 +25,10 @@
   <div style="position: fixed; inset: 0; z-index: 2147483005; background: #000000; overflow-y: auto; animation: {{ contactModalOverlayAnimation }};">
     <div style="position: absolute; inset: 0; background-image: url('uploads/Pinnacles.png'); background-size: cover; background-position: center;"></div>
     <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.82) 100%);"></div>
-    <button onClick="{{ closeContactModal }}" aria-label="Close" style="position: fixed; top: 24px; right: clamp(20px, 4vw, 40px); background: none; border: none; font-size: 32px; line-height: 1; cursor: pointer; color: #ffffff; z-index: 2; transition: opacity 0.2s ease;" style-hover="opacity: 0.6;">×</button>
+    <button data-ks-x="1" onClick="{{ closeContactModal }}" aria-label="Close" style="position: fixed; top: 24px; right: clamp(20px, 4vw, 40px); background: none; border: none; font-size: 32px; line-height: 1; cursor: pointer; color: #ffffff; z-index: 2; transition: opacity 0.2s ease;">×</button>
     <div style="position: relative; z-index: 1; min-height: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 56px; max-width: 1200px; margin: 0 auto; padding: clamp(72px, 10vh, 120px) clamp(24px, 6vw, 64px) 64px; animation: {{ contactModalCardAnimation }};">
       <div style="border-right: 1px solid rgba(255,255,255,0.18); padding-right: clamp(0px, 4vw, 48px);">
-        <h2 style="font-size: clamp(26px, 3.6vw, 38px); font-weight: 600; color: #ffffff; margin: 0 0 32px; letter-spacing: -0.01em;">Contact Details</h2>
+        <h2 data-ks-scaled="1" style="font-size: clamp(30px, 4.14vw, 44px); font-weight: 600; color: #ffffff; margin: 0 0 32px; letter-spacing: -0.01em;">Contact Details</h2>
         <div style="display: flex; flex-direction: column; gap: 36px; font-size: 15px; color: rgba(255,255,255,0.85);">
           <div>
             <div style="font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-bottom: 10px;">Phone</div>
@@ -50,7 +51,7 @@
         </div>
       </div>
       <div>
-        <h2 style="font-size: clamp(26px, 3.6vw, 38px); font-weight: 600; color: #ffffff; margin: 0 0 32px; letter-spacing: -0.01em;">Send Me a Message</h2>
+        <h2 data-ks-scaled="1" style="font-size: clamp(30px, 4.14vw, 44px); font-weight: 600; color: #ffffff; margin: 0 0 32px; letter-spacing: -0.01em;">Send Me a Message</h2>
         <form onSubmit="{{ handleContactSubmit }}" style="display: flex; flex-direction: column; gap: 22px;">
           <div style="display: flex; flex-direction: column; gap: 6px;">
             <label style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.55);">Full Name *</label>
@@ -87,7 +88,7 @@
           </div>
           <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0;">
             <button type="submit" disabled="{{ contactSending }}" style="width: 100%; padding: 14px; font-size: 14px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; font-family: var(--rh-font); color: #1a1a1a; background: #ffffff; border: none; cursor: pointer; transition: opacity 0.2s ease;" style-hover="opacity: 0.85;">Send Message</button>
-            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: rgba(255,255,255,0.85); overflow: hidden; max-height: {{ contactStatusH }}; opacity: {{ contactStatusOp }}; transition: opacity 0.3s ease, max-height 0.3s ease;">{{ contactStatusMsg }}</p>
+            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: rgba(255,255,255,0.85); overflow: hidden; max-height: {{ contactStatusH }}; opacity: {{ contactStatusOp }}; transition: opacity 0.45s ease, max-height 0.45s ease;">{{ contactStatusMsg }}</p>
             <p style="margin: 0; font-size: 11px; line-height: 1.5; color: rgba(255,255,255,0.45);">This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy" target="_blank" style="color: rgba(255,255,255,0.65); text-decoration: underline;">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" style="color: rgba(255,255,255,0.65); text-decoration: underline;">Terms of Service</a> apply.</p>
         </form>
       </div>
@@ -160,6 +161,25 @@ class Component extends DCLogic {
       this.setState({ [prefix + 'PhoneErrOn']: false });
     }
   };
+  _ksPreload = (() => {
+    if (typeof window === 'undefined' || window.__ksRcPre) return;
+    window.__ksRcPre = true;
+    const load = () => {
+      if (window.grecaptcha || document.querySelector('script[data-ks-recaptcha]')) return;
+      const s = document.createElement('script'); s.src = 'https://www.google.com/recaptcha/api.js?render=6Ldt-s0tAAAAAHKHMZoNKfYDRnjbYp7jfkhix9MQ'; s.dataset.ksRecaptcha = '1'; document.head.appendChild(s);
+    };
+    document.addEventListener('focusin', (e) => { const t = e.composedPath ? e.composedPath()[0] : e.target; if (t && t.closest && t.closest('form')) load(); }, true);
+  })();
+  _ksStatus = (msg) => {
+    clearTimeout(this._ksStT1); clearTimeout(this._ksStT2); clearTimeout(this._ksStT3);
+    const show = () => {
+      this.setState({ contactStatusMsg: msg, contactStatusOn: false });
+      this._ksStT2 = setTimeout(() => this.setState({ contactStatusOn: true }), 30);
+      if (/^Thanks/.test(msg)) this._ksStT3 = setTimeout(() => this.setState({ contactStatusOn: false }), 7000);
+    };
+    if (!msg) { this.setState({ contactStatusOn: false }); return; }
+    if (this.state.contactStatusOn) { this.setState({ contactStatusOn: false }); this._ksStT1 = setTimeout(show, 500); } else show();
+  };
   _ksSubmit = (data) => new Promise((resolve) => {
     const KEY = '6Ldt-s0tAAAAAHKHMZoNKfYDRnjbYp7jfkhix9MQ';
     const URL = 'https://script.google.com/macros/s/AKfycbz-txrCbgzj4U78dBOSrFZMrT9qN3D0XV2ZcEua_6g_LB3VLNKkSk-NoUJHxEOvapY9ww/exec';
@@ -167,7 +187,7 @@ class Component extends DCLogic {
     const send = (token) => {
       if (done) return;
       done = true;
-      fetch(URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({}, data, { token: token || '', url: location.href })) })
+      fetch(URL, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({}, data, { token: token || '', url: location.href })) })
         .then((r) => r.json()).then(resolve).catch(() => resolve({ ok: false, error: 'network' }));
     };
     const go = () => { try { window.grecaptcha.ready(() => window.grecaptcha.execute(KEY, { action: data.form || 'contact' }).then(send, () => send(''))); } catch (e) { send(''); } };
@@ -192,15 +212,15 @@ class Component extends DCLogic {
         const fd = new FormData(f);
         if (String(fd.get('phone') || '').replace(/\D/g, '').length !== 10) { this.setState({ contactPhoneErr: 'Please enter a 10-digit phone number.', contactPhoneErrOn: true }); return; }
         const il = f.querySelector('[data-ks-interest]');
-        this.setState({ contactSending: true, contactStatusMsg: 'Sending…' });
+        f.reset(); this.setState({ contactSending: false }); this._ksStatus('Thanks! Your message was sent. Jackson will be in touch soon.');
         this._ksSubmit({ form: 'contact', name: fd.get('name'), email: fd.get('email'), phone: fd.get('phone'), message: fd.get('message'), website: fd.get('website'), interest: il ? il.textContent.trim() : '' }).then((r) => {
-          if (r && r.ok) { f.reset(); this.setState({ contactSending: false, contactStatusMsg: 'Thanks! Your message was sent. Jackson will be in touch soon.' }); }
-          else this.setState({ contactSending: false, contactStatusMsg: 'Something went wrong. Please call or text (831) 821-0398.' });
+          if (r && r.ok) return;
+          this.setState({ contactSending: false }); this._ksStatus('Something went wrong. Please call or text (831) 821-0398.');
         });
       },
       contactStatusMsg: this.state.contactStatusMsg || '',
-      contactStatusOp: this.state.contactStatusMsg ? 1 : 0,
-      contactStatusH: this.state.contactStatusMsg ? '60px' : '0px',
+      contactStatusOp: this.state.contactStatusOn ? 1 : 0,
+      contactStatusH: this.state.contactStatusOn ? '60px' : '0px',
       contactPhoneInput: this._ksPhone('contact'),
       contactPhoneErrText: this.state.contactPhoneErr || '',
       contactPhoneErrOp: this.state.contactPhoneErrOn ? 1 : 0,
