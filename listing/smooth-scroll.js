@@ -12,13 +12,14 @@
     for (var n = node; n && n.nodeType === 1 && n !== wrap && n !== document.body && n !== document.documentElement; n = n.parentElement || (n.getRootNode && n.getRootNode().host) || null) {
       var cs = getComputedStyle(n);
       if (cs.position === 'fixed') return true;
-      if (/(auto|scroll)/.test(cs.overflowY) && n.scrollHeight > n.clientHeight + 1) return true;
+      if (/(auto|scroll)/.test(cs.overflowY) && n.scrollHeight > n.clientHeight + 1 && n.clientHeight < (wrap ? wrap.clientHeight : window.innerHeight) * 0.85) return true;
     }
     return false;
   }
   function realLimit() { if (wrap) return Math.max(0, wrap.scrollHeight - wrap.clientHeight); var se = document.scrollingElement || document.documentElement; return Math.max(0, se.scrollHeight - window.innerHeight); }
   function fit() { var l = window.__ksLenis; if (!l) return; if (Math.abs((l.limit || 0) - realLimit()) > 2) { try { l.resize(); } catch (e) {} } }
-  window.addEventListener('wheel', fit, { capture: true, passive: true });
+  var lastFit = 0;
+  window.addEventListener('wheel', function () { var n = performance.now(); if (n - lastFit > 400) { lastFit = n; fit(); } }, { capture: true, passive: true });
   function start() {
     if (!window.Lenis || window.__ksLenis) return;
     if (WRAP_SEL) {
@@ -26,7 +27,7 @@
       if (!wrap || !wrap.firstElementChild) { setTimeout(start, 100); return; }
     }
     var opts = wrap ? { wrapper: wrap, content: wrap.firstElementChild, eventsTarget: wrap } : {};
-    var l = new window.Lenis(Object.assign(opts, { lerp: 0.09, smoothWheel: true, wheelMultiplier: 1, anchors: true, __experimental__naiveDimensions: true, prevent: blocked }));
+    var l = new window.Lenis(Object.assign(opts, { lerp: 0.1, smoothWheel: true, wheelMultiplier: 1, anchors: true, __experimental__naiveDimensions: true, prevent: blocked }));
     window.__ksLenis = l;
     if (window.ResizeObserver) { var ro = new ResizeObserver(fit); ro.observe(document.documentElement); if (document.body) ro.observe(document.body); if (wrap) { ro.observe(wrap); ro.observe(wrap.firstElementChild); } }
     window.addEventListener('load', fit);

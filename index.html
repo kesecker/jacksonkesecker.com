@@ -14,7 +14,7 @@
 <helmet>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&display=swap">
   <title>Jackson Kesecker, REALTOR® | Monterey County Real Estate</title>
-  <script src="smooth-scroll.js?v=4"></script>
+  <script src="smooth-scroll.js?v=7"></script>
   <link rel="icon" type="image/png" href="assets/favicon-dark.png" media="(prefers-color-scheme: dark)">
   <link rel="icon" type="image/png" href="assets/favicon-light.png" media="(prefers-color-scheme: light)">
   <link rel="icon" type="image/png" href="assets/favicon-light.png">
@@ -53,6 +53,8 @@
     a:hover { color: var(--rh-accent-hover); }
     .vc-eyebrow { font-family: var(--rh-font); font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--rh-accent); }
     html body *:not(svg):not(path) { font-family: 'Inter', system-ui, sans-serif !important; }
+    html:has(div[style*="z-index: 2147483005"]), html:has(div[style*="z-index: 2147483005"]) body, html:has(div[style*="z-index: 2147483005"]) [data-ks-scroll], div[style*="z-index: 2147483005"] { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+    html:has(div[style*="z-index: 2147483005"])::-webkit-scrollbar, html:has(div[style*="z-index: 2147483005"]) body::-webkit-scrollbar, html:has(div[style*="z-index: 2147483005"]) [data-ks-scroll]::-webkit-scrollbar, div[style*="z-index: 2147483005"]::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
     html body #hero-logo span { font-family: 'Montserrat', system-ui, sans-serif !important; }
     [data-ks-x], [data-ks-x] svg path, [data-ks-x] svg line { transition: color 0.3s ease, stroke 0.3s ease !important; }
     [data-ks-x]:hover { color: #999999 !important; }
@@ -180,7 +182,7 @@
         <div style="align-self: center; width: 100%; box-sizing: border-box; transform: translateY(calc(-8vh - 40px));">
         <div id="hero-text-block" style="box-sizing: border-box; padding-left: clamp(20px, 6vw, 73px); padding-right: 24px; display: flex; flex-direction: column; gap: clamp(6px, 1vw, 10px); text-align: left; max-width: 774px;"><span id="hero-eyebrow-span" style="font-family: var(--rh-font); font-size: clamp(12px, 1.1vw, 17px); font-weight: 400; letter-spacing: 0.06em; color: #ffffff;">Keller Williams Coastal &amp; Salinas Valley Estates | DRE#02196405</span><div id="hero-heading-wrap" style="display: flex; align-items: center; overflow: hidden; min-height: clamp(68px, 12vw, 124px);">
           <h1 id="hero-heading" style="font-size: clamp(24px, 3.4vw, 52px); font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; margin: 0; color: #ffffff; text-align: left; opacity: {{ heroTextOpacity }}; transform: {{ heroTextTransform }}; transition: opacity 0.81s ease, transform 0.81s ease;">{{ rotatingHeroText }}</h1>
-        </div><p id="hero-paragraph" style="font-size: clamp(14px, 1.2vw, 18px); line-height: 1.6; color: rgba(255,255,255,0.88); max-width: 620px; margin: 0">{{ t.heroParagraph }}</p><a href="https://keseckerproperties.com/listings" onMouseEnter="{{ heroListingsHoverEnter }}" onMouseLeave="{{ heroListingsHoverLeave }}" style="margin-top: 34px; display: inline-block; width: fit-content;"><span style="position: relative; display: inline-block; font-size: 16px; font-weight: 400; letter-spacing: normal; text-transform: none; color: #ffffff;">Search for Properties<span style="position: absolute; left: 0; bottom: -4px; height: 2px; background: #ffffff; width: {{ heroListingsUnderlineWidth }}; transition: width 0.35s ease;"></span></span></a></div>
+        </div><p id="hero-paragraph" style="font-size: clamp(14px, 1.2vw, 18px); line-height: 1.6; color: rgba(255,255,255,0.88); max-width: 620px; margin: 0">{{ t.heroParagraph }}</p><a href="https://jacksonkesecker.com/listings" onMouseEnter="{{ heroListingsHoverEnter }}" onMouseLeave="{{ heroListingsHoverLeave }}" style="margin-top: 34px; display: inline-block; width: fit-content;"><span style="position: relative; display: inline-block; font-size: 16px; font-weight: 400; letter-spacing: normal; text-transform: none; color: #ffffff;">Search for Properties<span style="position: absolute; left: 0; bottom: -4px; height: 2px; background: #ffffff; width: {{ heroListingsUnderlineWidth }}; transition: width 0.35s ease;"></span></span></a></div>
         </div>
       </div>
       <div id="nav-burger-wrapper" style="position: fixed; top: 20px; right: clamp(16px, 3vw, 32px); z-index: 2147483001; opacity: {{ burgerOpacity }}; pointer-events: {{ burgerPointerEvents }}; transition: opacity 0.35s ease;">
@@ -193,9 +195,9 @@
       <sc-if value="{{ isMobileMenuVisible }}" hint-placeholder-val="{{ false }}">
         <div onClick="{{ closeMobileMenu }}" style="position: fixed; inset: 0; z-index: 2147483000; background: rgba(0,0,0,0.88); animation: {{ mobileMenuOverlayAnimation }};">
           <div onClick="{{ stopPropagation }}" style="position: absolute; top: 128px; right: clamp(20px, 5vw, 64px); background: transparent; min-width: 280px; padding: 0; display: flex; flex-direction: column; align-items: flex-end; gap: clamp(26px, 4.2vh, 46px); animation: {{ mobileMenuCardAnimation }};">
-            <a href="https://keseckerproperties.com/listings" target="_self" onClick="{{ closeMobileMenu }}" style="font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">{{ t.navListings }}</a>
-            <a href="https://keseckerproperties.com/communities" target="_self" onClick="{{ closeMobileMenu }}" style="font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">{{ t.navNeighborhoods }}</a>
-            <a href="https://keseckerproperties.com/about" target="_self" onClick="{{ closeMobileMenu }}" style="font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">{{ t.navAbout }}</a>
+            <a href="https://jacksonkesecker.com/listings" target="_self" onClick="{{ closeMobileMenu }}" style="font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">{{ t.navListings }}</a>
+            <a href="https://jacksonkesecker.com/communities" target="_self" onClick="{{ closeMobileMenu }}" style="font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">{{ t.navNeighborhoods }}</a>
+            <a href="https://jacksonkesecker.com/about" target="_self" onClick="{{ closeMobileMenu }}" style="font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">{{ t.navAbout }}</a>
             <a href="#" onClick="{{ openContactModalFromMenu }}" style="font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">{{ t.navContact }}</a>
             <a href="#" onClick="{{ toggleLang }}" style="margin-top: 12px; font-size: clamp(13px, 1.1vw, 16px); font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(255,255,255,0.65); text-decoration: none; transition: color 0.25s ease;" style-hover="color: #ffffff;">{{ langToggleLabel }}</a>
           </div>
@@ -237,7 +239,7 @@
         <button onClick="{{ openContactModal }}" style="font-family: var(--rh-font); font-size: 16px; font-weight: 600; line-height: 1.5; color: var(--rh-accent); background-color: transparent; border: none; padding: 0 0 3px; margin: 0; cursor: pointer; background-image: linear-gradient(to top, currentColor 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">{{ t.aboutGetInTouch }}</button>
       </div>
       <div style="margin-top: 4px;">
-        <a href="https://keseckerproperties.com/about" target="_self" style="font-family: var(--rh-font); font-weight: 600; letter-spacing: 0.01em; font-size: 14px; padding: 9px 18px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; background: #ffffff; color: var(--rh-accent); border: 1px solid var(--rh-border); transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease; text-decoration: none;" style-hover="background: #000000; color: #ffffff; border-color: #000000;">{{ t.learnMore }}</a>
+        <a href="https://jacksonkesecker.com/about" target="_self" style="font-family: var(--rh-font); font-weight: 600; letter-spacing: 0.01em; font-size: 14px; padding: 9px 18px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; background: #ffffff; color: var(--rh-accent); border: 1px solid var(--rh-border); transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease; text-decoration: none;" style-hover="background: #000000; color: #ffffff; border-color: #000000;">{{ t.learnMore }}</a>
       </div>
     </div><div id="agent-portrait-wrapper" style="flex: 1 1 380px; min-width: 260px; max-width: 480px;">
       <div style="position: relative; width: 100%; padding-top: 100%;">
@@ -414,10 +416,10 @@
         </a>
       </div>
       <div data-ks-foot-links="1" style="display: flex; align-items: center; gap: 22px; flex-wrap: nowrap; white-space: nowrap; justify-self: center;">
-        <a data-ks-foot-home="1" href="https://keseckerproperties.com/" target="_self" style="font-size: 13px; color: rgba(255,255,255,0.7); transition: color 0.2s ease;" style-hover="color: #ffffff;">{{ t.navHome }}</a>
-        <a href="https://keseckerproperties.com/listings" target="_self" style="font-size: 13px; color: rgba(255,255,255,0.7); transition: color 0.2s ease;" style-hover="color: #ffffff;">{{ t.navListings }}</a>
-        <a href="https://keseckerproperties.com/communities" target="_self" style="font-size: 13px; color: rgba(255,255,255,0.7); transition: color 0.2s ease;" style-hover="color: #ffffff;">{{ t.navNeighborhoods }}</a>
-        <a href="https://keseckerproperties.com/about" target="_self" style="font-size: 13px; color: rgba(255,255,255,0.7); transition: color 0.2s ease;" style-hover="color: #ffffff;">{{ t.navAbout }}</a>
+        <a data-ks-foot-home="1" href="https://jacksonkesecker.com/" target="_self" style="font-size: 13px; color: rgba(255,255,255,0.7); transition: color 0.2s ease;" style-hover="color: #ffffff;">{{ t.navHome }}</a>
+        <a href="https://jacksonkesecker.com/listings" target="_self" style="font-size: 13px; color: rgba(255,255,255,0.7); transition: color 0.2s ease;" style-hover="color: #ffffff;">{{ t.navListings }}</a>
+        <a href="https://jacksonkesecker.com/communities" target="_self" style="font-size: 13px; color: rgba(255,255,255,0.7); transition: color 0.2s ease;" style-hover="color: #ffffff;">{{ t.navNeighborhoods }}</a>
+        <a href="https://jacksonkesecker.com/about" target="_self" style="font-size: 13px; color: rgba(255,255,255,0.7); transition: color 0.2s ease;" style-hover="color: #ffffff;">{{ t.navAbout }}</a>
         <a href="#" onClick="{{ openContactModal }}" style="font-size: 13px; color: rgba(255,255,255,0.7); transition: color 0.2s ease;" style-hover="color: #ffffff;">{{ t.navContact }}</a>
       </div>
       <div style="display: flex; align-items: center; gap: 20px; justify-self: stretch; justify-content: flex-end; padding-right: calc(clamp(48px, 16vw, 168px) * 0.104); box-sizing: border-box;">
@@ -500,7 +502,7 @@
             </div>
             <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0;">
             <button type="submit" disabled="{{ contactSending }}" style="width: 100%; padding: 14px; font-size: 14px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; font-family: var(--rh-font); color: #1a1a1a; background: #ffffff; border: none; cursor: pointer; transition: opacity 0.2s ease;" style-hover="opacity: 0.85;">{{ t.formSend }}</button>
-            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: rgba(255,255,255,0.85); overflow: hidden; max-height: {{ contactStatusH }}; opacity: {{ contactStatusOp }}; transition: opacity 0.3s ease, max-height 0.3s ease;">{{ contactStatusMsg }}</p>
+            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: rgba(255,255,255,0.85); overflow: hidden; max-height: {{ contactStatusH }}; opacity: {{ contactStatusOp }}; transition: opacity 0.45s ease, max-height 0.45s ease;">{{ contactStatusMsg }}</p>
             <p style="margin: 0; font-size: 11px; line-height: 1.5; color: rgba(255,255,255,0.45);">This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy" target="_blank" style="color: rgba(255,255,255,0.65); text-decoration: underline;">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" style="color: rgba(255,255,255,0.65); text-decoration: underline;">Terms of Service</a> apply.</p>
           </form>
         </div>
@@ -864,7 +866,7 @@ class Component extends DCLogic {
   }
   hasSeenIntro = () => {
     let internal = false;
-    try { const r = document.referrer ? new URL(document.referrer) : null; internal = !!(r && /(^|\.)keseckerproperties\.com$/i.test(r.hostname)); } catch (e) {}
+    try { const r = document.referrer ? new URL(document.referrer) : null; internal = !!(r && /(^|\.)(jacksonkesecker|keseckerproperties)\.com$/i.test(r.hostname)); } catch (e) {}
     try { if (sessionStorage.getItem('jkr_on_site')) internal = true; sessionStorage.setItem('jkr_on_site', '1'); } catch (e) {}
     return internal;
   };
@@ -1136,7 +1138,7 @@ class Component extends DCLogic {
   handleHeroSearchKeyDown = (e) => { if (e.key === 'Enter') { e.preventDefault(); this.goToListings(); } };
   goToListings = () => {
     const q = (this.state.heroSearchValue || '').trim();
-    window.location.href = 'https://keseckerproperties.com/listings' + (q ? '?q=' + encodeURIComponent(q) : '');
+    window.location.href = 'https://jacksonkesecker.com/listings' + (q ? '?q=' + encodeURIComponent(q) : '');
   };
 
   setOfficeHover = (which) => {
@@ -1262,7 +1264,7 @@ class Component extends DCLogic {
       const mlsText = (card.textContent || '').match(/#?\b([A-Za-z]{1,4})(\d{6,})\b/);
       const prefix = mlsText && mlsText[2] === m[1] ? mlsText[1].toUpperCase() : 'ML';
       const fullId = om ? om[1] : prefix + m[1] + '_190';
-      link.setAttribute('href', 'https://keseckerproperties.com/listing?id=' + fullId);
+      link.setAttribute('href', 'https://jacksonkesecker.com/listing?id=' + fullId);
     });
   };
   _ihfFixAllShadowRoots = () => {
@@ -1336,8 +1338,8 @@ class Component extends DCLogic {
   marqueeCardW = 408;
   marqueeSetW = 408 * 7;
 
-  marqueeTick = () => {
-    const dt = 0.03;
+  marqueeTick = (dt) => {
+    if (dt == null) dt = 0.016;
     if (!this.marqueePaused) {
       this.marqueeOffset -= (this.marqueeSetW / 220) * dt;
       if (this.marqueeOffset <= -this.marqueeSetW) this.marqueeOffset += this.marqueeSetW;
@@ -1407,7 +1409,9 @@ class Component extends DCLogic {
     if (this.state.isIntroVisible) {
       this.introFailsafeTimer = setTimeout(() => { if (this.state.isIntroVisible && !this.state.isIntroFading) this.dismissIntro(); }, 6000);
     }
-    this.marqueeInterval = setInterval(this.marqueeTick, 30);
+    this._mqLast = 0;
+    const mqLoop = (ts) => { const dt = this._mqLast ? Math.min(0.05, (ts - this._mqLast) / 1000) : 0; this._mqLast = ts; this.marqueeTick(dt); this._mqRaf = requestAnimationFrame(mqLoop); };
+    this._mqRaf = requestAnimationFrame(mqLoop);
     this.onScroll = () => {
       const scrolled = window.scrollY > 400;
       if (scrolled !== this.state.isScrolled) this.setState({ isScrolled: scrolled });
@@ -1455,6 +1459,7 @@ class Component extends DCLogic {
   }
   ctaBandRef = React.createRef();
   ctaPinLoop = () => {
+    if (!this._ctaLenisHook && window.__ksLenis) { this._ctaLenisHook = () => this.updateCtaPin(); window.__ksLenis.on('scroll', this._ctaLenisHook); }
     this.updateCtaPin();
     this._ctaPinRafId = requestAnimationFrame(this.ctaPinLoop);
   };
@@ -1463,7 +1468,9 @@ class Component extends DCLogic {
     if (!el) return;
     const rect = el.getBoundingClientRect();
     const img = el.firstElementChild;
-    if (img) img.style.transform = `translate3d(0, ${Math.round(-rect.top)}px, 0)`;
+    if (rect.bottom < -50 || rect.top > window.innerHeight + 50) return;
+    const y = Math.round(-rect.top);
+    if (img && img.__ksY !== y) { img.__ksY = y; img.style.transform = `translate3d(0, ${y}px, 0)`; }
   };
   _burgerFade = (hide) => {
     document.querySelectorAll('#nav-burger-fixed, button[aria-label="Menu"]').forEach((b) => {
@@ -1519,7 +1526,8 @@ class Component extends DCLogic {
       heroEl.removeEventListener('loadeddata', this.retryHeroPlay);
     }
     if (this._revealObserver) this._revealObserver.disconnect();
-    clearInterval(this.marqueeInterval);
+    cancelAnimationFrame(this._mqRaf);
+    if (window.__ksLenis && this._ctaLenisHook) window.__ksLenis.off('scroll', this._ctaLenisHook);
     clearTimeout(this.marqueeResumeTimer);
     clearTimeout(this.marqueeTransitionTimer);
     window.removeEventListener('scroll', this.onScroll);
@@ -1573,6 +1581,25 @@ class Component extends DCLogic {
       this.setState({ [prefix + 'PhoneErrOn']: false });
     }
   };
+  _ksPreload = (() => {
+    if (typeof window === 'undefined' || window.__ksRcPre) return;
+    window.__ksRcPre = true;
+    const load = () => {
+      if (window.grecaptcha || document.querySelector('script[data-ks-recaptcha]')) return;
+      const s = document.createElement('script'); s.src = 'https://www.google.com/recaptcha/api.js?render=6Ldt-s0tAAAAAHKHMZoNKfYDRnjbYp7jfkhix9MQ'; s.dataset.ksRecaptcha = '1'; document.head.appendChild(s);
+    };
+    document.addEventListener('focusin', (e) => { const t = e.composedPath ? e.composedPath()[0] : e.target; if (t && t.closest && t.closest('form')) load(); }, true);
+  })();
+  _ksStatus = (msg) => {
+    clearTimeout(this._ksStT1); clearTimeout(this._ksStT2); clearTimeout(this._ksStT3);
+    const show = () => {
+      this.setState({ contactStatusMsg: msg, contactStatusOn: false });
+      this._ksStT2 = setTimeout(() => this.setState({ contactStatusOn: true }), 30);
+      if (/^Thanks/.test(msg)) this._ksStT3 = setTimeout(() => this.setState({ contactStatusOn: false }), 7000);
+    };
+    if (!msg) { this.setState({ contactStatusOn: false }); return; }
+    if (this.state.contactStatusOn) { this.setState({ contactStatusOn: false }); this._ksStT1 = setTimeout(show, 500); } else show();
+  };
   _ksSubmit = (data) => new Promise((resolve) => {
     const KEY = '6Ldt-s0tAAAAAHKHMZoNKfYDRnjbYp7jfkhix9MQ';
     const URL = 'https://script.google.com/macros/s/AKfycbz-txrCbgzj4U78dBOSrFZMrT9qN3D0XV2ZcEua_6g_LB3VLNKkSk-NoUJHxEOvapY9ww/exec';
@@ -1580,7 +1607,7 @@ class Component extends DCLogic {
     const send = (token) => {
       if (done) return;
       done = true;
-      fetch(URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({}, data, { token: token || '', url: location.href })) })
+      fetch(URL, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({}, data, { token: token || '', url: location.href })) })
         .then((r) => r.json()).then(resolve).catch(() => resolve({ ok: false, error: 'network' }));
     };
     const go = () => { try { window.grecaptcha.ready(() => window.grecaptcha.execute(KEY, { action: data.form || 'contact' }).then(send, () => send(''))); } catch (e) { send(''); } };
@@ -1713,15 +1740,15 @@ class Component extends DCLogic {
         const fd = new FormData(f);
         if (String(fd.get('phone') || '').replace(/\D/g, '').length !== 10) { this.setState({ contactPhoneErr: 'Please enter a 10-digit phone number.', contactPhoneErrOn: true }); return; }
         const il = f.querySelector('[data-ks-interest]');
-        this.setState({ contactSending: true, contactStatusMsg: 'Sending…' });
+        f.reset(); this.setState({ contactSending: false }); this._ksStatus('Thanks! Your message was sent. Jackson will be in touch soon.');
         this._ksSubmit({ form: 'contact', name: fd.get('name'), email: fd.get('email'), phone: fd.get('phone'), message: fd.get('message'), website: fd.get('website'), interest: il ? il.textContent.trim() : '' }).then((r) => {
-          if (r && r.ok) { f.reset(); this.setState({ contactSending: false, contactStatusMsg: 'Thanks! Your message was sent. Jackson will be in touch soon.' }); }
-          else this.setState({ contactSending: false, contactStatusMsg: 'Something went wrong. Please call or text (831) 821-0398.' });
+          if (r && r.ok) return;
+          this.setState({ contactSending: false }); this._ksStatus('Something went wrong. Please call or text (831) 821-0398.');
         });
       },
       contactStatusMsg: this.state.contactStatusMsg || '',
-      contactStatusOp: this.state.contactStatusMsg ? 1 : 0,
-      contactStatusH: this.state.contactStatusMsg ? '60px' : '0px',
+      contactStatusOp: this.state.contactStatusOn ? 1 : 0,
+      contactStatusH: this.state.contactStatusOn ? '60px' : '0px',
       contactPhoneInput: this._ksPhone('contact'),
       contactPhoneErrText: this.state.contactPhoneErr || '',
       contactPhoneErrOp: this.state.contactPhoneErrOn ? 1 : 0,
