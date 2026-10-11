@@ -11,7 +11,7 @@
 <body>
 <x-dc>
 <helmet>
-  <script src="smooth-scroll.js?v=4" data-wrapper="[data-ks-scroll]"></script>
+  <script src="smooth-scroll.js?v=6" data-wrapper="[data-ks-scroll]"></script>
   <title>Listing | Jackson Kesecker, Realtor®</title>
   <link rel="icon" type="image/png" href="assets/favicon-dark.png" media="(prefers-color-scheme: dark)">
   <link rel="icon" type="image/png" href="assets/favicon-light.png" media="(prefers-color-scheme: light)">
@@ -57,6 +57,8 @@
     }
     html, body { margin: 0; overflow-x: hidden; background: var(--rh-bg); letter-spacing: 0.015em; }
     html body *:not(svg):not(path) { font-family: 'Inter', system-ui, sans-serif !important; }
+    html:has(div[style*="z-index: 2147483005"]), html:has(div[style*="z-index: 2147483005"]) body, html:has(div[style*="z-index: 2147483005"]) [data-ks-scroll], div[style*="z-index: 2147483005"] { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+    html:has(div[style*="z-index: 2147483005"])::-webkit-scrollbar, html:has(div[style*="z-index: 2147483005"]) body::-webkit-scrollbar, html:has(div[style*="z-index: 2147483005"]) [data-ks-scroll]::-webkit-scrollbar, div[style*="z-index: 2147483005"]::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
     [data-ks-x], [data-ks-x] svg path, [data-ks-x] svg line { transition: color 0.3s ease, stroke 0.3s ease !important; }
     [data-ks-x]:hover { color: #999999 !important; }
     [data-ks-x]:hover svg path, [data-ks-x]:hover svg line { stroke: #999999 !important; }
@@ -79,13 +81,13 @@
 
 <div style="font-family: var(--rh-font); color: var(--rh-text-primary); background: var(--rh-bg); width: 100%; min-height: 100vh; display: flex; flex-direction: column;">
   <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 clamp(20px, 4vw, 48px) 0 clamp(8px, 1.5vw, 18px); height: 92px; background: #000000; flex-wrap: wrap; flex-shrink: 0;">
-    <a href="https://keseckerproperties.com/" target="_self" style="display: flex; align-items: center; flex-shrink: 0;">
+    <a href="https://jacksonkesecker.com/" target="_self" style="display: flex; align-items: center; flex-shrink: 0;">
       <img src="uploads/JKR-key-white.png" alt="Jackson Kesecker Realtor" style="height: 34px; width: auto;">
     </a>
     <div data-ks-navlinks="1" style="display: flex; align-items: center; gap: clamp(14px, 2.4vw, 26px); flex: 1; padding-left: clamp(8px, 2vw, 28px);">
-      <a target="_self" href="https://keseckerproperties.com/" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: #ffffff; text-decoration: none; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 2px; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Home</a>
+      <a target="_self" href="https://jacksonkesecker.com/" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: #ffffff; text-decoration: none; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 2px; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Home</a>
       <span style="font-size: 15px; line-height: 1; display: flex; align-items: center; color: #ffffff;">•</span>
-      <a aria-current="page" href="https://keseckerproperties.com/listings" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: #ffffff; text-decoration: none; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 100% 100%; padding-bottom: 2px; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Search</a>
+      <a aria-current="page" href="https://jacksonkesecker.com/listings" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: #ffffff; text-decoration: none; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 100% 100%; padding-bottom: 2px; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Search</a>
       <span style="font-size: 15px; line-height: 1; display: flex; align-items: center; color: #ffffff;">•</span>
       <a href="../communities" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 2px;" style-hover="color: #ffffff; background-size: 100% 100%;">Communities</a>
       <span style="font-size: 15px; line-height: 1; display: flex; align-items: center; color: #ffffff;">•</span>
@@ -101,10 +103,10 @@
     <sc-if value="{{ navMenuOpen }}" hint-placeholder-val="{{ false }}">
       <div onClick="{{ closeNavMenu }}" style="position: fixed; inset: 0; z-index: 2147483000; background: rgba(0,0,0,0.88); animation: {{ navOverlayAnim }};">
         <div onClick="{{ stopNavProp }}" style="position: absolute; top: 128px; right: clamp(20px, 5vw, 64px); min-width: 280px; display: flex; flex-direction: column; align-items: flex-end; gap: clamp(26px, 4.2vh, 46px); animation: {{ navCardAnim }};">
-          <a href="https://keseckerproperties.com/" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Home</a>
-          <a href="https://keseckerproperties.com/listings" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Search</a>
-          <a href="https://keseckerproperties.com/communities" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Communities</a>
-          <a href="https://keseckerproperties.com/about" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">About</a>
+          <a href="https://jacksonkesecker.com/" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Home</a>
+          <a href="https://jacksonkesecker.com/listings" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Search</a>
+          <a href="https://jacksonkesecker.com/communities" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Communities</a>
+          <a href="https://jacksonkesecker.com/about" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">About</a>
           <a href="#" target="_self" onClick="{{ navMenuContact }}" style="font-family: 'Inter', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Contact</a>
         </div>
       </div>
@@ -112,7 +114,7 @@
     <dc-import name="ContactModalV2" hint-size="0,0"></dc-import>
   </div>
 
-  <div data-ks-scroll="1" style="height: calc(100vh - 92px); overflow-y: auto; scroll-behavior: smooth; position: relative;">
+  <div data-ks-scroll="1" style="height: calc(100vh - 92px); overflow-y: auto; position: relative;">
     <div id="ihf-listing-detail" ref="{{ ihfListingDetailRef }}" style="width: 100%; min-height: 100%; padding: 0 36px 24px; box-sizing: border-box; opacity: 0; transition: opacity 0.25s ease; position: relative; z-index: 0; isolation: isolate;"></div>
   </div>
 
