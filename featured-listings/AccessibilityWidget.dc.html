@@ -8,11 +8,10 @@
 <body>
 <x-dc>
 <helmet>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..800;1,300..800&display=swap">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root { --rh-font: 'Montserrat', system-ui, sans-serif; --rh-accent: #1a1a1a; --rh-accent-hover: #000000; --rh-accent-light: #ededed; --rh-bg: #ffffff; --rh-surface: #f9f9f9; --rh-text-primary: #1a1a1a; --rh-text-secondary: #666666; --rh-text-muted: #999999; --rh-border: #e0e0e0; }
+    :root { --rh-font: 'Inter', system-ui, sans-serif; --rh-accent: #1a1a1a; --rh-accent-hover: #000000; --rh-accent-light: #ededed; --rh-bg: #ffffff; --rh-surface: #f9f9f9; --rh-text-primary: #1a1a1a; --rh-text-secondary: #666666; --rh-text-muted: #999999; --rh-border: #e0e0e0; }
     @keyframes rhDropdownFade { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </helmet>
@@ -42,7 +41,7 @@
       </div>
       <span style="font-size: 17px; font-weight: 700; color: var(--rh-text-primary);">Accessibility</span>
     </div>
-    <span data-ks-x="1" onClick="{{ closeA11yPanel }}" style="cursor: pointer; color: var(--rh-text-muted); font-size: 16px; transition: color 0.2s ease, transform 0.2s ease;">✕</span>
+    <span onClick="{{ closeA11yPanel }}" style="cursor: pointer; color: var(--rh-text-muted); font-size: 16px; transition: color 0.2s ease, transform 0.2s ease;" style-hover="color: var(--rh-text-primary); transform: scale(1.15);">✕</span>
   </div>
 
   <div style="padding: 16px 18px;">
@@ -214,7 +213,7 @@
     <div onClick="{{ stopPropagation }}" style="background: #ffffff; border-radius: 12px; padding: 28px; max-width: 420px; width: calc(100% - 48px); box-shadow: 0 20px 60px rgba(0,0,0,0.4); font-family: var(--rh-font);">
       <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px;">
         <h3 style="font-size: 19px; font-weight: 700; color: var(--rh-text-primary); margin: 0;">Accessibility statement</h3>
-        <span data-ks-x="1" onClick="{{ closeA11yStatement }}" style="cursor: pointer; color: var(--rh-text-muted); font-size: 16px;">✕</span>
+        <span onClick="{{ closeA11yStatement }}" style="cursor: pointer; color: var(--rh-text-muted); font-size: 16px;">✕</span>
       </div>
       <p style="font-size: 14px; line-height: 1.6; color: var(--rh-text-secondary); margin: 0 0 12px;">We work to make this site easier to use for as many people as possible.</p>
       <p style="font-size: 14px; line-height: 1.6; color: var(--rh-text-secondary); margin: 0 0 20px;">This tool offers adjustments like size, contrast, motion, and reading aids that you can combine to suit your needs.</p>

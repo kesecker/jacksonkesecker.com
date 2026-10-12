@@ -5,15 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com" data-early-fonts>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=block">
-<script data-ks-mo-guard>(function(){if(window.__ksMoGuard)return;window.__ksMoGuard=true;var NMO=window.MutationObserver;if(!NMO)return;function G(cb){var self=this,n=0,t0=0,q=null,warned=false,pend=[];var w=function(recs,obs){var now=Date.now();if(now-t0>1000){t0=now;n=0;}n++;if(n<=40){return cb.call(this,recs,obs);}pend=pend.concat(recs);if(!warned){warned=true;try{console.warn('[ks-guard] throttled a runaway MutationObserver:',String(cb).slice(0,160));}catch(e){}}if(q)return;q=setTimeout(function(){q=null;var r=pend;pend=[];t0=Date.now();n=0;try{cb.call(self,r,obs);}catch(e){}},300);};var o=new NMO(w);return o;}G.prototype=NMO.prototype;window.MutationObserver=G;})();</script>
-<script data-ks-card-early>(function(){if(window.__ksCardEarly)return;window.__ksCardEarly=true;var CSS="[class*='ihf-listing-result' i] *,*:has(> .ihf-listing-result-img-container) *,*:has(> * > .ihf-listing-result-img-container) *,[class*='listing-result' i] *,.similar-listings *{font-family:Montserrat,system-ui,sans-serif !important;font-weight:500 !important;letter-spacing:-0.01em !important;}[class*='ihf-listing-result' i] [class*='price' i],[class*='ihf-listing-result' i] [class*='price' i] *,*:has(> .ihf-listing-result-img-container) [class*='price' i],*:has(> .ihf-listing-result-img-container) [class*='price' i] *,*:has(> * > .ihf-listing-result-img-container) [class*='price' i],*:has(> * > .ihf-listing-result-img-container) [class*='price' i] *,.ihf-listing-result-badges *:not([class*='fav' i]):not([class*='fav' i] *),.ihf-listing-result-status,.ihf-listing-result-status *,[data-ks-sold-date]{font-weight:700 !important;}.similar-listings > h1,.similar-listings > h2,.similar-listings > h3{font-weight:600 !important;}";function put(r){try{var h=r===document?document.head:r;if(!h)return;var s=h.querySelector&&h.querySelector('style[data-ks-card-css]');if(!s){s=document.createElement('style');s.setAttribute('data-ks-card-css','1');s.textContent=CSS;}if(!s.parentNode)h.appendChild(s);}catch(e){}}var o=Element.prototype.attachShadow;Element.prototype.attachShadow=function(x){var sr=o.call(this,x);put(sr);var keep=function(){put(sr);};new MutationObserver(keep).observe(sr,{childList:true});return sr;};document.addEventListener('DOMContentLoaded',function(){put(document);});setInterval(function(){document.querySelectorAll('div.ihf-container,div.ihf-overlay-container').forEach(function(h){if(h.shadowRoot)put(h.shadowRoot);});},1000);})();</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=block">
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..800;1,300..800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..800;1,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap">
   <link rel="icon" type="image/png" href="assets/favicon-dark.png" media="(prefers-color-scheme: dark)">
   <link rel="icon" type="image/png" href="assets/favicon-light.png" media="(prefers-color-scheme: light)">
   <link rel="icon" type="image/png" href="assets/favicon-light.png">
@@ -28,7 +26,7 @@
     };
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=block" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=block" rel="stylesheet">
   <style>
     :root {
       --rh-font: 'Montserrat', system-ui, sans-serif;
@@ -47,8 +45,7 @@
     }
     html, body { margin: 0; overflow-x: hidden; background: var(--rh-bg); letter-spacing: 0.015em; }
     html body *:not(svg):not(path) { font-family: 'Montserrat', system-ui, sans-serif !important; }
-    /* ks body tracking */ html body { letter-spacing: -0.01em; }
-    html:root body h1, html:root body h2, html:root body h3, html:root body h4, html:root body h5, html:root body h6, html:root body h1 *, html:root body h2 *, html:root body h3 *, html:root body h4 *, html:root body h5 *, html:root body h6 *, html:root body .vc-eyebrow, html:root body .vc-eyebrow *, html:root body [data-ks-subtitle], html:root body [data-ks-subtitle] * { font-family: 'Montserrat', system-ui, sans-serif !important; font-weight: 700 !important; letter-spacing: -0.01em !important; text-transform: none !important; }
+    html:root body h1, html:root body h2, html:root body h3, html:root body h4, html:root body h5, html:root body h6, html:root body h1 *, html:root body h2 *, html:root body h3 *, html:root body h4 *, html:root body h5 *, html:root body h6 *, html:root body .vc-eyebrow, html:root body .vc-eyebrow *, html:root body [data-ks-subtitle], html:root body [data-ks-subtitle] * { font-family: 'Playfair Display', Georgia, serif !important; }
     html:has(div[style*="z-index: 2147483005"]), html:has(div[style*="z-index: 2147483005"]) body, html:has(div[style*="z-index: 2147483005"]) [data-ks-scroll], div[style*="z-index: 2147483005"] { scrollbar-width: none !important; -ms-overflow-style: none !important; }
     html:has(div[style*="z-index: 2147483005"])::-webkit-scrollbar, html:has(div[style*="z-index: 2147483005"]) body::-webkit-scrollbar, html:has(div[style*="z-index: 2147483005"]) [data-ks-scroll]::-webkit-scrollbar, div[style*="z-index: 2147483005"]::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
     [data-ks-x], [data-ks-x] svg path, [data-ks-x] svg line { transition: color 0.3s ease, stroke 0.3s ease !important; }
@@ -79,15 +76,15 @@
       <img src="uploads/JKR-key-white.png" alt="Jackson Kesecker Realtor" style="height: 34px; width: auto;">
     </a>
     <div data-ks-navlinks="1" style="display: flex; align-items: center; gap: clamp(14px, 2.4vw, 26px); flex: 1; padding-left: clamp(8px, 2vw, 28px);">
-      <a data-ks-ul-low="1" target="_self" href="https://jacksonkesecker.com/" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: #ffffff; text-decoration: none; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 6px; transition: background-size 0.3s ease; margin-bottom: -4px" style-hover="background-size: 100% 100%;">Home</a>
+      <a target="_self" href="https://jacksonkesecker.com/" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: #ffffff; text-decoration: none; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 2px; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Home</a>
       <span style="font-size: 15px; line-height: 1; display: flex; align-items: center; color: #ffffff;">•</span>
-      <a data-ks-ul-low="1" aria-current="page" href="https://jacksonkesecker.com/listings" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: #ffffff; text-decoration: none; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 100% 100%; padding-bottom: 6px; transition: background-size 0.3s ease; margin-bottom: -4px" style-hover="background-size: 100% 100%;">Search</a>
+      <a aria-current="page" href="https://jacksonkesecker.com/listings" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: #ffffff; text-decoration: none; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 100% 100%; padding-bottom: 2px; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Search</a>
       <span style="font-size: 15px; line-height: 1; display: flex; align-items: center; color: #ffffff;">•</span>
-      <a data-ks-ul-low="1" href="../communities" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 6px; margin-bottom: -4px" style-hover="color: #ffffff; background-size: 100% 100%;">Communities</a>
+      <a href="../communities" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 2px;" style-hover="color: #ffffff; background-size: 100% 100%;">Communities</a>
       <span style="font-size: 15px; line-height: 1; display: flex; align-items: center; color: #ffffff;">•</span>
-      <a data-ks-ul-low="1" href="../about" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 6px; margin-bottom: -4px" style-hover="color: #ffffff; background-size: 100% 100%;">About</a>
+      <a href="../about" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 2px;" style-hover="color: #ffffff; background-size: 100% 100%;">About</a>
       <span style="font-size: 15px; line-height: 1; display: flex; align-items: center; color: #ffffff;">•</span>
-      <a data-ks-ul-low="1" href="#" onClick="{{ openContactModal }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 6px; margin-bottom: -4px" style-hover="color: #ffffff; background-size: 100% 100%;">Contact</a>
+      <a href="#" onClick="{{ openContactModal }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.3s ease, background-size 0.3s ease; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; padding-bottom: 2px;" style-hover="color: #ffffff; background-size: 100% 100%;">Contact</a>
     </div>
     <button onClick="{{ toggleNavMenu }}" aria-label="Menu" style="flex-shrink: 0; width: 44px; height: 44px; margin-right: -6px; background: transparent; border: none; border-radius: 50%; cursor: pointer; padding: 0 0 0 8px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 6px; box-sizing: border-box; position: relative; isolation: isolate; z-index: 2147483001;">
       <span style="display: block; width: 26px; height: 2px; border-radius: 1px; background: #ffffff; transform: perspective(200px) {{ navBurgerTransform }}; transform-origin: left center; transition: transform 0.4s ease;"></span>
@@ -97,11 +94,11 @@
     <sc-if value="{{ navMenuOpen }}" hint-placeholder-val="{{ false }}">
       <div onClick="{{ closeNavMenu }}" style="position: fixed; inset: 0; z-index: 2147483000; background: rgba(0,0,0,0.88); animation: {{ navOverlayAnim }};">
         <div onClick="{{ stopNavProp }}" style="position: absolute; top: 128px; right: clamp(20px, 5vw, 64px); min-width: 280px; display: flex; flex-direction: column; align-items: flex-end; gap: clamp(26px, 4.2vh, 46px); animation: {{ navCardAnim }};">
-          <a data-ks-ul-low="1" href="https://jacksonkesecker.com/" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 8px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease; margin-bottom: -4px" style-hover="background-size: 100% 100%;">Home</a>
-          <a data-ks-ul-low="1" href="https://jacksonkesecker.com/listings" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 8px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease; margin-bottom: -4px" style-hover="background-size: 100% 100%;">Search</a>
-          <a data-ks-ul-low="1" href="https://jacksonkesecker.com/communities" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 8px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease; margin-bottom: -4px" style-hover="background-size: 100% 100%;">Communities</a>
-          <a data-ks-ul-low="1" href="https://jacksonkesecker.com/about" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 8px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease; margin-bottom: -4px" style-hover="background-size: 100% 100%;">About</a>
-          <a data-ks-ul-low="1" href="#" target="_self" onClick="{{ navMenuContact }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 8px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease; margin-bottom: -4px" style-hover="background-size: 100% 100%;">Contact</a>
+          <a href="https://jacksonkesecker.com/" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Home</a>
+          <a href="https://jacksonkesecker.com/listings" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Search</a>
+          <a href="https://jacksonkesecker.com/communities" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Communities</a>
+          <a href="https://jacksonkesecker.com/about" target="_self" onClick="{{ closeNavMenu }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">About</a>
+          <a href="#" target="_self" onClick="{{ navMenuContact }}" style="font-family: 'Montserrat', system-ui, sans-serif !important; font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Contact</a>
         </div>
       </div>
     </sc-if>
@@ -122,7 +119,7 @@
       <p style="font-size: 15px; line-height: 1.75; color: rgba(255,255,255,0.92); margin: 0; text-shadow: 0 1px 8px rgba(0,0,0,0.6);">No matter your situation today, click below to get in touch with me. I'm excited to meet you.</p>
       <a href="#" onClick="{{ openContactModal }}" style="text-decoration: none; margin-top: 40px; display: inline-block;">
         <span style="display: inline-block; padding: 14px 36px; border: 1px solid rgba(255,255,255,0.85);">
-          <span data-ks-ul-low="1" style="position: relative; display: inline-block; font-size: 18px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: #ffffff; text-shadow: 0 1px 8px rgba(0,0,0,0.6); padding-bottom: 8px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease; margin-bottom: -4px" style-hover="background-size: 100% 100%;">Get in Touch</span>
+          <span style="position: relative; display: inline-block; font-size: 18px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: #ffffff; text-shadow: 0 1px 8px rgba(0,0,0,0.6); padding-bottom: 4px; background-image: linear-gradient(to top, #ffffff 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Get in Touch</span>
         </span>
       </a>
     </div>
@@ -190,7 +187,7 @@
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
   state = { isPhoneOpen: false };
-  _ihfStreetSuffixes = { RD:'Road', ST:'Street', AVE:'Avenue', DR:'Drive', LN:'Lane', CT:'Court', BLVD:'Boulevard', PL:'Place', CIR:'Circle', TER:'Terrace', PKWY:'Parkway', HWY:'Highway', TRL:'Trail' };
+  _ihfStreetSuffixes = { RD:'Road', ST:'Street', AVE:'Avenue', DR:'Drive', LN:'Lane', CT:'Court', WAY:'Way', BLVD:'Boulevard', PL:'Place', CIR:'Circle', TER:'Terrace', PKWY:'Parkway', HWY:'Highway', LOOP:'Loop', TRL:'Trail', SQ:'Square' };
   _ihfFixTextInRoot = (root) => {
     const cityStateZipRe = /^([A-Za-z .'-]+),\s*([A-Z]{2})\s*(\d{5})$/;
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -198,15 +195,15 @@ class Component extends DCLogic {
     while ((node = walker.nextNode())) {
       const text = node.nodeValue;
       if (!text || !/[A-Za-z]/.test(text)) continue;
-      if (text.includes('Sold Price:')) { const nv = text.replace('Sold Price:', '').trim(); if (nv !== text) node.nodeValue = nv; continue; }
+      if (text.includes('Sold Price:')) { node.nodeValue = text.replace('Sold Price:', '').trim(); continue; }
       const filterCountMatch = text.match(/^(Price|Beds|Baths|More)\s*\(\d+\)$/);
-      if (filterCountMatch) { if (filterCountMatch[1] !== text) node.nodeValue = filterCountMatch[1]; continue; }
-      if (node.parentElement && /^\$[\d,]+\+?$/.test(text.trim()) && node.parentElement.style.getPropertyValue('font-weight') !== '700') node.parentElement.style.setProperty('font-weight', '700', 'important');
+      if (filterCountMatch) { node.nodeValue = filterCountMatch[1]; continue; }
+      if (node.parentElement && /^\$[\d,]+\+?$/.test(text.trim())) node.parentElement.style.setProperty('font-weight', '700', 'important');
       const trimmed = text.trim();
       const cz = trimmed.match(cityStateZipRe);
       if (cz && trimmed === trimmed.toUpperCase()) {
         const fixedCity = cz[1].toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
-        { const nv = text.replace(trimmed, fixedCity + ', ' + cz[2] + ' ' + cz[3]); if (nv !== text) node.nodeValue = nv; }
+        node.nodeValue = text.replace(trimmed, fixedCity + ', ' + cz[2] + ' ' + cz[3]);
         continue;
       }
       let changed = false;
@@ -215,7 +212,7 @@ class Component extends DCLogic {
         if (full) { changed = true; return full; }
         return word;
       });
-      if (changed && fixedText !== text) node.nodeValue = fixedText;
+      if (changed) node.nodeValue = fixedText;
     }
     const ihfDirectText = (el) => { let s = ''; el.childNodes.forEach((n) => { if (n.nodeType === 3) s += n.nodeValue; }); return s.trim(); };
     root.querySelectorAll('*').forEach((el) => {
@@ -228,9 +225,8 @@ class Component extends DCLogic {
     if (!root.querySelector('style[data-ihf-font-fix]')) {
       const style = document.createElement('style');
       style.setAttribute('data-ihf-font-fix', '1');
-      const scopeSel = root === document ? ':where(#ihf-featured-listings-page, #ihf-featured-listings-page *)' : ':host, *';
-      style.textContent = scopeSel + " { --rh-font: 'Montserrat', system-ui, sans-serif !important; font-family: 'Montserrat', system-ui, sans-serif !important; font-weight: 500 !important; letter-spacing: -0.01em !important; }"
-        + ".ihf-listing-result-badges *:not([class*='fav' i]):not([class*='fav' i] *), [class*='listing-result-badge' i]:not([class*='fav' i]), [class*='listing-result-badge' i]:not([class*='fav' i]) *, [class*='price' i] *, [data-ks-sold-date] { font-weight: 700 !important; }"
+      const scopeSel = root === document ? '#ihf-featured-listings-page, #ihf-featured-listings-page *' : ':host, *';
+      style.textContent = scopeSel + " { --rh-font: 'Montserrat', system-ui, sans-serif !important; font-family: 'Montserrat', system-ui, sans-serif !important; font-weight: 400 !important; }"
         + ".ui-typography-h3 { text-align: center !important; font-size: 22px !important; }"
         + ".ui-typography-body1 { text-align: center !important; font-size: 14px !important; }"
         + ".ui-outlined-input { border: none !important; border-bottom: 1px solid #cccccc !important; border-radius: 0 !important; box-shadow: none !important; padding-left: 4px !important; }"
@@ -352,11 +348,6 @@ class Component extends DCLogic {
     });
   };
   _ihfFixAllShadowRoots = () => {
-    if (this._ksInFix) return;
-    this._ksInFix = true;
-    try { this._ihfFixAllShadowRootsInner(); } finally { if (this._ihfMo) this._ihfMo.takeRecords(); this._ksInFix = false; }
-  };
-  _ihfFixAllShadowRootsInner = () => {
     this._ihfFixTextInRoot(document);
     this._ihfFixCloseButtons(document);
     this._ihfFixListingLinks(document);
@@ -386,7 +377,7 @@ class Component extends DCLogic {
       document.head.appendChild(s);
     }
     if (!this._ihfMo) {
-      this._ihfMo = new MutationObserver(() => { if (this._ksFixQ) return; this._ksFixQ = true; requestAnimationFrame(() => { this._ksFixQ = false; this._ihfFixAllShadowRoots(); }); });
+      this._ihfMo = new MutationObserver(() => this._ihfFixAllShadowRoots());
       this._ihfMo.observe(document.body, { childList: true, subtree: true });
     }
     this._ihfFixAllShadowRoots();
