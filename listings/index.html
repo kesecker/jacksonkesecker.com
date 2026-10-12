@@ -137,7 +137,7 @@
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
   state = { isPhoneOpen: false };
-  _ihfStreetSuffixes = { RD:'Road', ST:'Street', AVE:'Avenue', DR:'Drive', LN:'Lane', CT:'Court', WAY:'Way', BLVD:'Boulevard', PL:'Place', CIR:'Circle', TER:'Terrace', PKWY:'Parkway', HWY:'Highway', LOOP:'Loop', TRL:'Trail', SQ:'Square' };
+  _ihfStreetSuffixes = { RD:'Road', ST:'Street', AVE:'Avenue', DR:'Drive', LN:'Lane', CT:'Court', BLVD:'Boulevard', PL:'Place', CIR:'Circle', TER:'Terrace', PKWY:'Parkway', HWY:'Highway', TRL:'Trail' };
   _ihfFixTextInRoot = (root) => {
     const cityStateZipRe = /^([A-Za-z .'-]+),\s*([A-Z]{2})\s*(\d{5})$/;
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -145,16 +145,16 @@ class Component extends DCLogic {
     while ((node = walker.nextNode())) {
       const text = node.nodeValue;
       if (!text || !/[A-Za-z]/.test(text)) continue;
-      if (text.includes('Sold Price:')) { node.nodeValue = text.replace('Sold Price:', '').trim(); continue; }
+      if (text.includes('Sold Price:')) { const nv = text.replace('Sold Price:', '').trim(); if (nv !== text) node.nodeValue = nv; continue; }
       const filterCountMatch = text.match(/^(Price|Beds|Baths|More)\s*\(\d+\)$/);
-      if (filterCountMatch) { node.nodeValue = filterCountMatch[1]; continue; }
+      if (filterCountMatch) { if (filterCountMatch[1] !== text) node.nodeValue = filterCountMatch[1]; continue; }
       if (node.parentElement && /^\$[\d,]+\+?$/.test(text.trim())) node.parentElement.style.setProperty('font-weight', '700', 'important');
       if (/Start typing to find an area/i.test(text)) node.nodeValue = text.replace(/Start typing to find an area/i, 'City, neighborhood, address...');
       const trimmed = text.trim();
       const cz = trimmed.match(cityStateZipRe);
       if (cz && trimmed === trimmed.toUpperCase()) {
         const fixedCity = cz[1].toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
-        node.nodeValue = text.replace(trimmed, fixedCity + ', ' + cz[2] + ' ' + cz[3]);
+        { const nv = text.replace(trimmed, fixedCity + ', ' + cz[2] + ' ' + cz[3]); if (nv !== text) node.nodeValue = nv; }
         continue;
       }
       let changed = false;
@@ -163,7 +163,7 @@ class Component extends DCLogic {
         if (full) { changed = true; return full; }
         return word;
       });
-      if (changed) node.nodeValue = fixedText;
+      if (changed && fixedText !== text) node.nodeValue = fixedText;
     }
     const ihfDirectText = (el) => { let s = ''; el.childNodes.forEach((n) => { if (n.nodeType === 3) s += n.nodeValue; }); return s.trim(); };
     root.querySelectorAll('*').forEach((el) => {
@@ -323,6 +323,11 @@ class Component extends DCLogic {
     });
   };
   _ihfFixAllShadowRoots = () => {
+    if (this._ksInFix) return;
+    this._ksInFix = true;
+    try { this._ihfFixAllShadowRootsInner(); } finally { if (this._ihfMo) this._ihfMo.takeRecords(); this._ksInFix = false; }
+  };
+  _ihfFixAllShadowRootsInner = () => {
     this._ihfFixTextInRoot(document);
     this._ihfFixCloseButtons(document);
     this._ihfFixTitleAttrs(document);
