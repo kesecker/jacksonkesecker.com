@@ -77,7 +77,7 @@
     getRoots().forEach(function (root) {
       if (observed.has(root)) return;
       observed.add(root);
-      new MutationObserver(schedule).observe(root, { childList: true, subtree: true, characterData: true });
+      new MutationObserver(schedule).observe(root, { childList: true, subtree: true, characterData: false });
     });
   }
   var tries = 0;
@@ -698,8 +698,7 @@ mc.innerHTML = '<h2 data-mc-h style="margin:0 0 24px;font-size:' + hSize + ';lin
 + '<p style="margin:20px 0 0;font-size:13px;line-height:1.55;color:#666666;font-style:italic;">This program only provides an estimate. Ask your agent for the tax rates in your area. Tax rates may vary depending on community. The default interest rate is the latest weekly national average for a 30-year fixed mortgage (Freddie Mac); your actual rate will depend on your credit, down payment and lender. Insurance estimate is based on an average cost, your final premium cost will be determined by the type of coverage you select. For more information on financing, contact your preferred lender or bank.</p>';
 mc.style.cssText = 'display:block;margin-top:48px;box-sizing:border-box;';
 const q = (s) => mc.querySelector(s);
-const money = (n) => '
- + Math.round(n).toLocaleString('en-US');
+const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
 const I = {};
 ['price', 'downPct', 'downAmt', 'rate', 'taxPct', 'ins', 'hoa'].forEach((k) => { I[k] = q('[data-k="' + k + '"]'); });
 const show = (k, v) => { if (mc.getRootNode().activeElement === I[k]) return; I[k].value = v; };
@@ -940,7 +939,7 @@ while ((node = walker.nextNode())) {
 const text = node.nodeValue;
 if (!text || !/[A-Za-z]/.test(text)) continue;
 if (node.parentElement && node.parentElement.closest && node.parentElement.closest('.ihf-stats-clone')) continue;
-if (text.includes('Sold Price:')) { const nv0 = text.replace('Sold Price:', 'Sold for').trim(); if (nv0 !== text) node.nodeValue = nv0; if (node.parentElement) node.parentElement.style.setProperty('font-weight', '700', 'important'); continue; }
+if (text.includes('Sold Price:')) { node.nodeValue = text.replace('Sold Price:', 'Sold for').trim(); if (node.parentElement) node.parentElement.style.setProperty('font-weight', '700', 'important'); continue; }
 if (/^Sold for \$/.test(text) && node.parentElement && node.parentElement.style.fontWeight !== '700') { node.parentElement.style.setProperty('font-weight', '700', 'important'); continue; }
 const filterCountMatch = text.match(/^(Price|Beds|Baths|More)\s*\(\d+\)$/);
 if (filterCountMatch) { if (filterCountMatch[1] !== text) node.nodeValue = filterCountMatch[1]; continue; }
@@ -972,7 +971,7 @@ if (!root.querySelector('style[data-ihf-font-fix]')) {
 const style = document.createElement('style');
 style.setAttribute('data-ihf-font-fix', '1');
 const scopeSel = root === document ? '#ihf-listing-detail, #ihf-listing-detail *' : ':host, *';
-style.textContent = scopeSel + " { --rh-font: 'Inter', system-ui, sans-serif !important; font-family: 'Inter', system-ui, sans-serif !important; font-weight: 400 !important; }"
+style.textContent = scopeSel + " { --rh-font: 'Montserrat', system-ui, sans-serif !important; font-family: 'Montserrat', system-ui, sans-serif !important; font-weight: 400 !important; }"
 + ".ui-typography-h3 { text-align: center !important; font-size: 22px !important; }"
 + ".ui-typography-body1 { text-align: center !important; font-size: 14px !important; }"
 + ".ui-outlined-input { border: none !important; border-bottom: 1px solid #cccccc !important; border-radius: 0 !important; box-shadow: none !important; padding-left: 4px !important; }"
@@ -1039,7 +1038,7 @@ if (el.shadowRoot) {
 this._ihfFixTextInRoot(el.shadowRoot);
 if (!el.shadowRoot.__ihfObserved) {
 el.shadowRoot.__ihfObserved = true;
-new MutationObserver(() => this._ihfRunGuarded('all', () => this._ihfFixAllShadowRoots())).observe(el.shadowRoot, { childList: true, subtree: true, characterData: true });
+new MutationObserver(() => this._ihfRunGuarded('all', () => this._ihfFixAllShadowRoots())).observe(el.shadowRoot, { childList: true, subtree: true, characterData: false });
 }
 }
 });
@@ -1072,7 +1071,7 @@ const bcClone = breadcrumb.cloneNode(true);
 breadcrumb.style.setProperty('display', 'none', 'important');
 bcClone.style.cssText = 'font-size:14px;color:#888;white-space:nowrap;display:flex;align-items:center;flex-shrink:0;';
 Array.from(bcClone.querySelectorAll('a')).forEach((a) => {
-a.style.cssText = 'font-family:Inter,system-ui,sans-serif;font-size:14px;color:#888;text-decoration:none;display:inline-block;width:fit-content;background-image:linear-gradient(to top, #888888 2px, transparent 2px);background-repeat:no-repeat;background-position:left bottom;background-size:0 100%;transition:background-size 0.3s ease;padding-bottom:2px;';
+a.style.cssText = 'font-family:Montserrat,system-ui,sans-serif;font-size:14px;color:#888;text-decoration:none;display:inline-block;width:fit-content;background-image:linear-gradient(to top, #888888 2px, transparent 2px);background-repeat:no-repeat;background-position:left bottom;background-size:0 100%;transition:background-size 0.3s ease;padding-bottom:2px;';
 a.addEventListener('mouseenter', () => a.style.setProperty('background-size', '100% 100%', 'important'));
 a.addEventListener('mouseleave', () => a.style.setProperty('background-size', '0 100%', 'important'));
 });
@@ -1083,7 +1082,7 @@ navRow.style.cssText = 'display:flex;align-items:center;gap:26px;flex-wrap:wrap;
 sections.forEach(({ label, target }, i) => {
 const link = document.createElement('span');
 link.textContent = label;
-link.style.cssText = 'font-family:Inter,system-ui,sans-serif;font-size:14px;font-weight:' + (i === 0 ? '700' : '500') + ';color:#1a1a1a;cursor:pointer;display:inline-block;width:fit-content;background-image:linear-gradient(to top, #000000 2px, transparent 2px);background-repeat:no-repeat;background-position:left bottom;background-size:' + (i === 0 ? '100% 2px' : '0 2px') + ';transition:background-size 0.3s ease;padding-bottom:4px;';
+link.style.cssText = 'font-family:Montserrat,system-ui,sans-serif;font-size:14px;font-weight:' + (i === 0 ? '700' : '500') + ';color:#1a1a1a;cursor:pointer;display:inline-block;width:fit-content;background-image:linear-gradient(to top, #000000 2px, transparent 2px);background-repeat:no-repeat;background-position:left bottom;background-size:' + (i === 0 ? '100% 2px' : '0 2px') + ';transition:background-size 0.3s ease;padding-bottom:4px;';
 link.addEventListener('mouseenter', () => link.style.setProperty('background-size', '100% 100%', 'important'));
 link.addEventListener('mouseleave', () => { if (i !== 0) link.style.setProperty('background-size', '0 100%', 'important'); });
 link.addEventListener('click', () => {
@@ -1455,8 +1454,7 @@ if (hoaAmt > 0) {
 const freq = xv(/^(hoa|association)\s*(fee\s*)?frequency$/i);
 const per = /annual|year/i.test(freq) ? '/yr' : /semi/i.test(freq) ? '/6 mo' : /quarter/i.test(freq) ? '/qtr' : '/mo';
 const hoaIcon = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 14h3v7H2z"/><path d="M5 15h3.5c.8 0 1.6.3 2.2.8l.8.7h3a1.5 1.5 0 0 1 0 3H10"/><path d="M14.5 18.5l4.8-2.3a1.6 1.6 0 0 1 1.9 2.5L16 21.5c-.6.3-1.2.5-1.9.5H5"/><circle cx="15" cy="7.5" r="3.5"/><path d="M15 5.8v3.4M14 6.6h1.6a.8.8 0 0 1 0 1.6h-1.2a.8.8 0 0 0 0 1.6H16"/></svg>';
-const hCell = mkCell(hoaIcon, 'HOA 
- + Math.round(hoaAmt).toLocaleString('en-US') + per, 'ihfHoa');
+const hCell = mkCell(hoaIcon, 'HOA $' + Math.round(hoaAmt).toLocaleString('en-US') + per, 'ihfHoa');
 const home = cloneRowEl.querySelector('[data-ihf-home]');
 if (home) home.parentElement.insertBefore(hCell, home.nextSibling); else cloneRowEl.appendChild(hCell);
 }
@@ -1605,7 +1603,7 @@ if (fixed !== t) document.title = fixed;
 if (matched || isFallback) this._ihfTitleFixed = true;
 };
 const titleEl = document.querySelector('title');
-if (titleEl) new MutationObserver(fixTitle).observe(titleEl, { childList: true, characterData: true, subtree: true });
+if (titleEl) new MutationObserver(fixTitle).observe(titleEl, { childList: true, characterData: false, subtree: true });
 fixTitle();
 }
 };
@@ -2592,7 +2590,7 @@ if (type === 'click') st.eatBar = false;
     }, true);
     var report = function () { try { top.__ksListingLoaded(location.href, document.title); } catch (e) {} };
     report();
-    new MutationObserver(report).observe(document.querySelector('title') || document.head, { childList: true, characterData: true, subtree: true });
+    new MutationObserver(report).observe(document.querySelector('title') || document.head, { childList: true, characterData: false, subtree: true });
     return;
   }
   if (here !== '/listings') return;
@@ -2874,8 +2872,7 @@ if (type === 'click') st.eatBar = false;
     return 1;
   }
   function snap(v) { var st = v < 1000000 ? 10000 : v < 5000000 ? 25000 : 100000; return Math.round(v / st) * st; }
-  function fmt(v) { return v == null ? '' : '
- + Math.round(v).toLocaleString('en-US'); }
+  function fmt(v) { return v == null ? '' : '$' + Math.round(v).toLocaleString('en-US'); }
   function parse(t) {
     t = String(t || '').toLowerCase().replace(/[$,\s]/g, '');
     if (!t) return null;
@@ -2897,9 +2894,9 @@ if (type === 'click') st.eatBar = false;
   }
   var CSS = '[data-ks-price-panel]:not(#a):not(#b):not(#c){width:440px !important;min-width:440px !important;max-width:calc(100vw - 32px) !important;padding:20px 22px 22px !important;box-sizing:border-box !important;overflow:visible !important;}'
     + '[data-ks-price-panel]:not(#a):not(#b):not(#c) > :not([data-ks-price-ui]){position:absolute !important;left:0 !important;top:0 !important;width:1px !important;height:1px !important;overflow:hidden !important;opacity:0 !important;pointer-events:none !important;}'
-    + '[data-ks-price-ui]{display:flex;flex-direction:column;gap:22px;font-family:Inter,system-ui,sans-serif;}'
+    + '[data-ks-price-ui]{display:flex;flex-direction:column;gap:22px;font-family:Montserrat,system-ui,sans-serif;}'
     + '[data-ks-price-ui] .ksp-row{display:flex;align-items:center;gap:12px;}'
-    + '[data-ks-price-ui] input{flex:1 1 0;min-width:0;height:52px;box-sizing:border-box;border:1px solid #d6d6d6 !important;border-radius:10px !important;padding:0 14px !important;font:500 15px Inter,system-ui,sans-serif !important;color:#1a1a1a !important;background:#ffffff !important;background-image:none !important;outline:none;transition:border-color .2s ease;}'
+    + '[data-ks-price-ui] input{flex:1 1 0;min-width:0;height:52px;box-sizing:border-box;border:1px solid #d6d6d6 !important;border-radius:10px !important;padding:0 14px !important;font:500 15px Montserrat,system-ui,sans-serif !important;color:#1a1a1a !important;background:#ffffff !important;background-image:none !important;outline:none;transition:border-color .2s ease;}'
     + '[data-ks-price-ui] input:hover,[data-ks-price-ui] input:focus{border-color:#1a1a1a !important;}'
     + '[data-ks-price-ui] input::placeholder{color:#999999;}'
     + '[data-ks-price-ui] .ksp-to{font-size:14px;color:#999999;}'
@@ -2913,7 +2910,7 @@ if (type === 'click') st.eatBar = false;
     + '[role="tooltip"]:not([data-ks-seen]),[data-ks-hold]{visibility:hidden !important;}'
     + '@keyframes ksReveal{to{visibility:visible;}}'
     + '[data-ks-orig-slider]{position:absolute !important;left:0 !important;top:0 !important;width:100% !important;opacity:0 !important;pointer-events:none !important;}'
-    + '[data-ks-range-ui]{position:relative;flex:1 1 auto;min-width:0;box-sizing:border-box;margin:0 0 0 20px;padding:16px 0 0;font-family:Inter,system-ui,sans-serif;}'
+    + '[data-ks-range-ui]{position:relative;flex:1 1 auto;min-width:0;box-sizing:border-box;margin:0 0 0 20px;padding:16px 0 0;font-family:Montserrat,system-ui,sans-serif;}'
     + '[data-ks-range-ui] .ksp-track{position:relative;height:28px;margin:0 10px;touch-action:none;cursor:pointer;}'
     + '[data-ks-range-ui] .ksp-rail{position:absolute;left:0;right:0;top:13px;height:2px;background:#e0e0e0;}'
     + '[data-ks-range-ui] .ksp-fill{position:absolute;top:13px;height:2px;background:#1a1a1a;}'
@@ -2982,8 +2979,7 @@ if (type === 'click') st.eatBar = false;
           var caret = inp.selectionStart == null ? raw.length : inp.selectionStart;
           var digitsBefore = raw.slice(0, caret).replace(/\D/g, '').length;
           var digits = raw.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
-          var out = digits ? '
- + Number(digits).toLocaleString('en-US') : '';
+          var out = digits ? '$' + Number(digits).toLocaleString('en-US') : '';
           if (out !== raw) {
             inp.value = out;
             var pos = out.length, cnt = 0;
