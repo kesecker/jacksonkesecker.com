@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&amp;amp;display=block">
 <script data-ks-mo-guard>(function(){if(window.__ksMoGuard)return;window.__ksMoGuard=true;var NMO=window.MutationObserver;if(!NMO)return;function G(cb){var self=this,n=0,t0=0,q=null,warned=false,pend=[];var w=function(recs,obs){var now=Date.now();if(now-t0>1000){t0=now;n=0;}n++;if(n<=40){return cb.call(this,recs,obs);}pend=pend.concat(recs);if(!warned){warned=true;try{console.warn('[ks-guard] throttled a runaway MutationObserver:',String(cb).slice(0,160));}catch(e){}}if(q)return;q=setTimeout(function(){q=null;var r=pend;pend=[];t0=Date.now();n=0;try{cb.call(self,r,obs);}catch(e){}},300);};var o=new NMO(w);return o;}G.prototype=NMO.prototype;window.MutationObserver=G;})();</script>
-<script data-ks-sqft-early>(function(){if(window.__ksSqFtEarly)return;window.__ksSqFtEarly=true;var RE=/\b(Square\s*(Feet|Foot|Ft\.?)|Sq\.?\s?Ft\b\.?)/gi;function fn(t){var v=t.nodeValue||'';if(!/sq|square/i.test(v))return;var n=v.replace(RE,'Sq. Ft.');if(n!==v)t.nodeValue=n;}function fx(r){var w=document.createTreeWalker(r,NodeFilter.SHOW_TEXT),t;while((t=w.nextNode()))fn(t);}function watch(r){fx(r);new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='characterData')fn(m.target);else for(var j=0;j<m.addedNodes.length;j++){var a=m.addedNodes[j];if(a.nodeType===3)fn(a);else if(a.nodeType===1)fx(a);}}}).observe(r,{childList:true,subtree:true,characterData:true});}var orig=Element.prototype.attachShadow;Element.prototype.attachShadow=function(o){var sr=orig.call(this,o);try{watch(sr);}catch(e){}return sr;};document.addEventListener('DOMContentLoaded',function(){watch(document.body);});})();</script>
 <script data-ks-card-early>(function(){if(window.__ksCardEarly)return;window.__ksCardEarly=true;var CSS="[class*='ihf-listing-result' i] *,*:has(> .ihf-listing-result-img-container) *,*:has(> * > .ihf-listing-result-img-container) *,[class*='listing-result' i] *,.similar-listings *{font-family:Montserrat,system-ui,sans-serif !important;font-weight:500 !important;letter-spacing:-0.01em !important;}[class*='ihf-listing-result' i] [class*='price' i],[class*='ihf-listing-result' i] [class*='price' i] *,*:has(> .ihf-listing-result-img-container) [class*='price' i],*:has(> .ihf-listing-result-img-container) [class*='price' i] *,*:has(> * > .ihf-listing-result-img-container) [class*='price' i],*:has(> * > .ihf-listing-result-img-container) [class*='price' i] *,.ihf-listing-result-badges *:not([class*='fav' i]):not([class*='fav' i] *),.ihf-listing-result-status,.ihf-listing-result-status *,[data-ks-sold-date]{font-weight:700 !important;}.similar-listings > h1,.similar-listings > h2,.similar-listings > h3{font-weight:600 !important;}";function put(r){try{var h=r===document?document.head:r;if(!h)return;var s=h.querySelector&&h.querySelector('style[data-ks-card-css]');if(!s){s=document.createElement('style');s.setAttribute('data-ks-card-css','1');s.textContent=CSS;}if(!s.parentNode)h.appendChild(s);}catch(e){}}var o=Element.prototype.attachShadow;Element.prototype.attachShadow=function(x){var sr=o.call(this,x);put(sr);var keep=function(){put(sr);};new MutationObserver(keep).observe(sr,{childList:true});return sr;};document.addEventListener('DOMContentLoaded',function(){put(document);});setInterval(function(){document.querySelectorAll('div.ihf-container,div.ihf-overlay-container').forEach(function(h){if(h.shadowRoot)put(h.shadowRoot);});},1000);})();</script>
 <script src="./support.js"></script>
 </head>
@@ -187,7 +186,7 @@
         </div>
         <div style="align-self: center; width: 100%; box-sizing: border-box; transform: translateY(calc(-8vh - 40px));">
         <div id="hero-text-block" style="box-sizing: border-box; padding-left: clamp(20px, 6vw, 73px); padding-right: 24px; display: flex; flex-direction: column; gap: clamp(6px, 1vw, 10px); text-align: left; max-width: 774px;"><span id="hero-eyebrow-span" style="font-family: var(--rh-font); font-size: clamp(12px, 1.1vw, 17px); font-weight: 400; letter-spacing: -0.01em; color: #ffffff;">Keller Williams Coastal &amp; Salinas Valley Estates | DRE#02196405</span><div id="hero-heading-wrap" style="display: flex; align-items: center; overflow: visible; min-height: clamp(68px, 12vw, 124px);">
-          <h1 id="hero-heading" style="font-size: clamp(24px, 3.4vw, 52px); white-space: nowrap; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; margin: 0; color: #ffffff; text-align: left; opacity: {{ heroTextOpacity }}; transform: {{ heroTextTransform }}; transition: opacity 0.81s ease, transform 0.81s ease;">{{ rotatingHeroText }}</h1>
+          <h1 id="hero-heading" style="font-size: clamp(30px, 6.5vw, 52px); white-space: normal; max-width: min(760px, 100%); text-wrap: balance; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; margin: 0; color: #ffffff; text-align: left; opacity: {{ heroTextOpacity }}; transform: {{ heroTextTransform }}; transition: opacity 0.81s ease, transform 0.81s ease;">{{ rotatingHeroText }}</h1>
         </div><p id="hero-paragraph" style="font-size: clamp(14px, 1.2vw, 18px); line-height: 1.6; color: rgba(255,255,255,0.88); max-width: 620px; margin: 0">{{ t.heroParagraph }}</p><a href="https://jacksonkesecker.com/listings" onMouseEnter="{{ heroListingsHoverEnter }}" onMouseLeave="{{ heroListingsHoverLeave }}" style="margin-top: 34px; display: inline-block; width: fit-content;"><span style="position: relative; display: inline-block; font-size: 16px; font-weight: 400; letter-spacing: normal; text-transform: none; color: #ffffff;">Search for Properties<span style="position: absolute; left: 0; bottom: -4px; height: 2px; background: #ffffff; width: {{ heroListingsUnderlineWidth }}; transition: width 0.35s ease;"></span></span></a></div>
         </div>
       </div>
@@ -1537,16 +1536,7 @@ class Component extends DCLogic {
       }
     });
   };
-  _fitHero = () => {
-    const el = document.getElementById('hero-heading');
-    if (!el) return;
-    el.style.removeProperty('font-size');
-    const base = parseFloat(getComputedStyle(el).fontSize) || 40;
-    const left = el.getBoundingClientRect().left;
-    const avail = window.innerWidth - Math.max(0, left) - 20;
-    const w = el.scrollWidth;
-    if (w > avail && avail > 0) el.style.setProperty('font-size', Math.max(14, Math.floor(base * avail / w * 10) / 10) + 'px', 'important');
-  };
+  _fitHero = () => {};
   componentDidUpdate(prevProps, prevState) {
     if (prevState && (prevState.heroPhraseIndex !== this.state.heroPhraseIndex || prevState.lang !== this.state.lang)) requestAnimationFrame(this._fitHero);
     if (!prevState) return;
