@@ -128,9 +128,11 @@
           <sc-for list="{{ tSizers }}" as="sz" hint-placeholder-count="0">
             <div aria-hidden="true" style="grid-area: 1 / 1; visibility: hidden; pointer-events: none; display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%;">
               <h2 data-ks-scaled="1" style="font-size: clamp(23px, 3.22vw, 30px); font-weight: 600; margin: 0; letter-spacing: -0.01em; text-transform: none; color: var(--rh-text-primary); text-wrap: balance;">{{ sz.headline }}</h2>
+              <div data-ks-sz-paras="1" style="display: flex; flex-direction: column; gap: 16px; width: 100%;">
               <sc-for list="{{ sz.paras }}" as="sp" hint-placeholder-count="0">
                 <p style="font-size: 16px; line-height: 1.75; color: var(--rh-text-secondary); margin: 0; text-wrap: pretty;">{{ sp }}</p>
               </sc-for>
+              </div>
               <sc-if value="{{ sz.long }}" hint-placeholder-val="{{ false }}">
                 <span style="font-size: 14px; font-weight: 600; padding: 0 0 3px; line-height: normal;">Read more</span>
               </sc-if>
@@ -139,9 +141,11 @@
           </sc-for>
           <div style="grid-area: 1 / 1; align-self: center; display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; opacity: {{ tOpacity }}; transform: {{ tTransform }}; transition: {{ tTransition }};">
           <h2 data-ks-scaled="1" style="font-size: clamp(23px, 3.22vw, 30px); font-weight: 600; margin: 0; letter-spacing: -0.01em; text-transform: none; color: var(--rh-text-primary); text-wrap: balance;">{{ tHeadline }}</h2>
+          <div ref="{{ tParasRef }}" style="display: flex; flex-direction: column; gap: 16px; width: 100%;">
           <sc-for list="{{ tParas }}" as="para" hint-placeholder-count="1">
             <p style="font-size: 16px; line-height: 1.75; color: var(--rh-text-secondary); margin: 0; text-wrap: pretty;">{{ para }}</p>
           </sc-for>
+          </div>
           <sc-if value="{{ tCanExpand }}" hint-placeholder-val="{{ false }}">
             <button type="button" onClick="{{ tToggle }}" style="background: none; border: none; padding: 0 0 3px; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600; color: var(--rh-text-primary); background-image: linear-gradient(to top, currentColor 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">{{ tToggleLabel }}</button>
           </sc-if>
@@ -231,6 +235,33 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
+  _tToggle = () => {
+    const el = this._tParasRef && this._tParasRef.current;
+    if (!el || this._tAnim) { this.setState((s) => ({ tOpen: !s.tOpen })); return; }
+    this._tAnim = true;
+    const DUR = 600, EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
+    const done = () => { el.style.transition = ''; el.style.height = ''; el.style.overflow = ''; this._tAnim = false; };
+    const h0 = el.offsetHeight;
+    el.style.overflow = 'hidden'; el.style.height = h0 + 'px';
+    if (!this.state.tOpen) {
+      this.setState({ tOpen: true }, () => {
+        requestAnimationFrame(() => {
+          const h1 = el.scrollHeight;
+          el.style.transition = 'height ' + DUR + 'ms ' + EASE;
+          el.style.height = h1 + 'px';
+          setTimeout(done, DUR + 30);
+        });
+      });
+    } else {
+      const sz = document.querySelectorAll('[data-ks-sz-paras]')[this.state.tIdx || 0];
+      const h1 = sz ? sz.offsetHeight : Math.round(h0 * 0.4);
+      requestAnimationFrame(() => {
+        el.style.transition = 'height ' + DUR + 'ms ' + EASE;
+        el.style.height = h1 + 'px';
+        setTimeout(() => { this.setState({ tOpen: false }, () => requestAnimationFrame(done)); }, DUR + 10);
+      });
+    }
+  };
   state = { isPhoneOpen: false };
   openContactModal = (e) => { if (e) e.preventDefault(); if (window.openKeseckerContactModal) window.openKeseckerContactModal(); };
   togglePhonePopup = () => this.setState(s => ({ isPhoneOpen: !s.isPhoneOpen }));
@@ -300,7 +331,8 @@ class Component extends DCLogic {
       tSizers: this.aboutTestimonials.map((x) => this._tClip(x, false)),
       tHeadline: t.headline, tParas: paras, tName: t.name, tRole: t.role,
       tCanExpand: long, tToggleLabel: this.state.tOpen ? 'Show less' : 'Read more',
-      tToggle: () => this.setState((s) => ({ tOpen: !s.tOpen })),
+      tParasRef: this._tParasRef || (this._tParasRef = React.createRef()),
+      tToggle: this._tToggle,
       tPrev: () => this.tGo(-1), tNext: () => this.tGo(1),
       tCounter: ((this.state.tIdx || 0) + 1) + ' / ' + this.aboutTestimonials.length,
       tOpacity: (this.state.tPhase === 'out' || this.state.tPhase === 'enter') ? 0 : 1,
