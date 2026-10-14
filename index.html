@@ -1405,7 +1405,43 @@ class Component extends DCLogic {
       ? 'opacity:1;transform:translateX(0);transition:opacity 1.4s cubic-bezier(.16,1,.3,1),transform 1.4s cubic-bezier(.16,1,.3,1);'
       : 'opacity:0;transform:translateX(-32px);transition:opacity 1.4s cubic-bezier(.16,1,.3,1),transform 1.4s cubic-bezier(.16,1,.3,1);';
   }
+  _ksNotableTick = () => {
+    const box = document.getElementById('ihf-notable-sales');
+    if (!box) return;
+    const roots = [box];
+    box.querySelectorAll('*').forEach((el) => { if (el.shadowRoot) roots.push(el.shadowRoot); });
+    const CSS = '[data-ks-viewall]{display:inline-block !important;text-decoration:none !important;padding-bottom:8px !important;background-image:linear-gradient(to top,currentColor 2px,transparent 2px) !important;background-repeat:no-repeat !important;background-position:left bottom !important;background-size:0 100% !important;transition:background-size .3s ease !important;cursor:pointer !important;}[data-ks-viewall]:hover{background-size:100% 100% !important;}';
+    roots.forEach((root) => {
+      const host = root === box ? document.head : root;
+      if (!host.querySelector('style[data-ks-viewall-css]')) { const st = document.createElement('style'); st.setAttribute('data-ks-viewall-css', '1'); st.textContent = CSS; host.appendChild(st); }
+      const tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      let t;
+      while ((t = tw.nextNode())) {
+        const v = (t.nodeValue || '').trim();
+        if (v !== 'View All' && v !== 'View All Listings') continue;
+        if (v === 'View All') t.nodeValue = t.nodeValue.replace('View All', 'View All Listings');
+        const p = t.parentElement;
+        const el = (p && p.closest('a, button, [role="button"]')) || p;
+        if (el && !el.hasAttribute('data-ks-viewall')) el.setAttribute('data-ks-viewall', '1');
+      }
+      root.querySelectorAll('[class*="result-cell" i], .ihf-listing-result, [class*="listing-result-cell" i]').forEach((card) => {
+        let addr = '';
+        const a = card.querySelector('[class*="address" i]');
+        if (a) addr = a.innerText || a.textContent || '';
+        if (!addr) {
+          const lines = (card.innerText || '').split('\n').map((x) => x.trim()).filter(Boolean);
+          const i = lines.findIndex((l) => /,\s*[A-Z]{2}\s+\d{5}/.test(l));
+          if (i > 0) addr = lines[i - 1] + ', ' + lines[i]; else if (i === 0) addr = lines[0];
+        }
+        addr = addr.split('\n').map((x) => x.trim()).filter(Boolean).join(', ').replace(/\s+/g, ' ').replace(/,\s*,/g, ',');
+        if (!addr) return;
+        if (card.getAttribute('title') !== addr) card.setAttribute('title', addr);
+        card.querySelectorAll('[title], a, img').forEach((el) => { if (el.getAttribute('title') !== addr) el.setAttribute('title', addr); });
+      });
+    });
+  };
   componentDidMount() {
+    this._ksNotableIv = setInterval(this._ksNotableTick, 1000); setTimeout(this._ksNotableTick, 300);
     if (!this.state.isIntroVisible) setTimeout(() => this.setState({ logoIn: true }), 400);
     if (!this.state.isIntroVisible && this.heroVideoRef.current) { setTimeout(() => { try { this.heroVideoRef.current.play(); } catch (e) {} }, 1500); }
     if (this.state.isIntroVisible) {
@@ -1516,6 +1552,7 @@ class Component extends DCLogic {
     this.setState({ isPhoneOpen: false });
   };
   componentWillUnmount() {
+    clearInterval(this._ksNotableIv);
     window.removeEventListener('message', this.onMapMessage);
     if (this._gestureRetry) {
       ['touchstart', 'pointerdown', 'click', 'scroll', 'keydown'].forEach((evt) => {
