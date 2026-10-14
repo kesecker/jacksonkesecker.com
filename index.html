@@ -132,7 +132,7 @@
 <div style="font-family: var(--rh-font); color: var(--rh-text-primary); background: var(--rh-bg); width: 100%; overflow-x: hidden; position: relative;">
   <sc-if value="{{ isIntroVisible }}" hint-placeholder-val="{{ true }}">
     <div style="position: fixed; inset: 0; z-index: 2147483600; background: #000000; display: flex; align-items: center; justify-content: center; overflow: hidden; transform: translateY({{ introTranslateY }}); transition: transform 0.35s cubic-bezier(0.65,0,0.35,1);">
-      <video ref="{{ introVideoRef }}" autoPlay="{{ true }}" muted="{{ true }}" defaultMuted="{{ true }}" playsInline="{{ true }}" preload="auto" onEnded="{{ dismissIntro }}" onError="{{ dismissIntro }}" onTimeUpdate="{{ handleIntroTimeUpdate }}" style="width: 100%; height: 100%; object-fit: contain;">
+      <video ref="{{ introVideoRef }}" autoPlay="{{ true }}" muted="{{ true }}" defaultMuted="{{ true }}" playsInline="{{ true }}" preload="auto" onPlaying="{{ startHeroLoad }}" onEnded="{{ dismissIntro }}" onError="{{ dismissIntro }}" onTimeUpdate="{{ handleIntroTimeUpdate }}" style="width: 100%; height: 100%; object-fit: contain;">
         <source src="uploads/Intro-fc69fc54.mp4" type="video/mp4">
       </video>
     </div>
@@ -160,7 +160,7 @@
   </sc-if>
   <sc-if value="{{ isFullBleedHero }}" hint-placeholder-val="{{ true }}">
     <div id="hero-fullbleed" style="position: relative; width: 100%; height: 100vh; min-height: 720px; overflow: hidden; background: #000;">
-      <video ref="{{ heroVideoRef }}" autoPlay="{{ true }}" muted="{{ true }}" defaultMuted="{{ true }}" loop="{{ true }}" playsInline="{{ true }}" preload="auto" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+      <video ref="{{ heroVideoRef }}" autoPlay="{{ heroAutoPlay }}" muted="{{ true }}" defaultMuted="{{ true }}" loop="{{ true }}" playsInline="{{ true }}" preload="{{ heroPreload }}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
         <source src="uploads/Hero-mobile.mp4" type="video/mp4" media="(max-width: 767px)">
         <source src="uploads/Hero-b0be3542.mp4" type="video/mp4">
       </video>
@@ -836,7 +836,8 @@ class Component extends DCLogic {
     if (this.state.isIntroFading || !this.state.isIntroVisible) return;
     if (this.introFailsafeTimer) clearTimeout(this.introFailsafeTimer);
     if (this.introVideoEl) { try { this.introVideoEl.pause(); } catch (e) {} }
-    setTimeout(() => { if (this.heroVideoRef.current) { try { this.heroVideoRef.current.play(); } catch (e) {} } }, 1500);
+    this.startHeroLoad();
+    if (this.heroVideoRef.current) { try { this.heroVideoRef.current.play().catch(() => {}); } catch (e) {} }
     this.setState({ isIntroFading: true });
     setTimeout(() => {
       this.setState({ isIntroVisible: false, isIntroFading: false });
@@ -1440,10 +1441,20 @@ class Component extends DCLogic {
       });
     });
   };
+  startHeroLoad = () => {
+    if (this.state.heroGo) return;
+    this.setState({ heroGo: true }, () => {
+      const v = this.heroVideoRef.current;
+      if (!v) return;
+      try { v.preload = 'auto'; v.load(); } catch (e) {}
+      if (!this.state.isIntroVisible) { try { v.play().catch(() => {}); } catch (e) {} }
+    });
+  };
   componentDidMount() {
     this._ksNotableIv = setInterval(this._ksNotableTick, 1000); setTimeout(this._ksNotableTick, 300);
     if (!this.state.isIntroVisible) setTimeout(() => this.setState({ logoIn: true }), 400);
-    if (!this.state.isIntroVisible && this.heroVideoRef.current) { setTimeout(() => { try { this.heroVideoRef.current.play(); } catch (e) {} }, 1500); }
+    if (!this.state.isIntroVisible && this.heroVideoRef.current) { try { this.heroVideoRef.current.play().catch(() => {}); } catch (e) {} setTimeout(() => { try { this.heroVideoRef.current && this.heroVideoRef.current.paused && this.heroVideoRef.current.play().catch(() => {}); } catch (e) {} }, 400); }
+    if (this.state.isIntroVisible) this._heroGoTimer = setTimeout(this.startHeroLoad, 1200);
     if (this.state.isIntroVisible) {
       this.introFailsafeTimer = setTimeout(() => { if (this.state.isIntroVisible && !this.state.isIntroFading) this.dismissIntro(); }, 6000);
     }
@@ -1753,7 +1764,8 @@ class Component extends DCLogic {
       rotatingHeroText: this.renderHeroPhrase(t.heroPhrases[this.state.heroPhraseIndex]),
       heroTextOpacity: this.state.heroFadeVisible ? 1 : 0,
       heroTextTransform: this.state.heroFadeVisible ? 'translateY(0)' : 'translateY(10px)',
-      heroVideoRef: this.heroVideoRef,
+      heroVideoRef: this.heroVideoRef, startHeroLoad: this.startHeroLoad,
+      heroAutoPlay: !this.state.isIntroVisible || !!this.state.heroGo, heroPreload: (!this.state.isIntroVisible || this.state.heroGo) ? 'auto' : 'none',
       ctaBandRef: this.ctaBandRef,
       useJsPin: this.state.isIosDevice,
       useCssPin: !this.state.isIosDevice,
