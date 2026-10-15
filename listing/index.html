@@ -1069,7 +1069,8 @@ findAllMatches('Share').filter((s) => !s.closest('[data-ihf-own], [data-ihf-acti
         let matched = false;
         let fixed = t.replace(suffixRe, (m, pre, suf, city, st) => {
           matched = true;
-          const properSuf = suf.charAt(0).toUpperCase() + suf.slice(1).toLowerCase();
+          const SUF_FULL = { st:'Street', ave:'Avenue', rd:'Road', dr:'Drive', ln:'Lane', ct:'Court', blvd:'Boulevard', pl:'Place', ter:'Terrace', cir:'Circle', pkwy:'Parkway', trl:'Trail', hwy:'Highway', sq:'Square', xing:'Crossing', pt:'Point' };
+          const properSuf = SUF_FULL[suf.toLowerCase()] || (suf.charAt(0).toUpperCase() + suf.slice(1).toLowerCase());
           const properCity = city.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
           return pre + properSuf + ' | ' + properCity + ', ' + st.toUpperCase();
         });
