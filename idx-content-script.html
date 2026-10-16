@@ -1,4 +1,6 @@
 <script>
+(function(){if(window.__ksIvCalm)return;window.__ksIvCalm=true;var onListing=/\/listing(\/|\?|$)/.test(location.pathname+location.search)&&!/\/listings/.test(location.pathname);var last=0;var mark=function(){last=performance.now();};['scroll','wheel','touchmove','pointerdown','keydown'].forEach(function(e){window.addEventListener(e,mark,{capture:true,passive:true});});var si=window.setInterval;window.setInterval=function(fn,ms){if(typeof fn!=='function')return si.apply(window,arguments);var floor=onListing?1500:600;var wrapped=function(){if(document.hidden)return;if(performance.now()-last<400)return;if(window.__ksUiBusyUntil&&performance.now()<window.__ksUiBusyUntil)return;return fn.apply(this,arguments);};return si.call(window,wrapped,Math.max(ms||0,floor));};})();
+
 (function () {
   if (window.__ksMO) return;
   var Native = window.MutationObserver, last = 0;
@@ -144,7 +146,7 @@ view.dataset.ihfOwn = '1';
 view.style.cssText = 'overflow:hidden;background:#ffffff;touch-action:pan-y;cursor:grab;';
 [['position', 'absolute'], ['top', '0'], ['left', '0'], ['right', '0'], ['bottom', '0'], ['width', '100%'], ['height', '100%'], ['margin', '0'], ['padding', '0'], ['z-index', '5']].forEach(([k, v]) => view.style.setProperty(k, v, 'important'));
 const track = document.createElement('div');
-track.style.cssText = 'display:flex;height:100%;width:100%;will-change:transform;';
+track.style.cssText = 'display:flex;height:100%;width:100%;will-change:transform;backface-visibility:hidden;';
 all.forEach((s, k) => {
 const slide = document.createElement('div');
 slide.style.cssText = 'flex:0 0 60%;width:60%;min-width:60%;max-width:60%;height:100%;overflow:hidden;';
@@ -152,7 +154,9 @@ const im = document.createElement('img');
 im.src = s;
 im.alt = '';
 im.draggable = false;
-im.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;user-select:none;';
+im.decoding = 'async';
+im.loading = 'eager';
+im.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;user-select:none;transform:translateZ(0);';
 slide.appendChild(im);
 slide.addEventListener('click', () => {
 if (view.dataset.dragged === '1') return;
@@ -186,24 +190,32 @@ let i = CL;
 const w = () => view.getBoundingClientRect().width;
 const place = (anim, extra) => {
 track.style.setProperty('transition', anim ? 'transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none', 'important');
-track.style.setProperty('transform', 'translateX(calc(' + (20 - i * 60) + '% + ' + (extra || 0) + 'px))', 'important');
+track.style.setProperty('transform', 'translate3d(calc(' + (20 - i * 60) + '% + ' + (extra || 0) + 'px),0,0)', 'important');
 };
 let busy = false;
 let settleTimer = null;
+let queued = 0;
+const warm = () => {
+[i - 1, i, i + 1, i + 2].forEach((j) => { const s = track.children[j]; const im = s && s.firstChild; if (im && im.decode) im.decode().catch(() => {}); });
+};
 const settle = () => {
 clearTimeout(settleTimer);
 if (i >= n + CL) { i -= n; place(false); }
 if (i < CL) { i += n; place(false); }
 busy = false;
+warm();
+if (queued) { const d = queued; queued = 0; requestAnimationFrame(() => go(d)); }
 };
 const go = (d) => {
-if (busy) return;
+window.__ksUiBusyUntil = performance.now() + 900;
+if (busy) { queued = Math.max(-1, Math.min(1, queued + d)); return; }
 busy = true;
 i += d;
-place(true);
+requestAnimationFrame(() => place(true));
 clearTimeout(settleTimer);
-settleTimer = setTimeout(settle, 500);
+settleTimer = setTimeout(settle, 480);
 };
+setTimeout(warm, 300);
 track.addEventListener('transitionend', (e) => { if (e.target === track) settle(); });
 mkArrow('l');
 mkArrow('r');
@@ -522,9 +534,10 @@ window.addEventListener('keydown', onKey, true);
 _ihfAlignVirtualTour = (root) => {
 const leaves = Array.from(root.querySelectorAll('h1, h2, h3, h4, p, span, div')).filter((el) => el.children.length === 0);
 const aboutH = leaves.find((el) => /^about this property$/i.test((el.textContent || '').trim()));
-const vtH = leaves.find((el) => /^(virtual|3d) tour$/i.test((el.textContent || '').trim()) && /^H[1-4]$/.test(el.tagName) && !el.closest('[data-ihf-own], .ihf-info-col, .ihf-stats-clone, button, .similar-listings, [class*="listing-result" i], [class*="gallery" i], [class*="chip" i]'));
+const vtH = leaves.find((el) => /^(virtual|3d|additional) tour$/i.test((el.textContent || '').trim()) && /^H[1-4]$/.test(el.tagName) && !el.closest('[data-ihf-own], .ihf-info-col, .ihf-stats-clone, button, .similar-listings, [class*="listing-result" i], [class*="gallery" i], [class*="chip" i]'));
 if (!aboutH || !vtH) return;
-if (vtH.textContent.trim() !== '3D Tour') vtH.textContent = '3D Tour';
+if (vtH.textContent.trim() !== 'Additional Tour') vtH.textContent = 'Additional Tour';
+if (vtH.style.getPropertyValue('font-weight') !== '700') vtH.style.setProperty('font-weight', '700', 'important');
 let vtSec = vtH;
 while (vtSec.parentElement && !vtSec.parentElement.contains(aboutH)) vtSec = vtSec.parentElement;
 let aboutSec = aboutH;
@@ -637,8 +650,10 @@ if (!price0) return;
 let mc = kids.find((c) => c.dataset && c.dataset.ihfMc);
 if (native) native.style.setProperty('display', 'none', 'important');
 const footSec = kids.find((c) => c !== mc && (c.classList.contains('listing-footer') || /MLSListings Inc\.|data relating to real estate/i.test(c.textContent || '')));
+const descEl = kids.find((c) => c.dataset && c.dataset.ksGmap) || kids.find((c) => c.classList.contains('features')) || kids.find((c) => c.classList.contains('listing-description'));
 if (mc && mc.dataset.ihfMcKey === String(price0)) {
-if (footSec && mc.nextElementSibling !== footSec) section.insertBefore(mc, footSec);
+if (descEl) { if (descEl.nextElementSibling !== mc) section.insertBefore(mc, descEl.nextElementSibling); }
+else if (footSec && mc.nextElementSibling !== footSec) section.insertBefore(mc, footSec);
 this._ihfAlignSection(root, mc);
 return;
 }
@@ -685,7 +700,7 @@ mc.innerHTML = '<h2 data-mc-h style="margin:0 0 24px;font-size:' + hSize + ';lin
 + field('ins', 'Home Insurance ($ per year)')
 + field('hoa', 'HOA Dues ($ per month)')
 + '</div>'
-+ '<div style="flex:1 1 300px;min-width:0;border:1px solid #e0e0e0;border-radius:12px;padding:28px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px;">'
++ '<div style="flex:1 1 300px;min-width:0;border:1px solid #e0e0e0;border-radius:0;padding:28px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px;">'
 + '<div style="font-size:13px;color:#666666;">Estimated Monthly Payment</div>'
 + '<div data-o="total" style="font-size:40px;line-height:1.1;color:#1a1a1a;font-weight:700 !important;letter-spacing:-0.01em;"></div>'
 + '<div data-bar style="display:flex;height:10px;border-radius:999px;overflow:hidden;background:#f0f0f0;"></div>'
@@ -794,8 +809,9 @@ else { const hr = scope.querySelector('hr'); if (hr) { const s = getComputedStyl
 }
 const features = kids.find((c) => c.classList.contains('features'));
 const desc = kids.find((c) => c.classList.contains('listing-description'));
-const ref = footSec || native || null;
-if (ref) section.insertBefore(mc, ref); else section.appendChild(mc);
+const afterEl = kids.find((c) => c.dataset && c.dataset.ksGmap) || features || desc;
+if (afterEl) section.insertBefore(mc, afterEl.nextElementSibling);
+else { const ref = footSec || native || null; if (ref) section.insertBefore(mc, ref); else section.appendChild(mc); }
 this._ihfAlignSection(root, mc);
 };
 _ihfCrispCarousel = (root) => {
@@ -984,7 +1000,7 @@ style.textContent = scopeSel + " { --rh-font: 'Montserrat', system-ui, sans-seri
 + "[class*='price' i] { font-weight: 700 !important; }"
 + "[class*='status' i] { font-weight: 700 !important; }"
 + ".MuiButtonBase-root:hover, .MuiIconButton-root:hover, .MuiFormControl-root:hover, .MuiAutocomplete-root:hover, .MuiInputBase-root:hover, .MuiOutlinedInput-root:hover, .MuiFilledInput-root:hover, [class*='Input' i]:hover, [class^='ihf' i]:hover { background-color: transparent !important; }"
-+ ".MuiFormControl-root, .MuiAutocomplete-root, .MuiInputBase-root { background-image: linear-gradient(to top, #000000 2px, transparent 2px) !important; background-repeat: no-repeat !important; background-position: left bottom !important; background-size: 0 100% !important; transition: background-size 0.3s ease !important; }"
++ ".MuiFormControl-root, .MuiAutocomplete-root, .MuiInputBase-root { background-image: none !important; background-repeat: no-repeat !important; background-position: left bottom !important; background-size: 0 100% !important; transition: background-size 0.3s ease !important; }"
 + ".MuiFormControl-root:hover, .MuiAutocomplete-root:hover, .MuiInputBase-root:hover, .MuiFormControl-root:focus-within, .MuiAutocomplete-root:focus-within, .MuiInputBase-root:focus-within { background-size: 100% 100% !important; }"
 + ".ihf-listing-result-status, .ihf-listing-result-status .ui-chip-label, .ihf-listing-result-status span, .ihf-listing-result-badge-open-house, .ihf-listing-result-badge-open-house .ui-chip-label, .ihf-listing-result-badge-open-house span, .ihf-listing-result-badge-virtual-tour, .ihf-listing-result-badge-virtual-tour .ui-chip-label, .ihf-listing-result-badge-virtual-tour span, [class*='open' i][class*='house' i], [class*='virtual' i][class*='tour' i] { font-weight: 700 !important; }"
 + ".MuiCardContent-root:last-child { padding-bottom: 20px !important; }"
@@ -1014,7 +1030,13 @@ style.textContent = scopeSel + " { --rh-font: 'Montserrat', system-ui, sans-seri
 + ".ihf-listing-result-badge-fav svg[fill=\"currentColor\"], .ihf-listing-result-badge-fav svg[fill=\"currentColor\"] path { fill: #e53935 !important; color: #e53935 !important; }"
 + ".heart-trace-clone path { transition: stroke-dashoffset 0.6s ease; } .ihf-listing-result-badge-fav:hover .heart-trace-clone path, .ihf-listing-result-badge-fav svg[fill=\"currentColor\"] ~ .heart-trace-clone path { stroke-dashoffset: 0 !important; }"
 + ".MuiDialog-paper::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; } .MuiDialog-paper { scrollbar-width: none !important; -ms-overflow-style: none !important; }"
-+ " .MuiFormControl-root:not(#ihf-x):not(#ihf-y), .MuiAutocomplete-root:not(#ihf-x):not(#ihf-y) { background-image: none !important; } .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *) { border: none !important; border-bottom: none !important; box-shadow: none !important; background-color: transparent !important; background-image: linear-gradient(to top, #000000 2px, transparent 2px), linear-gradient(to top, #cccccc 1px, transparent 1px) !important; background-repeat: no-repeat !important; background-position: left bottom, left bottom !important; background-size: 0 100%, 100% 100% !important; transition: background-size 0.3s ease !important; } .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *):hover, .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *):focus-within { background-size: 100% 100%, 100% 100% !important; } .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *)::before, .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *)::after { display: none !important; content: none !important; border: none !important; } .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *) fieldset, .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *) .MuiOutlinedInput-notchedOutline { border: none !important; }";
++ " .MuiFormControl-root:not(#ihf-x):not(#ihf-y), .MuiAutocomplete-root:not(#ihf-x):not(#ihf-y) { background-image: none !important; } .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *) { border: none !important; border-bottom: none !important; box-shadow: none !important; background-color: transparent !important; background-image: linear-gradient(to top, #cccccc 1px, transparent 1px) !important; background-repeat: no-repeat !important; background-position: left bottom, left bottom !important; background-size: 100% 100% !important; transition: background-size 0.3s ease !important; } .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *):hover, .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *):focus-within { background-size: 100% 100%, 100% 100% !important; } .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *)::before, .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *)::after { display: none !important; content: none !important; border: none !important; } .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *) fieldset, .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *) .MuiOutlinedInput-notchedOutline { border: none !important; }";
+style.textContent += " /* ks-no-field-lines */ .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not(#ihf-z), .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not(#ihf-z):hover, .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not(#ihf-z):focus-within, .MuiFormControl-root:not(#ihf-x):not(#ihf-y):not(#ihf-z):hover, .MuiFormControl-root:not(#ihf-x):not(#ihf-y):not(#ihf-z):focus-within, .MuiAutocomplete-root:not(#ihf-x):not(#ihf-y):not(#ihf-z):hover, .MuiAutocomplete-root:not(#ihf-x):not(#ihf-y):not(#ihf-z):focus-within { background-image: linear-gradient(to top, #cccccc 1px, transparent 1px) !important; background-size: 100% 100% !important; background-repeat: no-repeat !important; background-position: left bottom !important; transition: none !important; } .MuiFormControl-root:not(#ihf-x):not(#ihf-y):not(#ihf-z), .MuiAutocomplete-root:not(#ihf-x):not(#ihf-y):not(#ihf-z) { background-image: none !important; } input[type=\"number\"] { -moz-appearance: textfield !important; appearance: textfield !important; } input[type=\"number\"]::-webkit-inner-spin-button, input[type=\"number\"]::-webkit-outer-spin-button { -webkit-appearance: none !important; appearance: none !important; margin: 0 !important; display: none !important; }";
+style.textContent += " /* ks-round4: centered checkbox menus, Deselect All spacing, no field line animations (structural selectors — widget class names are obfuscated) */ *:has(> ul[role=\"menu\"]):not(#k1):not(#k2):not(#k3):not(#k4) { padding-left: 0 !important; padding-right: 0 !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4) { padding: 8px 0 !important; margin: 0 auto !important; width: max-content !important; min-width: 0 !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4) > li { padding-left: 28px !important; padding-right: 28px !important; margin: 0 !important; width: auto !important; box-sizing: border-box !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4) > li label > span:first-child { padding-left: 0 !important; margin-left: 0 !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4) > li:not(:has(input[type=\"checkbox\"])) { margin-bottom: 10px !important; } div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *), div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):hover, div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):focus-within { border: none !important; box-shadow: none !important; background-color: transparent !important; background-image: linear-gradient(to top, #cccccc 1px, transparent 1px) !important; background-size: 100% 100% !important; background-repeat: no-repeat !important; background-position: left bottom !important; transition: none !important; } div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *)::before, div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *)::after, div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):hover::before, div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):hover::after, div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):focus-within::before, div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):focus-within::after { display: none !important; content: none !important; border: none !important; } div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *) fieldset { border: none !important; } div:has(> div:has(> div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])))):not(#k1):not(#k2):not(#k3):not(#k4) { background-image: none !important; }";
+style.textContent += " /* ks-round5: More-tab fields (lot sq ft etc.) — no black hover/focus line anywhere in the field; Property Type menu spacing */ *:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *)::after, *:has(> * > input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *)::after, *:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *)::before, *:has(> * > input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *)::before { display: none !important; content: none !important; border: none !important; transform: none !important; } *:has(> * > input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *), *:has(> * > input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):hover, *:has(> * > input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):focus-within { border-bottom: none !important; box-shadow: none !important; background-image: none !important; transition: none !important; } input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"]):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *) { border-bottom: none !important; box-shadow: none !important; outline: none !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5) { padding: 18px 0 22px !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5) > li:not(:has(input[type=\"checkbox\"])) { margin-top: -4px !important; margin-bottom: 16px !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5) > li:has(input[type=\"checkbox\"]) { padding-top: 7px !important; padding-bottom: 7px !important; }";
+style.textContent += " /* ks-round6: mortgage calculator inputs keep a visible grey underline so they read as editable */ [data-ihf-mc] input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"]):not(#m1):not(#m2):not(#m3):not(#m4):not(#m5):not(#m6) { border: none !important; border-bottom: 1px solid #cccccc !important; border-radius: 0 !important; box-shadow: none !important; padding-bottom: 6px !important; background: transparent !important; } [data-ihf-mc] input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"]):not(#m1):not(#m2):not(#m3):not(#m4):not(#m5):not(#m6):focus { border-bottom-color: #1a1a1a !important; outline: none !important; }";
+style.textContent += " /* ks-round7: mortgage calculator Loan Term buttons — sharp corners */ [data-ihf-mc] button:not(#m1):not(#m2):not(#m3):not(#m4):not(#m5):not(#m6), [data-ihf-mc] [role=\"button\"]:not(#m1):not(#m2):not(#m3):not(#m4):not(#m5):not(#m6), [data-ihf-mc] label:not(#m1):not(#m2):not(#m3):not(#m4):not(#m5):not(#m6) { border-radius: 0 !important; }";
+style.textContent += " /* ks-round8: kill every pseudo-element underline inside filter popups (More panel etc.); even vertical spacing in checkbox menus */ [role=\"tooltip\"] *:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not(#k6)::after, [role=\"tooltip\"] *:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not(#k6)::before, [role=\"presentation\"] *:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not(#k6)::after, [role=\"presentation\"] *:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not(#k6)::before { border-bottom-width: 0 !important; border-bottom-color: transparent !important; } [role=\"tooltip\"] *:focus-within:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not(#k6), [role=\"tooltip\"] *:hover:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not(#k6) { border-bottom-color: #cccccc !important; }  ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not(#k6) > li { padding-top: 11px !important; padding-bottom: 11px !important; margin: 0 !important; min-height: 0 !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not(#k6) > li:not(:has(input[type=\"checkbox\"])) { padding-left: 64px !important; margin: 0 !important; }";
 (root === document ? document.head : root).appendChild(style);
 }
 try { this._ihfMoveResultsCount(root); } catch (e) { console.error('_ihfMoveResultsCount', e); }
@@ -1590,7 +1612,8 @@ const suffixRe = new RegExp('^(.*)\\b(' + suffixes + ')\\b\\s+([A-Za-z .\'-]+?),
 let matched = false;
 let fixed = t.replace(suffixRe, (m, pre, suf, city, st) => {
 matched = true;
-const properSuf = suf.charAt(0).toUpperCase() + suf.slice(1).toLowerCase();
+const SUF_FULL = { st:'Street', ave:'Avenue', rd:'Road', dr:'Drive', ln:'Lane', ct:'Court', blvd:'Boulevard', pl:'Place', ter:'Terrace', cir:'Circle', pkwy:'Parkway', trl:'Trail', hwy:'Highway', sq:'Square', xing:'Crossing', pt:'Point' };
+          const properSuf = SUF_FULL[suf.toLowerCase()] || (suf.charAt(0).toUpperCase() + suf.slice(1).toLowerCase());
 const properCity = city.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 return pre + properSuf + ' | ' + properCity + ', ' + st.toUpperCase();
 });
@@ -1599,6 +1622,8 @@ fixed = t.replace(/\b([A-Z]{2,}(?:[ .'-][A-Z]{2,})*),\s*([A-Z]{2})\b/g, (m, city
 }
 const isFallback = /\{listingAddress\}/.test(fixed);
 if (isFallback) fixed = 'Home Search | Jackson Kesecker';
+        { const SF = { st:'Street', ave:'Avenue', rd:'Road', dr:'Drive', ln:'Lane', ct:'Court', blvd:'Boulevard', pl:'Place', ter:'Terrace', cir:'Circle', pkwy:'Parkway', trl:'Trail', hwy:'Highway', xing:'Crossing' };
+          fixed = fixed.replace(/^[^|]*/, (street) => street.replace(/\b(St|Ave|Rd|Dr|Ln|Ct|Blvd|Pl|Ter|Cir|Pkwy|Trl|Hwy|Xing)\b\.?(?=\s|$)/gi, (m, w) => SF[w.toLowerCase()] || m)); }
 if (fixed !== t) document.title = fixed;
 if (matched || isFallback) this._ihfTitleFixed = true;
 };
@@ -1822,12 +1847,12 @@ this._ihfFixAllShadowRoots();
 + '[data-ihf-ap="field"]{border:none !important;box-shadow:none !important;background-image:linear-gradient(to top, #1a1a1a 2px, transparent 2px),linear-gradient(to top, #cccccc 2px, transparent 2px) !important;background-repeat:no-repeat !important;background-position:left bottom,left bottom !important;background-size:0 100%,100% 1px !important;transition:background-size .3s ease !important;}'
 + '[data-ihf-ap="field"]:hover,[data-ihf-ap="field"]:focus-within{background-size:100% 100%,100% 1px !important;}'
     + '[data-ihf-ap="field"] *{background-image:none !important;box-shadow:none !important;}'
-    + '[data-ihf-ap="gbtn"]{flex:1 1 0 !important;min-width:0 !important;height:38px !important;margin:0 !important;border:1px solid #1a1a1a !important;border-radius:6px !important;font-size:13px !important;text-transform:none !important;box-shadow:none !important;background-image:none !important;background-color:#ffffff !important;color:#1a1a1a !important;transition:background-color .2s ease,color .2s ease !important;}'
+    + '[data-ihf-ap="gbtn"]{flex:1 1 0 !important;min-width:0 !important;height:38px !important;margin:0 !important;border:1px solid #1a1a1a !important;border-radius:0 !important;font-size:13px !important;text-transform:none !important;box-shadow:none !important;background-image:none !important;background-color:#ffffff !important;color:#1a1a1a !important;transition:background-color .2s ease,color .2s ease !important;}'
     + '[data-ihf-ap="gbtn"][class*="contained"]{background-color:#1a1a1a !important;color:#ffffff !important;}'
     + '[data-ihf-ap="gbtn"]:not([class*="contained"]):hover{background-color:#1a1a1a !important;color:#ffffff !important;}'
     + '[data-ihf-ap="gbtn"] *{color:inherit !important;}'
 + '[data-ihf-ap="actions"]{margin:-4px 0 0 !important;padding:0 !important;border-top:none !important;display:flex !important;gap:10px !important;justify-content:flex-start !important;}'
-    + '[data-ihf-ap="abtn"]{margin:0 !important;height:40px !important;padding:0 20px !important;border:1px solid #1a1a1a !important;border-radius:6px !important;font-size:14px !important;text-transform:none !important;box-shadow:none !important;transition:background-color .2s ease,color .2s ease !important;}'
+    + '[data-ihf-ap="abtn"]{margin:0 !important;height:40px !important;padding:0 20px !important;border:1px solid #1a1a1a !important;border-radius:0 !important;font-size:14px !important;text-transform:none !important;box-shadow:none !important;transition:background-color .2s ease,color .2s ease !important;}'
 + '[data-ihf-ap="abtn"][data-ihf-primary="1"]{background-color:#000000 !important;color:#ffffff !important;border:none !important;font-weight:600 !important;}'
     + '[data-ihf-ap="abtn"][data-ihf-primary="1"]:hover{background-color:transparent !important;color:#000000 !important;border:none !important;}'
     + '[data-ihf-ap="abtn"]:not([data-ihf-primary="1"]){background-color:#ffffff !important;color:#1a1a1a !important;}'
@@ -2896,7 +2921,7 @@ if (type === 'click') st.eatBar = false;
     + '[data-ks-price-panel]:not(#a):not(#b):not(#c) > :not([data-ks-price-ui]){position:absolute !important;left:0 !important;top:0 !important;width:1px !important;height:1px !important;overflow:hidden !important;opacity:0 !important;pointer-events:none !important;}'
     + '[data-ks-price-ui]{display:flex;flex-direction:column;gap:22px;font-family:Montserrat,system-ui,sans-serif;}'
     + '[data-ks-price-ui] .ksp-row{display:flex;align-items:center;gap:12px;}'
-    + '[data-ks-price-ui] input{flex:1 1 0;min-width:0;height:52px;box-sizing:border-box;border:1px solid #d6d6d6 !important;border-radius:10px !important;padding:0 14px !important;font:500 15px Montserrat,system-ui,sans-serif !important;color:#1a1a1a !important;background:#ffffff !important;background-image:none !important;outline:none;transition:border-color .2s ease;}'
+    + '[data-ks-price-ui] input{flex:1 1 0;min-width:0;height:52px;box-sizing:border-box;border:1px solid #d6d6d6 !important;border-radius:0 !important;padding:0 14px !important;font:500 15px Montserrat,system-ui,sans-serif !important;color:#1a1a1a !important;background:#ffffff !important;background-image:none !important;outline:none;transition:border-color .2s ease;}'
     + '[data-ks-price-ui] input:hover,[data-ks-price-ui] input:focus{border-color:#1a1a1a !important;}'
     + '[data-ks-price-ui] input::placeholder{color:#999999;}'
     + '[data-ks-price-ui] .ksp-to{font-size:14px;color:#999999;}'
@@ -2923,7 +2948,7 @@ if (type === 'click') st.eatBar = false;
     paper.setAttribute('data-ks-price-panel', '1');
     var ui = document.createElement('div');
     ui.setAttribute('data-ks-price-ui', '1');
-    ui.innerHTML = '<div class="ksp-row"><input type="text" inputmode="numeric" aria-label="Minimum price" placeholder="No min"><span class="ksp-to">to</span><input type="text" inputmode="numeric" aria-label="Maximum price" placeholder="No max"></div>'
+    ui.innerHTML = '<div class="ksp-row"><input type="text" inputmode="numeric" aria-label="Minimum price" placeholder="No minimum"><span class="ksp-to">to</span><input type="text" inputmode="numeric" aria-label="Maximum price" placeholder="No maximum"></div>'
       + '<div class="ksp-track"><div class="ksp-rail"></div><div class="ksp-fill"></div><div class="ksp-h" role="slider" tabindex="0" aria-label="Minimum price"></div><div class="ksp-h" role="slider" tabindex="0" aria-label="Maximum price"></div></div>';
     paper.appendChild(ui);
     var ins = ui.querySelectorAll('input'), hs = ui.querySelectorAll('.ksp-h'), fill = ui.querySelector('.ksp-fill'), track = ui.querySelector('.ksp-track');
@@ -3252,4 +3277,374 @@ if (type === 'click') st.eatBar = false;
 })();
 
 })(window.__ksMO || window.MutationObserver);
+(function () {
+  if (window.__ksSimTitle) return;
+  window.__ksSimTitle = true;
+  function addrOf(card) {
+    var a = card.querySelector('[class*="address" i]'), s = '';
+    if (a) s = a.innerText || a.textContent || '';
+    if (!s) {
+      var lines = (card.innerText || '').split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
+      var i = -1;
+      for (var k = 0; k < lines.length; k++) { if (/,\s*[A-Z]{2}\s+\d{5}/.test(lines[k])) { i = k; break; } }
+      if (i > 0) s = lines[i - 1] + ', ' + lines[i]; else if (i === 0) s = lines[0];
+    }
+    return s.split('\n').map(function (x) { return x.trim(); }).filter(Boolean).join(', ').replace(/\s+/g, ' ').replace(/,\s*,/g, ',');
+  }
+  function tick() {
+    document.querySelectorAll('div.ihf-container').forEach(function (h) {
+      var sr = h.shadowRoot; if (!sr) return;
+      sr.querySelectorAll('.similar-listings').forEach(function (sec) {
+        sec.querySelectorAll('[class*="result-cell" i]:not([data-ks-t]), .ihf-listing-result:not([data-ks-t])').forEach(function (card) {
+          var addr = addrOf(card); if (!addr) return;
+          card.setAttribute('data-ks-t', '1');
+          if (card.getAttribute('title') !== addr) card.setAttribute('title', addr);
+          card.querySelectorAll('[title], a, img').forEach(function (el) { if (el.getAttribute('title') !== addr) el.setAttribute('title', addr); });
+        });
+      });
+    });
+  }
+  setInterval(tick, 1000);
+  setTimeout(tick, 500);
+})();
+(function () {
+  if (window.__ksGMap) return;
+  window.__ksGMap = true;
+  if (!/\/listing(\/|\?|$)/.test(location.pathname + location.search) || /\/listings/.test(location.pathname)) return;
+  function addressOf(root) {
+    var a = root.querySelector('.listing-header [class*="address" i], .ihf-info-col [class*="address" i]');
+    var s = a ? (a.innerText || a.textContent || '') : '';
+    if (!s) { var t = (document.title || '').split('|'); if (t.length > 1 && /\d/.test(t[0])) s = t[0] + ', ' + t[1]; }
+    s = s.split('\n').map(function (x) { return x.trim(); }).filter(Boolean).join(', ').replace(/\s+/g, ' ').replace(/\s*\|\s*/g, ', ').trim();
+    if (!/,\s*[A-Z]{2}\b/.test(s)) {
+      var tt = (document.title || '').split('|');
+      if (tt.length > 1 && /[A-Z]{2}/.test(tt[1])) s = s + ', ' + tt[1].trim();
+      else { var hc = root.querySelector('.listing-header, .ihf-info-col'); var m = hc && (hc.innerText || '').match(/[A-Za-z .'-]+,\s*[A-Z]{2}\s*\d{5}/); if (m) s = s + ', ' + m[0].trim(); }
+    }
+    return s;
+  }
+  function build(root) {
+    var section = root.querySelector('.listing-section');
+    if (!section || section.querySelector('[data-ks-gmap]')) return;
+    var addr = addressOf(root);
+    if (!addr || !/\d/.test(addr)) return;
+    var wrap = document.createElement('div');
+    wrap.setAttribute('data-ks-gmap', '1');
+    wrap.setAttribute('data-ihf-own', '1');
+    wrap.style.cssText = 'width:100%;max-width:1300px;margin:48px auto 0;box-sizing:border-box;';
+    var q = encodeURIComponent(addr);
+    wrap.innerHTML = '<h2 style="margin:0 0 20px;font-size:24px;line-height:1.25;color:#1a1a1a;font-weight:700 !important;text-align:left;font-family:Montserrat,system-ui,sans-serif;letter-spacing:-0.01em;">Location</h2>'
+      + '<div data-ks-gmap-box style="position:relative;width:100%;height:420px;background:#f2f2f2;overflow:hidden;"></div>'
+      + '<a href="https://www.google.com/maps/dir/?api=1&destination=' + q + '" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:14px;font-size:14px;font-weight:500;color:#1a1a1a;text-decoration:none;font-family:Montserrat,system-ui,sans-serif;letter-spacing:-0.01em;">Get directions &rarr;</a>';
+    var after = section.querySelector(':scope > .features') || section.querySelector(':scope > .listing-description');
+    if (after) section.insertBefore(wrap, after.nextElementSibling); else section.appendChild(wrap);
+    var box = wrap.querySelector('[data-ks-gmap-box]');
+    var load = function () {
+      if (box.firstChild) return;
+      var f = document.createElement('iframe');
+      f.title = 'Map of ' + addr;
+      f.loading = 'lazy';
+      f.referrerPolicy = 'no-referrer-when-downgrade';
+      f.src = 'https://maps.google.com/maps?q=' + q + '&z=15&output=embed';
+      f.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;';
+      box.appendChild(f);
+      var EXP = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+      var SHR = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>';
+      var mx = document.createElement('button');
+      mx.type = 'button';
+      mx.setAttribute('aria-label', 'Maximize map');
+      mx.innerHTML = EXP;
+      mx.style.cssText = 'position:absolute;top:12px;right:12px;z-index:3;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:#ffffff;color:#1a1a1a;border:none;border-radius:0;box-shadow:0 2px 8px rgba(0,0,0,0.25);cursor:pointer;padding:0;transition:background-color .2s ease,color .2s ease;';
+      mx.addEventListener('mouseenter', function () { mx.style.background = '#1a1a1a'; mx.style.color = '#ffffff'; });
+      mx.addEventListener('mouseleave', function () { mx.style.background = '#ffffff'; mx.style.color = '#1a1a1a'; });
+      var big = false, prev = '';
+      var setBig = function (on) {
+        big = on;
+        mx.innerHTML = on ? SHR : EXP;
+        mx.setAttribute('aria-label', on ? 'Exit full screen map' : 'Maximize map');
+      };
+      var fakeFull = function (on) {
+        if (on) { prev = box.style.cssText; box.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;z-index:2147483300;background:#f2f2f2;overflow:hidden;'; }
+        else box.style.cssText = prev;
+        setBig(on);
+      };
+      mx.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+        if (!big) {
+          var req = box.requestFullscreen || box.webkitRequestFullscreen;
+          if (req) { var p = req.call(box); if (p && p.catch) p.catch(function () { fakeFull(true); }); }
+          else fakeFull(true);
+        } else {
+          if (fsEl) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
+          else fakeFull(false);
+        }
+      });
+      var onFs = function () { var fsEl = document.fullscreenElement || document.webkitFullscreenElement; if (fsEl === box) setBig(true); else if (big && box.style.position !== 'fixed') setBig(false); };
+      document.addEventListener('fullscreenchange', onFs);
+      document.addEventListener('webkitfullscreenchange', onFs);
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && big && box.style.position === 'fixed') fakeFull(false); });
+      box.appendChild(mx);
+    };
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) { if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); load(); } }, { rootMargin: '600px 0px' });
+      io.observe(box);
+    } else load();
+  }
+  function isCommercial(root) {
+    var sec = root.querySelector('.listing-section') || root;
+    var leaves = Array.prototype.filter.call(sec.querySelectorAll('*'), function (el) { return el.children.length === 0 && (el.textContent || '').trim(); });
+    for (var i = 0; i < leaves.length - 1; i++) {
+      if (/^property\s*(sub\s*-?\s*)?type:?$/i.test(leaves[i].textContent.trim()) && /commercial|business|industrial|office|retail/i.test(leaves[i + 1].textContent)) return true;
+    }
+    return false;
+  }
+  function schools(root) {
+    if (isCommercial(root)) { var old = root.querySelector('[data-ks-schools]'); if (old) old.remove(); return; }
+    if (root.querySelector('[data-ks-schools]')) return;
+    var section = root.querySelector('.listing-section');
+    var sim = root.querySelector('.similar-listings');
+    if (!section) return;
+    var addr = addressOf(root);
+    if (!addr || !/\d/.test(addr)) return;
+    var el = document.createElement('div');
+    el.setAttribute('data-ks-schools', '1');
+    el.setAttribute('data-ihf-own', '1');
+    el.style.cssText = 'width:100%;max-width:1300px;margin:48px auto 0;box-sizing:border-box;font-family:Montserrat,system-ui,sans-serif;letter-spacing:-0.01em;';
+    el.innerHTML = '<h2 style="margin:0 0 20px;font-size:24px;line-height:1.25;color:#1a1a1a;font-weight:700 !important;text-align:left;">Nearby Schools</h2>'
+      + '<div data-ks-schools-box style="position:relative;width:100%;height:420px;background:#f2f2f2;overflow:hidden;margin-bottom:16px;"></div>'
+      + '<p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#555555;font-weight:500;">See school ratings, reviews and boundaries for this address.</p>'
+      + '<a href="https://www.greatschools.org/search/search.page?q=' + encodeURIComponent(((addr.match(/\b\d{5}\b(?!.*\b\d{5}\b)/) || [])[0]) || addr.replace(/^[^,]*,\s*/, '')) + '" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border:1px solid #1a1a1a;border-radius:0;color:#1a1a1a;background:#ffffff;text-decoration:none;font-size:14px;font-weight:500;transition:background-color .3s ease,color .3s ease;" onmouseover="this.style.background=\'#1a1a1a\';this.style.color=\'#ffffff\'" onmouseout="this.style.background=\'#ffffff\';this.style.color=\'#1a1a1a\'">View schools on GreatSchools &rarr;</a>';
+    if (sim && sim.parentElement) sim.parentElement.insertBefore(el, sim);
+    else section.appendChild(el);
+    var sbox = el.querySelector('[data-ks-schools-box]');
+    var sload = function () {
+      if (sbox.firstChild) return;
+      var f = document.createElement('iframe');
+      f.title = 'Schools near ' + addr;
+      f.loading = 'lazy';
+      f.referrerPolicy = 'no-referrer-when-downgrade';
+      f.src = 'https://maps.google.com/maps?q=' + encodeURIComponent('schools near ' + addr) + '&z=13&output=embed';
+      f.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;';
+      sbox.appendChild(f);
+    };
+    if ('IntersectionObserver' in window) {
+      var sio = new IntersectionObserver(function (es) { if (es.some(function (e) { return e.isIntersecting; })) { sio.disconnect(); sload(); } }, { rootMargin: '600px 0px' });
+      sio.observe(sbox);
+    } else sload();
+  }
+  function blankGaps(root) {
+    var section = root.querySelector('.listing-section');
+    if (!section) return;
+    Array.prototype.forEach.call(section.children, function (el) {
+      if (el.hasAttribute('data-ihf-own') || el.hasAttribute('data-ks-gap') || el.classList.contains('listing-photo-carousel')) return;
+      var r = el.getBoundingClientRect();
+      if (r.height < 120) return;
+      if ((el.innerText || '').trim()) return;
+      var visible = Array.prototype.some.call(el.querySelectorAll('iframe, img, video, canvas, svg'), function (m) {
+        var mr = m.getBoundingClientRect(); if (mr.width < 20 || mr.height < 20) return false;
+        var cs = getComputedStyle(m); return cs.visibility !== 'hidden' && cs.opacity !== '0' && cs.display !== 'none';
+      });
+      if (visible) return;
+      el.setAttribute('data-ks-gap', '1');
+      el.style.setProperty('display', 'none', 'important');
+    });
+  }
+  function tick() {
+    document.querySelectorAll('div.ihf-container').forEach(function (h) { if (h.shadowRoot) { build(h.shadowRoot); schools(h.shadowRoot); blankGaps(h.shadowRoot); } });
+  }
+  setInterval(tick, 1500);
+  setTimeout(tick, 800);
+})();
+(function () {
+  if (window.__ksMenuLay) return;
+  window.__ksMenuLay = true;
+  function lay(sr) {
+    sr.querySelectorAll('ul').forEach(function (ul) {
+      var boxes = ul.querySelectorAll('input[type="checkbox"]');
+      if (ul.__ksLaid || ul.closest('[data-ihf-ap], [data-ks-price-ui], .similar-listings, [class*="listing-result" i]')) return;
+      var isMenu = (ul.getAttribute('role') === 'menu' || ul.getAttribute('role') === 'listbox') && ul.children.length >= 2;
+      if (boxes.length < 2 && !isMenu) return;
+      var paper = ul;
+      for (var p = ul.parentElement, k = 0; p && k < 6; p = p.parentElement, k++) {
+        var cs = getComputedStyle(p);
+        if (cs.boxShadow && cs.boxShadow !== 'none') { paper = p; break; }
+      }
+      ul.__ksLaid = true;
+      var S = function (el, prop, v) { el.style.setProperty(prop, v, 'important'); };
+      // Panel: content-sized, even padding all round
+      [paper].concat(paper === ul ? [] : (function () { var a = []; for (var q = ul.parentElement; q && q !== paper; q = q.parentElement) a.push(q); return a; })()).forEach(function (el) {
+        S(el, 'height', 'auto'); S(el, 'min-height', '0'); S(el, 'max-height', 'none');
+        if (el !== paper) { S(el, 'padding', '0'); S(el, 'margin', '0'); }
+      });
+      S(paper, 'padding', '18px 28px'); S(paper, 'box-sizing', 'border-box');
+      S(ul, 'display', 'flex'); S(ul, 'flex-direction', 'column'); S(ul, 'gap', '0');
+      S(ul, 'padding', '0'); S(ul, 'margin', '0'); S(ul, 'height', 'auto'); S(ul, 'min-height', '0');
+      var items = Array.prototype.filter.call(ul.children, function (li) { return li.offsetHeight > 0; });
+      items.forEach(function (li) {
+        S(li, 'padding', '10px 0'); S(li, 'margin', '0'); S(li, 'min-height', '0'); S(li, 'height', 'auto');
+        S(li, 'display', 'flex'); S(li, 'align-items', 'center');
+      });
+      if (boxes.length < 2) return;
+      // Select All / Deselect All: same left edge as the checkboxes
+      var first = boxes[0].closest('label') || boxes[0].parentElement;
+      var boxEl = (boxes[0].closest('span') || boxes[0].parentElement);
+      var leftRef = boxEl.getBoundingClientRect().left;
+      items.forEach(function (li) {
+        if (li.querySelector('input[type="checkbox"]')) return;
+        var t = li.firstElementChild || li;
+        var dx = Math.round(leftRef - t.getBoundingClientRect().left);
+        if (dx) S(li, 'padding-left', (parseFloat(getComputedStyle(li).paddingLeft) + dx) + 'px');
+      });
+    });
+  }
+  function hook() {
+    document.querySelectorAll('div.ihf-overlay-container, div.ihf-container').forEach(function (host) {
+      if (!host.shadowRoot || host.__ksMenuHooked) return;
+      host.__ksMenuHooked = true;
+      var sr = host.shadowRoot;
+      var q = false;
+      new MutationObserver(function () { if (q) return; q = true; requestAnimationFrame(function () { q = false; lay(sr); }); }).observe(sr, { childList: true, subtree: true });
+      lay(sr);
+    });
+    lay(document);
+  }
+  hook();
+  document.addEventListener('pointerdown', function () { setTimeout(hook, 0); setTimeout(hook, 300); }, true);
+})();
+(function () {
+  if (window.__ksBarWeight) return;
+  window.__ksBarWeight = true;
+  if (!/\/listings/.test(location.pathname)) return;
+  function tick() {
+    document.querySelectorAll('div.ihf-container').forEach(function (h) {
+      var sr = h.shadowRoot; if (!sr) return;
+      var tw = document.createTreeWalker(sr, NodeFilter.SHOW_TEXT), t;
+      while ((t = tw.nextNode())) {
+        var v = (t.nodeValue || '').trim();
+        if (!v || v.length > 40) continue;
+        if (/^[\d,]+\s+results?$/i.test(v) || /^sort:/i.test(v)) {
+          var el = t.parentElement;
+          if (el && !el.hasAttribute('data-ks-bold600')) el.setAttribute('data-ks-bold600', '1');
+        }
+      }
+      if (!sr.querySelector('style[data-ks-bw]')) { var st = document.createElement('style'); st.setAttribute('data-ks-bw', '1'); st.textContent = '[data-ks-bold600],[data-ks-bold600] *,.ihf-list-toggle-button,.ihf-list-toggle-button *,.ihf-map-toggle-button,.ihf-map-toggle-button *{font-weight:600 !important;}'; sr.appendChild(st); }
+    });
+  }
+  setInterval(tick, 1500);
+  setTimeout(tick, 600);
+})();
+(function () {
+  if (window.__ksFullLabels) return;
+  window.__ksFullLabels = true;
+  if (!/\/listings/.test(location.pathname)) return;
+  function fix(t) {
+    var v = t.nodeValue, o = v;
+    if (/^\s*(From|To)\b/i.test(v)) v = v.replace(/\bMinimum\s+/g, 'Min. ').replace(/\bMaximum\s+/g, 'Max. ').replace(/\bMin\s+/g, 'Min. ').replace(/\bMax\s+/g, 'Max. ');
+    else v = v.replace(/\bMin\.?\s+/g, 'Minimum ').replace(/\bMax\.?\s+/g, 'Maximum ');
+    v = v.replace(/\bSq\.?\s?Ft\b\.?/gi, 'Square Feet');
+    if (v !== o) t.nodeValue = v;
+  }
+  function unshrink(sr) {
+    sr.querySelectorAll('label').forEach(function (l) {
+      if (l.closest('[data-ihf-ap], [data-ihf-mc], [data-ks-price-ui]')) return;
+      var tf = getComputedStyle(l).transform;
+      var m = tf && tf.match(/matrix\(([^)]+)\)/);
+      if (!m) return;
+      var p = m[1].split(',').map(parseFloat);
+      if (!(p[0] > 0 && p[0] < 0.99)) return;
+      l.style.setProperty('transform', 'translate(' + p[4] + 'px, ' + p[5] + 'px) scale(1)', 'important');
+      var fc = l.parentElement;
+      if (fc && !fc.__ksTopPad) { fc.__ksTopPad = true; fc.style.setProperty('margin-top', '14px', 'important'); }
+      l.style.setProperty('transform-origin', 'top left', 'important');
+    });
+  }
+  function run(sr) {
+    sr.querySelectorAll('label, legend').forEach(function (l) {
+      if (l.closest('[data-ihf-ap], [class*="listing-result" i], .similar-listings')) return;
+      var tw = document.createTreeWalker(l, NodeFilter.SHOW_TEXT), t;
+      while ((t = tw.nextNode())) { if (/\b(Min|Max|Minimum|Maximum)\b|Sq\.?\s?Ft/i.test(t.nodeValue)) fix(t); }
+    });
+    unshrink(sr);
+  }
+  function tick() { document.querySelectorAll('div.ihf-overlay-container, div.ihf-container').forEach(function (h) { if (h.shadowRoot) run(h.shadowRoot); }); }
+  setInterval(tick, 800);
+  document.addEventListener('pointerdown', function () { setTimeout(tick, 60); setTimeout(tick, 300); }, true);
+})();
+(function () {
+  if (window.__ksFieldNoFx) return;
+  window.__ksFieldNoFx = true;
+  var CSS = '[data-ks-nofx]::before,[data-ks-nofx]::after{display:none !important;content:none !important;border:0 !important;transform:none !important;}'
+    + '[data-ks-nofx],[data-ks-nofx]:hover,[data-ks-nofx]:focus-within{border-top:0 !important;border-left:0 !important;border-right:0 !important;border-bottom:0 !important;box-shadow:none !important;background-image:none !important;outline:none !important;transition:none !important;}'
+    + '[data-ks-nofx="line"],[data-ks-nofx="line"]:hover,[data-ks-nofx="line"]:focus-within{border-bottom:1px solid #cccccc !important;}'
+    + '[data-ks-nofx] fieldset{border:0 !important;}'
+    + '[role="tooltip"]:has([data-ihf-ap="card"]),[role="tooltip"]:has([data-ihf-ap="card"]) > *:not([data-ihf-ap="card"]):not(:has([data-ihf-ap="card"])){pointer-events:none !important;}'
+    + '[role="tooltip"]:has([data-ihf-ap="card"]) > *:has([data-ihf-ap="card"]){pointer-events:none !important;}'
+    + '[data-ihf-ap="card"]{pointer-events:auto !important;}';
+  function run(sr) {
+    if (!sr.querySelector('style[data-ks-nofx-css]')) { var st = document.createElement('style'); st.setAttribute('data-ks-nofx-css', '1'); st.textContent = CSS; sr.appendChild(st); }
+    sr.querySelectorAll('input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]), textarea:not([aria-hidden="true"])').forEach(function (inp) {
+      if (inp.__ksNofx) return;
+      if (inp.closest('[data-ihf-ap], [data-ks-price-ui], [data-ihf-mc], form[id="site-search-bar"]')) return;
+      inp.__ksNofx = true;
+      var p = inp.parentElement, k = 0, chain = [];
+      while (p && k < 4 && !p.matches('[role="tooltip"], [role="dialog"], [role="presentation"]')) { chain.push(p); p = p.parentElement; k++; }
+      chain.forEach(function (el, i) { el.setAttribute('data-ks-nofx', i === 0 ? 'line' : '1'); });
+    });
+  }
+  function tick() { document.querySelectorAll('div.ihf-overlay-container, div.ihf-container').forEach(function (h) { if (h.shadowRoot) run(h.shadowRoot); }); }
+  setInterval(tick, 800);
+  document.addEventListener('pointerdown', function () { setTimeout(tick, 60); setTimeout(tick, 300); }, true);
+  tick();
+})();
+(function () {
+  if (window.__ksMcMedium) return;
+  window.__ksMcMedium = true;
+  if (!/\/listing(\/|\?|$)/.test(location.pathname + location.search) || /\/listings/.test(location.pathname)) return;
+  function run(sr) {
+    sr.querySelectorAll('[data-ihf-mc]').forEach(function (mc) {
+      mc.querySelectorAll('*').forEach(function (el) {
+        if (el.__ksMed || el.tagName === 'svg' || (el.closest && el.closest('svg'))) return;
+        var hasText = el.tagName === 'INPUT' || el.tagName === 'BUTTON' || Array.prototype.some.call(el.childNodes, function (n) { return n.nodeType === 3 && n.nodeValue.trim(); });
+        if (!hasText) return;
+        el.__ksMed = true;
+        var w = parseInt(getComputedStyle(el).fontWeight, 10) || 400;
+        if (w < 600) el.style.setProperty('font-weight', '500', 'important');
+      });
+    });
+  }
+  function tick() { document.querySelectorAll('div.ihf-container').forEach(function (h) { if (h.shadowRoot) run(h.shadowRoot); }); }
+  setInterval(tick, 1500);
+  setTimeout(tick, 900);
+})();
+(function () {
+  if (window.__ksAreaClickAway) return;
+  window.__ksAreaClickAway = true;
+  var eat = false;
+  function openCard() {
+    var h = document.querySelector('div.ihf-overlay-container');
+    var card = h && h.shadowRoot && h.shadowRoot.querySelector('[data-ihf-ap="card"]');
+    if (!card) return null;
+    var r = card.getBoundingClientRect();
+    return r.width > 0 && r.height > 0 ? card : null;
+  }
+  function isTrigger(path) {
+    return path.some(function (n) { return n && n.nodeType === 1 && ((n.tagName === 'INPUT' && /start your search|find an area/i.test(n.getAttribute('placeholder') || '')) || n.getAttribute && n.getAttribute('role') === 'combobox' && n.querySelector && n.querySelector('input[placeholder]') && /start your search|find an area/i.test(n.querySelector('input[placeholder]').getAttribute('placeholder') || '')); });
+  }
+  window.addEventListener('pointerdown', function (e) {
+    eat = false;
+    var card = openCard(); if (!card) return;
+    var path = e.composedPath ? e.composedPath() : [];
+    if (path.indexOf(card) >= 0 || isTrigger(path)) return;
+    if (path.some(function (n) { return n && n.getAttribute && n.getAttribute('role') === 'listbox'; })) return;
+    eat = true;
+  }, true);
+  window.addEventListener('click', function (e) {
+    if (!eat) return;
+    eat = false;
+    e.preventDefault(); e.stopImmediatePropagation();
+    try { document.body.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, composed: true })); } catch (er) {}
+    try { document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true })); } catch (er) {}
+  }, true);
+})();
 </script>
