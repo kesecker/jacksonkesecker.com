@@ -295,7 +295,7 @@ const host = root === document ? document.head : root;
 if (host.querySelector('style[data-ihf-btn-style]')) return;
 const st = document.createElement('style');
 st.dataset.ihfBtnStyle = '1';
-st.textContent = '.ihf-invert-btn{font-family:inherit;font-size:14px;padding:8px 16px;border-radius:6px;border:none;outline:none;box-shadow:none;cursor:pointer;background:#1a1a1a;color:#ffffff;display:inline-flex;align-items:center;gap:8px;line-height:1.2;transition:background .2s ease,color .2s ease;}'
+st.textContent = '.ihf-invert-btn{font-family:inherit;font-size:14px;padding:8px 16px;border-radius:0;border:none;outline:none;box-shadow:none;cursor:pointer;background:#1a1a1a;color:#ffffff;display:inline-flex;align-items:center;gap:8px;line-height:1.2;transition:background .2s ease,color .2s ease;}'
 + '.ihf-invert-btn:hover{background:#ffffff;color:#1a1a1a;}'
 + '.ihf-save-btn path{stroke-dasharray:100;stroke-dashoffset:0;transition:fill .2s ease,stroke .2s ease;}'
 + '.ihf-save-btn:hover path{animation:ihfHeartTrace .7s ease forwards;stroke:#e53935;}'
