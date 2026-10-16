@@ -61,8 +61,8 @@
         body:has(#site-search-bar) div[style*="z-index: 2147483010"][style*="bottom: 24px"] { bottom: 84px !important; }
     body:has(#site-search-bar) div[style*="position: fixed; left: 24px; bottom: 24px"], body:has(#site-search-bar) div[style*="position: fixed; right: 24px; bottom: 24px"]:has(button[aria-label="Accessibility options"]) { bottom: 84px !important; }
     #site-search-bar > div { padding-left: 72px; }
-    @media (max-width: 760px) { #site-search-bar { padding: 16px 20px !important; } #site-search-bar > div { padding-left: 0; } }
-    #site-search-bar input::placeholder { color: rgba(255,255,255,0.6); }
+    @media (max-width: 760px) { #site-search-bar { padding: 16px 32px 16px 20px !important; } #site-search-bar > div { padding-left: 0; } }
+    #site-search-bar input::placeholder { color: rgba(255,255,255,0.6); opacity: 1; }
     @keyframes navm-fade-in { from { opacity: 0; } to { opacity: 1; } }
     @keyframes navm-fade-out { from { opacity: 1; } to { opacity: 0; } }
     @keyframes navm-scale-in { from { opacity: 0; transform: scale(0.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
@@ -238,12 +238,13 @@
   <dc-import name="AccessibilityWidget" hint-size="56px,56px" style="position: fixed; left: 0; bottom: 0; width: 0; height: 0; overflow: visible; z-index: 2147483010;"></dc-import>
 </div>
 
-  <div aria-hidden="true" style="height: 68px; background: #000000;"></div>
-  <form id="site-search-bar" action="https://jacksonkesecker.com/listings" method="get" style="position: fixed; bottom: 0; left: 0; width: 100%; box-sizing: border-box; z-index: 100; background: #1a1a1a; display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; gap: 24px; margin: 0;">
+  <div aria-hidden="true" style="height: 100px; background: #000000;"></div>
+  <form id="site-search-bar" action="https://jacksonkesecker.com/listings" method="get" style="position: fixed; bottom: 0; left: 0; width: 100%; box-sizing: border-box; z-index: 100; background: #1a1a1a; display: flex; align-items: center; justify-content: space-between; padding: 20px 32px 20px 40px; gap: 24px; margin: 0;">
     <div style="display: flex; align-items: center; gap: 14px; flex: 1; max-width: 520px;">
-      <button type="submit" aria-label="Search" style="background: none; border: none; padding: 0; margin: 0; color: #ffffff; font-size: 18px; line-height: 1; cursor: pointer;">⌕</button>
+      <button type="submit" aria-label="Search" style="background: none; border: none; padding: 0; margin: 0; color: #ffffff; font-size: 24px; line-height: 1; cursor: pointer;">⌕</button>
       <input type="text" name="q" placeholder="Search Address, City, or Community" aria-label="Search Address, City, or Community" style="background: transparent; border: none; outline: none; color: #ffffff; font-family: var(--rh-font); font-size: 15px; width: 100%;">
     </div>
+    <a href="#" onClick="{{ openContactModal }}" style="flex-shrink: 0; font-size: 15px; font-weight: 400; letter-spacing: -0.01em; color: rgba(255,255,255,0.6); text-decoration: none; padding-bottom: 8px; margin-bottom: -8px; background-image: linear-gradient(to top, rgba(255,255,255,0.6) 2px, transparent 2px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size 0.3s ease;" style-hover="background-size: 100% 100%;">Contact</a>
   </form>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
