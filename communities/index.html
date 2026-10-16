@@ -57,6 +57,19 @@
     [data-ks-social]:hover [data-ks-ring], [data-ks-social]:focus-visible [data-ks-ring] { stroke-dashoffset: 0; }
     @media (max-width: 760px) { [data-ks-foot-grid] { grid-template-columns: minmax(0, 1fr) !important; justify-items: center !important; row-gap: 20px !important; margin-top: 0 !important; } [data-ks-foot-grid] > * { justify-self: center !important; justify-content: center !important; padding-right: 0 !important; } [data-ks-foot-links] { flex-wrap: wrap !important; white-space: normal !important; row-gap: 12px !important; } }
     @media (max-width: 760px) { [data-ks-navlinks] { display: none !important; } [data-ks-navlinks] ~ button[aria-label="Menu"] { margin-left: auto !important; } [data-ks-copy] { white-space: normal !important; width: calc(100% - 40px) !important; line-height: 1.5 !important; } #communities-map-col { width: 100% !important; } #communities-map-col > div { width: 100% !important; } }
+        body:has(#site-search-bar) div[style*="z-index: 2147483010"][style*="bottom: 24px"] { bottom: 84px !important; }
+    body:has(#site-search-bar) div[style*="position: fixed; left: 24px; bottom: 24px"], body:has(#site-search-bar) div[style*="position: fixed; right: 24px; bottom: 24px"]:has(button[aria-label="Accessibility options"]) { bottom: 84px !important; }
+    #site-search-bar > div { padding-left: 72px; }
+    @media (max-width: 760px) { #site-search-bar { padding: 16px 20px !important; } #site-search-bar > div { padding-left: 0; } }
+    @media (max-width: 760px) {
+      [data-ks-groups] { flex: 1 1 100% !important; max-width: 100% !important; min-width: 0 !important; padding: 0 !important; gap: 36px !important; order: 2; }
+      [data-ks-topgroups] { flex-direction: column !important; gap: 36px !important; align-items: center !important; }
+      #communities-map-col { order: 1; }
+      #communities-list { gap: 40px !important; }
+    }
+    html, body { background: #000000; }
+    #site-search-bar { bottom: 0 !important; }
+    #site-search-bar input::placeholder { color: rgba(255,255,255,0.6); }
     @keyframes navm-fade-in { from { opacity: 0; } to { opacity: 1; } }
     @keyframes navm-fade-out { from { opacity: 1; } to { opacity: 0; } }
     @keyframes navm-scale-in { from { opacity: 0; transform: scale(0.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
@@ -100,14 +113,13 @@
   </div>
 
   <div style="min-height: calc(100vh - 92px);">
-    <div style="max-width: 1160px; margin: 0 auto; padding: 72px 36px 96px;">
-      <div style="text-align: center; margin-bottom: 56px;">
-        <span class="vc-eyebrow">Where We Serve</span>
-        <h1 data-ks-scaled="1" style="font-size: clamp(30px, 5.06vw, 46px); font-weight: 600; margin: 10px 0 0; letter-spacing: -0.01em; text-transform: none;">Areas Served</h1>
+    <div style="max-width: 1160px; margin: 0 auto; padding: 40px 36px 96px;">
+      <div style="text-align: center; margin-bottom: 48px;">
+        <h1 data-ks-scaled="1" style="font-size: clamp(30px, 5.06vw, 46px); font-weight: 600; margin: 0; letter-spacing: -0.01em; text-transform: none;">Areas Served</h1>
       </div>
       <div id="communities-list" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; align-items: flex-start;">
-        <div style="flex: 1 1 220px; min-width: 200px; max-width: 260px; display: flex; flex-direction: column; gap: 44px; justify-content: flex-start; align-items: center; padding: 0 24px; box-sizing: border-box;">
-          <div style="display: flex; gap: 40px; justify-content: center; width: 100%; flex-wrap: nowrap;">
+        <div data-ks-groups="1" style="flex: 1 1 220px; min-width: 200px; max-width: 260px; display: flex; flex-direction: column; gap: 44px; justify-content: flex-start; align-items: center; padding: 0 24px; box-sizing: border-box;">
+          <div data-ks-topgroups="1" style="display: flex; gap: 40px; justify-content: center; width: 100%; flex-wrap: nowrap;">
             <sc-for list="{{ topGroups }}" as="group" hint-placeholder-count="2">
               <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
                 <span style="font-size: 11px; white-space: nowrap; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rh-text-secondary);">{{ group.title }}</span>
@@ -210,6 +222,14 @@
 
   <dc-import name="AccessibilityWidget" hint-size="56px,56px" style="position: fixed; left: 0; bottom: 0; width: 0; height: 0; overflow: visible; z-index: 2147483010;"></dc-import>
 </div>
+
+  <div aria-hidden="true" style="height: 68px; background: #000000;"></div>
+  <form id="site-search-bar" action="https://jacksonkesecker.com/listings" method="get" style="position: fixed; bottom: 0; left: 0; width: 100%; box-sizing: border-box; z-index: 100; background: #1a1a1a; display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; gap: 24px; margin: 0;">
+    <div style="display: flex; align-items: center; gap: 14px; flex: 1; max-width: 520px;">
+      <button type="submit" aria-label="Search" style="background: none; border: none; padding: 0; margin: 0; color: #ffffff; font-size: 18px; line-height: 1; cursor: pointer;">⌕</button>
+      <input type="text" name="q" placeholder="Search Address, City, or Community" aria-label="Search Address, City, or Community" style="background: transparent; border: none; outline: none; color: #ffffff; font-family: var(--rh-font); font-size: 15px; width: 100%;">
+    </div>
+  </form>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {

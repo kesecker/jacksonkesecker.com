@@ -126,7 +126,7 @@
   </div>
 
   <div data-ks-tour-wrap="1" style="position: fixed; right: 96px; bottom: 24px; z-index: 2147482990;">
-    <button onClick="{{ openTourModal }}" style="height: 56px; padding: 0 22px; border-radius: 0; background: #1a1a1a; color: #ffffff; border: none; cursor: pointer; font-family: 'Montserrat', system-ui, sans-serif; font-weight: 600; font-size: 14px; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.25); transition: background 0.2s ease, color 0.2s ease;" style-hover="background: #ffffff; color: #1a1a1a;">Schedule a Tour</button>
+    <button onClick="{{ openTourModal }}" style="height: 56px; padding: 0 22px; border-radius: 999px; background: #1a1a1a; color: #ffffff; border: none; cursor: pointer; font-family: 'Montserrat', system-ui, sans-serif; font-weight: 600; font-size: 14px; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.25); transition: background 0.2s ease, color 0.2s ease;" style-hover="background: #ffffff; color: #1a1a1a;">Schedule a Tour</button>
   </div>
 
   <sc-if value="{{ tourOpen }}" hint-placeholder-val="{{ false }}">
@@ -1079,6 +1079,8 @@ findAllMatches('Share').filter((s) => !s.closest('[data-ihf-own], [data-ihf-acti
         }
         const isFallback = /\{listingAddress\}/.test(fixed);
         if (isFallback) fixed = 'Home Search | Jackson Kesecker';
+        { const SF = { st:'Street', ave:'Avenue', rd:'Road', dr:'Drive', ln:'Lane', ct:'Court', blvd:'Boulevard', pl:'Place', ter:'Terrace', cir:'Circle', pkwy:'Parkway', trl:'Trail', hwy:'Highway', xing:'Crossing' };
+          fixed = fixed.replace(/^[^|]*/, (street) => street.replace(/\b(St|Ave|Rd|Dr|Ln|Ct|Blvd|Pl|Ter|Cir|Pkwy|Trl|Hwy|Xing)\b\.?(?=\s|$)/gi, (m, w) => SF[w.toLowerCase()] || m)); }
         if (fixed !== t) document.title = fixed;
         if (matched || isFallback) this._ihfTitleFixed = true;
       };
