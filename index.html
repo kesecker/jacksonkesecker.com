@@ -1,9 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <script src="/cookie-consent.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Jackson Kesecker, REALTOR® with KW Coastal Estates, helps buyers and sellers across Monterey County — Salinas, Monterey, Carmel, Soledad and the Salinas Valley. Search homes and get a free home valuation.">
+<link rel="canonical" href="https://jacksonkesecker.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jackson Kesecker, REALTOR®">
+<meta property="og:title" content="Jackson Kesecker, REALTOR® | Monterey County Real Estate">
+<meta property="og:description" content="Jackson Kesecker, REALTOR® with KW Coastal Estates, helps buyers and sellers across Monterey County — Salinas, Monterey, Carmel, Soledad and the Salinas Valley. Search homes and get a free home valuation.">
+<meta property="og:url" content="https://jacksonkesecker.com/">
+<meta property="og:image" content="https://jacksonkesecker.com/about/uploads/Website%20Headshot.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"RealEstateAgent","name":"Jackson Kesecker, REALTOR®","url":"https://jacksonkesecker.com/","image":"https://jacksonkesecker.com/about/uploads/Website%20Headshot.png","telephone":"+1-831-821-0398","email":"kesecker@kw.com","address":{"@type":"PostalAddress","addressRegion":"CA","addressCountry":"US","addressLocality":"Salinas"},"areaServed":[{"@type":"AdministrativeArea","name":"Monterey County, CA"},"Salinas","Monterey","Carmel-by-the-Sea","Pacific Grove","Seaside","Marina","Soledad","Gonzales","Greenfield","King City","Carmel Valley","Pebble Beach"],"knowsLanguage":["en","es"],"parentOrganization":{"@type":"RealEstateAgent","name":"KW Coastal Estates"},"identifier":"California DRE #02196405","sameAs":["https://www.facebook.com/jacksonkesecker.realtor/","https://www.instagram.com/jacksonkesecker.realtor/","https://www.linkedin.com/in/jackson-kesecker-01b912188/","https://www.youtube.com/@jacksonkesecker.realtor"]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" data-early-fonts>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&amp;display=block">
@@ -148,20 +158,7 @@
   
 
   <!-- HERO -->
-  <sc-if value="{{ isSplitHero }}" hint-placeholder-val="{{ false }}">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; min-height: 640px;">
-      <div style="display: flex; flex-direction: column; justify-content: center; gap: 22px; padding: 80px 64px;">
-        <span class="vc-eyebrow">Coastal &amp; Estate Properties · North Shore</span>
-        <h1 data-ks-scaled="1" style="font-size: clamp(32px, 5.75vw, 64px); font-weight: 700; line-height: 1.04; letter-spacing: -0.01em; margin: 0;">Real estate,<br>represented with care.</h1>
-        <p style="font-size: 17px; line-height: 1.6; color: var(--rh-text-secondary); max-width: 460px; margin: 0;">Camille Voss and the Voss &amp; Co. team guide buyers and sellers across the North Shore — from first showing to closing day.</p>
-        <div style="display: flex; gap: 14px; margin-top: 8px;">
-          <span style="font-family: var(--rh-font); font-weight: 600; letter-spacing: 0.01em; font-size: 14px; padding: 9px 18px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; background: var(--rh-accent); color: #ffffff; border: 1px solid var(--rh-accent);">View Listings</span>
-          <span style="font-family: var(--rh-font); font-weight: 600; letter-spacing: 0.01em; font-size: 14px; padding: 9px 18px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; background: #ffffff; color: var(--rh-accent); border: 1px solid var(--rh-border);">Get a Home Valuation</span>
-        </div>
-      </div>
-      <image-slot id="hero-split" shape="rect" placeholder="Drop a hero property or lifestyle photo" style="width: 100%; height: 100%;"></image-slot>
-    </div>
-  </sc-if>
+  
   <sc-if value="{{ isFullBleedHero }}" hint-placeholder-val="{{ true }}">
     <div id="hero-fullbleed" style="position: relative; width: 100%; height: 100vh; min-height: 720px; overflow: hidden; background: #000;">
       <video ref="{{ heroVideoRef }}" autoPlay="{{ true }}" muted="{{ true }}" defaultMuted="{{ true }}" loop="{{ true }}" playsInline="{{ true }}" preload="auto" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
@@ -1058,31 +1055,15 @@ class Component extends DCLogic {
       aboutEyebrow: 'Meet Your Agent',
       aboutParagraph: 'Born in Monterey and raised in Soledad, Jackson is an 11th-generation Monterey County resident. He grew up between the Peninsula\'s beaches and the Salinas Valley\'s farmland and mountains, and he knows this market from the coast to the valley floor.\n\nBuying or selling a home is one of the biggest decisions you\'ll ever make. It deserves an agent who understands the local neighborhoods and economy, and who measures success by whether his clients reach their goals, not by the size of the commission.\n\nJackson has made it his mission to help his Central Coast community achieve the dream of homeownership. Whether you\'re a first-time buyer, a growing family, or a homeowner ready to sell, he\'ll give you honest advice and clear communication from the first conversation to closing day.', aboutReady: 'Ready to get started?', aboutGetInTouch: 'Get in touch',
       aboutParagraphRest: 'Born in Monterey and raised in Soledad, Jackson is an 11th-generation Monterey County resident. He grew up between the Peninsula\'s beaches and the Salinas Valley\'s farmland and mountains, and he knows this market from the coast to the valley floor.\n\nBuying or selling a home is one of the biggest decisions you\'ll ever make. It deserves an agent who understands the local neighborhoods and economy, and who measures success by whether his clients reach their goals, not by the size of the commission.\n\nJackson has made it his mission to help his Central Coast community achieve the dream of homeownership. Whether you\'re a first-time buyer, a growing family, or a homeowner ready to sell, he\'ll give you honest advice and clear communication from the first conversation to closing day.',
-      learnMore: 'Learn More', closeModal: 'Close',
-      badgeTopAgent: 'Top 1% Regional Agent', badgeLicensed: 'Licensed Broker', aboutButton: 'Read Full Bio',
-      listingsEyebrow: 'Featured', listingsHeading: 'Featured Listings', listingsViewAll: 'View all listings →',
-      badgeNew: 'New', badgeOpenSat: 'Open Sat', badgeWaterfront: 'Waterfront',
-      listing1Specs: '4 bd · 3.5 ba · 3,420 sqft', listing2Specs: '3 bd · 2 ba · 2,190 sqft', listing3Specs: '5 bd · 4 ba · 4,980 sqft', listing4Specs: '3 bd · 2 ba · 1,860 sqft',
-      notableEyebrow: 'Notable Sales', notableHeading: 'Notable Sales',
-      notableParagraph: 'A selection of standout properties recently closed.',
-      notableSale1Specs: '4 bd · 3.5 ba · 3,420 sqft', notableSale2Specs: '3 bd · 2 ba · 2,190 sqft', notableSale3Specs: '5 bd · 4 ba · 4,980 sqft', notableSale4Specs: '3 bd · 2 ba · 1,860 sqft',
-      badgeSold: 'Sold',
-      testimonialsEyebrow: '', testimonialsHeading: 'Testimonials',
+      learnMore: 'Learn More', closeModal: 'Close', aboutButton: 'Read Full Bio', notableHeading: 'Notable Sales', testimonialsHeading: 'Testimonials',
       seeAllReviews: 'See All Reviews', writeAReview: 'Write a Review',
-      quote1: '"Camille made our sale completely painless. She priced it right, staged it beautifully, and we had an offer in nine days."',
-      quote2: '"As first-time buyers we had a lot of questions. The team answered every one and never made us feel rushed."',
-      quote3: '"Sold our waterfront property above asking. Camille\'s marketing and negotiation were the difference."',
-      role1: 'Sellers, Harbor Ridge', role2: 'Buyer, Meridian Walk', role3: 'Seller, Lighthouse Point',
       neighborhoodsEyebrow: '', neighborhoodsHeading: 'Areas Served',
       groupSalinasValley: 'Salinas Valley', groupMontereyPeninsula: 'Monterey Peninsula', groupCoastalInland: 'Coastal & Inland',
       mapTitleLine1: 'Monterey', mapTitleLine2: 'County',
       ctaHeading: 'Curious what your home is worth?',
       ctaParagraph: 'Get a free, no-obligation, monthly valuation based on current market data.',
-      ctaButton: 'Get Valuation',
-      contactEyebrow: 'Get In Touch', contactHeading: "Let's Talk About Your Move",
-      ctaBandHeading: 'Local Roots, Statewide Reach', ctaBandParagraph: 'From the Salinas Valley to the Monterey Peninsula, get guidance grounded in decades of local knowledge and a wide network of buyers and sellers.', ctaBandButton: 'Get In Touch',
-      contactParagraph: "Whether you're buying, selling, or just exploring the market, reach out and a member of the team will respond within one business day.",
-      labelPhone: 'Phone', labelEmail: 'Email', labelOffice: 'Office', labelOffice2: 'Office',
+      ctaButton: 'Get Valuation', contactHeading: "Let's Talk About Your Move",
+      labelPhone: 'Phone', labelEmail: 'Email',
       formFullName: 'Full Name', formPhone: 'Phone', formMessage: 'Message', formMessagePlaceholder: "I'm interested in...", formSend: 'Send Message',
       formInterestLabel: 'What are you interested in?', optBuying: 'Buying', optSelling: 'Selling', optOther: 'Other',
       contactModalTitle: 'Contact Details', contactModalFormTitle: 'Send Me a Message', salinasOfficeLabel: 'Salinas Office', carmelOfficeLabel: 'Carmel Office',
@@ -1099,32 +1080,16 @@ class Component extends DCLogic {
       aboutEyebrow: 'Conoce a Tu Agente',
       aboutParagraph: 'Nacido en Monterey y criado en Soledad, Jackson es residente de undécima generación del Condado de Monterey. Creció entre las playas de la Península y los campos agrícolas y montañas del Valle de Salinas, y conoce este mercado desde la costa hasta el fondo del valle.\n\nComprar o vender una casa es una de las decisiones más importantes de su vida. Merece un agente que entienda los vecindarios y la economía local, y que mida el éxito por si sus clientes alcanzan sus metas, no por el tamaño de la comisión.\n\nJackson ha hecho su misión ayudar a su comunidad de la Costa Central a lograr el sueño de ser propietarios. Ya sea que usted compre por primera vez, tenga una familia en crecimiento o esté listo para vender, le dará consejos honestos y una comunicación clara desde la primera conversación hasta el día del cierre.', aboutReady: '¿Listo para comenzar?', aboutGetInTouch: 'Contáctenos',
       aboutParagraphRest: 'Nacido en Monterey y criado en Soledad, Jackson es residente de undécima generación del Condado de Monterey. Creció entre las playas de la Península y los campos agrícolas y montañas del Valle de Salinas, y conoce este mercado desde la costa hasta el fondo del valle.\n\nComprar o vender una casa es una de las decisiones más importantes de su vida. Merece un agente que entienda los vecindarios y la economía local, y que mida el éxito por si sus clientes alcanzan sus metas, no por el tamaño de la comisión.\n\nJackson ha hecho su misión ayudar a su comunidad de la Costa Central a lograr el sueño de ser propietarios. Ya sea que usted compre por primera vez, tenga una familia en crecimiento o esté listo para vender, le dará consejos honestos y una comunicación clara desde la primera conversación hasta el día del cierre.',
-      learnMore: 'Leer Más', closeModal: 'Cerrar',
-      badgeTopAgent: 'Top 1% Regional', badgeLicensed: 'Corredor con Licencia', aboutButton: 'Leer Biografía Completa',
-      listingsEyebrow: 'Destacadas', listingsHeading: 'Propiedades Disponibles', listingsViewAll: 'Ver todas las propiedades →',
-      badgeNew: 'Nueva', badgeOpenSat: 'Casa Abierta Sáb', badgeWaterfront: 'Frente al Mar',
-      listing1Specs: '4 recámaras · 3.5 baños · 3,420 pies²', listing2Specs: '3 recámaras · 2 baños · 2,190 pies²', listing3Specs: '5 recámaras · 4 baños · 4,980 pies²', listing4Specs: '3 recámaras · 2 baños · 1,860 pies²',
-      notableEyebrow: 'Ventas Destacadas', notableHeading: 'Ventas Notables',
-      notableParagraph: 'Una selección de propiedades destacadas vendidas recientemente.',
-      notableSale1Specs: '4 recámaras · 3.5 baños · 3,420 pies²', notableSale2Specs: '3 recámaras · 2 baños · 2,190 pies²', notableSale3Specs: '5 recámaras · 4 baños · 4,980 pies²', notableSale4Specs: '3 recámaras · 2 baños · 1,860 pies²',
-      badgeSold: 'Vendida',
-      testimonialsEyebrow: '', testimonialsHeading: 'Testimonios',
+      learnMore: 'Leer Más', closeModal: 'Cerrar', aboutButton: 'Leer Biografía Completa', notableHeading: 'Ventas Notables', testimonialsHeading: 'Testimonios',
       seeAllReviews: 'Ver Todas las Reseñas', writeAReview: 'Escribir una Reseña',
-      quote1: '"Camille hizo que vender nuestra casa fuera bien fácil. Le puso el precio correcto, la preparó bien bonita, y tuvimos una oferta en nueve días."',
-      quote2: '"Como compradores primerizos teníamos un chorro de preguntas. El equipo respondió cada una y nunca nos hizo sentir apurados."',
-      quote3: '"Vendimos nuestra propiedad frente al mar arriba del precio pedido. El marketing y la negociación de Camille hicieron toda la diferencia."',
-      role1: 'Vendedores, Harbor Ridge', role2: 'Compradora, Meridian Walk', role3: 'Vendedor, Lighthouse Point',
       neighborhoodsEyebrow: '', neighborhoodsHeading: 'Áreas Que Atendemos',
       groupSalinasValley: 'Valle de Salinas', groupMontereyPeninsula: 'Península de Monterey', groupCoastalInland: 'Costa e Interior',
       mapTitleLine1: 'Condado', mapTitleLine2: 'de Monterey',
       ctaHeading: '¿Tienes curiosidad de cuánto vale tu casa?',
       ctaParagraper2: '',
       ctaParagraph: 'Obtén una valuación mensual gratuita y sin compromiso, basada en los datos actuales del mercado.',
-      ctaButton: 'Obtener Valuación',
-      contactEyebrow: 'Contáctanos', contactHeading: 'Hablemos de Tu Próximo Paso',
-      ctaBandHeading: 'Raíces Locales, Alcance Estatal', ctaBandParagraph: 'Desde el Valle de Salinas hasta la Península de Monterey, recibe orientación respaldada por décadas de conocimiento local y una amplia red de compradores y vendedores.', ctaBandButton: 'Contáctanos',
-      contactParagraph: 'Ya sea que estés comprando, vendiendo, o nomás checando el mercado, contáctanos y alguien del equipo te responde dentro de un día hábil.',
-      labelPhone: 'Teléfono', labelEmail: 'Correo', labelOffice: 'Oficina', labelOffice2: 'Oficina',
+      ctaButton: 'Obtener Valuación', contactHeading: 'Hablemos de Tu Próximo Paso',
+      labelPhone: 'Teléfono', labelEmail: 'Correo',
       formFullName: 'Nombre Completo', formPhone: 'Teléfono', formMessage: 'Mensaje', formMessagePlaceholder: 'Estoy interesado/a en...', formSend: 'Enviar Mensaje',
       formInterestLabel: '¿Qué te interesa?', optBuying: 'Comprar', optSelling: 'Vender', optOther: 'Otro',
       contactModalTitle: 'Detalles de Contacto', contactModalFormTitle: 'Enviar un Mensaje', salinasOfficeLabel: 'Oficina de Salinas', carmelOfficeLabel: 'Oficina de Carmel',
@@ -1778,7 +1743,6 @@ class Component extends DCLogic {
       isPhoneOpen: this.state.isPhoneOpen,
       phonePopoverStyle: this.state.isPhoneOpen ? 'opacity:1;visibility:visible;transform:translateY(0);transition:opacity 0.4s cubic-bezier(.16,1,.3,1),transform 0.4s cubic-bezier(.16,1,.3,1),visibility 0s linear 0s;' : 'opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity 0.4s cubic-bezier(.16,1,.3,1),transform 0.4s cubic-bezier(.16,1,.3,1),visibility 0s linear 0.4s;',
       isFullBleedHero: heroLayout === 'full-bleed',
-      isSplitHero: heroLayout === 'split',
       listingsColumns: this.props.listingsColumns ?? 4,
       a11yOpen: this.state.a11yOpen,
       a11yT: a11yT,

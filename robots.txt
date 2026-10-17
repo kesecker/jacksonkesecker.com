@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /idx/
+
+Sitemap: https://jacksonkesecker.com/sitemap.xml
