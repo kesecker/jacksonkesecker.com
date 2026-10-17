@@ -439,6 +439,7 @@
   <div id="footer-bottom-bar" style="height: 60px; background: #000000; position: relative; box-sizing: border-box;">
     <div id="footer-bottom-copyright" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 12px; color: rgba(255,255,255,0.55); text-align: center; white-space: nowrap;">{{ t.footerCopyright }} | <a href="https://jacksonkesecker.com/privacy/" style="color: rgba(255,255,255,0.75); text-decoration: underline;">Privacy Policy</a></div>
   </div>
+  <div id="footer-search-spacer" aria-hidden="true" style="height: 84px; background: #000000;"></div>
 
   <!-- CONTACT MODAL -->
   <sc-if value="{{ isContactModalVisible }}" hint-placeholder-val="{{ false }}">
@@ -1444,7 +1445,17 @@ class Component extends DCLogic {
       });
     });
   };
+  _syncSearchSpacer = () => {
+    const bar = document.getElementById('hero-search-bar');
+    const sp = document.getElementById('footer-search-spacer');
+    if (!bar || !sp) return;
+    const h = Math.ceil(bar.getBoundingClientRect().height);
+    if (h && sp.style.height !== h + 'px') sp.style.height = h + 'px';
+  };
   componentDidMount() {
+    setTimeout(this._syncSearchSpacer, 50);
+    window.addEventListener('resize', this._syncSearchSpacer);
+    if (window.ResizeObserver) { const b = document.getElementById('hero-search-bar'); if (b) new ResizeObserver(this._syncSearchSpacer).observe(b); else setTimeout(() => { const b2 = document.getElementById('hero-search-bar'); if (b2) new ResizeObserver(this._syncSearchSpacer).observe(b2); }, 800); }
     this._ksNotableIv = setInterval(this._ksNotableTick, 1000); setTimeout(this._ksNotableTick, 300);
     if (!this.state.isIntroVisible) setTimeout(() => this.setState({ logoIn: true }), 400);
     if (!this.state.isIntroVisible && this.heroVideoRef.current) { try { this.heroVideoRef.current.play().catch(() => {}); } catch (e) {} setTimeout(() => { try { this.heroVideoRef.current && this.heroVideoRef.current.paused && this.heroVideoRef.current.play().catch(() => {}); } catch (e) {} }, 400); }
