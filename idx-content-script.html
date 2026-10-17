@@ -1835,6 +1835,7 @@ this._ihfFixAllShadowRoots();
 (function () {
   if (window.__ihfAreaPanelFix) return;
   window.__ihfAreaPanelFix = true;
+  if (!(/\/listings/.test(location.pathname))) return;
   var CSS = ''
 + '[data-ihf-ap="card"]{width:376px !important;max-width:calc(100vw - 32px) !important;min-width:0 !important;box-sizing:border-box !important;padding:22px 28px 20px !important;border-radius:12px !important;box-shadow:0 12px 40px rgba(0,0,0,0.12) !important;}'
     + '[data-ihf-ap="wrap"]{width:100% !important;max-width:100% !important;flex-basis:100% !important;flex-grow:0 !important;margin-left:0 !important;margin-right:0 !important;padding-left:0 !important;padding-right:0 !important;box-sizing:border-box !important;}'
@@ -2133,6 +2134,7 @@ if (type === 'click') st.eatBar = false;
 (function () {
   if (window.__ihfGalleryMask) return;
   window.__ihfGalleryMask = true;
+  if (!((/\/listing(\/|\?|$)/.test(location.pathname + location.search) && !/\/listings/.test(location.pathname)))) return;
   window.__ihfBlackout = function (ready) {
     var o = document.getElementById('ihf-blackout');
     if (!o) {
@@ -2241,6 +2243,7 @@ if (type === 'click') st.eatBar = false;
 (function () {
   if (window.__ihfViewerExit) return;
   window.__ihfViewerExit = true;
+  if (!((/\/listing(\/|\?|$)/.test(location.pathname + location.search) && !/\/listings/.test(location.pathname)))) return;
   var CSS = '[data-ihf-vclose]{transition:color .3s ease,opacity .3s ease !important;}'
     + '[data-ihf-vclose]:hover{color:#999999 !important;opacity:1 !important;}';
   function viewerOf(n) { return n && n.closest ? n.closest('[data-ihf-viewer-styled]') : null; }
@@ -2522,6 +2525,7 @@ if (type === 'click') st.eatBar = false;
 (function () {
   if (window.__ksEditBtn) return;
   window.__ksEditBtn = true;
+  if (!(/\/listings/.test(location.pathname))) return;
   var CSS = '[data-ihf-edit]{position:relative !important;background:transparent !important;background-color:transparent !important;background-image:none !important;box-shadow:none !important;border-bottom:none !important;text-decoration:none !important;overflow:visible !important;}'
     + '[data-ihf-edit] *,[data-ihf-edit]:hover,[data-ihf-edit]:hover *{text-decoration:none !important;border-bottom:none !important;background-image:none !important;box-shadow:none !important;}'
     + '[data-ihf-edit]::before,[data-ihf-edit] *::before,[data-ihf-edit] *::after{display:none !important;content:none !important;}'
@@ -2679,6 +2683,7 @@ if (type === 'click') st.eatBar = false;
 (function () {
   if (window.__ksSinglePhoto) return;
   window.__ksSinglePhoto = true;
+  if (!((/\/listing(\/|\?|$)/.test(location.pathname + location.search) && !/\/listings/.test(location.pathname)))) return;
   var key = function (u) { return (u || '').split('?')[0]; };
   function fix(sr) {
     var car = sr.querySelector('.listing-photo-carousel');
@@ -2836,6 +2841,7 @@ if (type === 'click') st.eatBar = false;
 (function () {
   if (window.__ksFilterWidths) return;
   window.__ksFilterWidths = true;
+  if (!(/\/listings/.test(location.pathname))) return;
   var seen = new WeakSet();
   var ro = new ResizeObserver(function (entries) {
     entries.forEach(function (en) {
@@ -2886,6 +2892,7 @@ if (type === 'click') st.eatBar = false;
 (function () {
   if (window.__ksPriceSlider) return;
   window.__ksPriceSlider = true;
+  if (!(/\/listings/.test(location.pathname))) return;
   var STOPS = [[0, 0], [0.5, 2000000], [0.75, 5000000], [1, 20000000]];
   function toVal(p) {
     for (var i = 1; i < STOPS.length; i++) { var a = STOPS[i - 1], b = STOPS[i]; if (p <= b[0]) return a[1] + (b[1] - a[1]) * (p - a[0]) / (b[0] - a[0]); }
@@ -3180,6 +3187,7 @@ if (type === 'click') st.eatBar = false;
 (function () {
   if (window.__ksSoldNoSave) return;
   window.__ksSoldNoSave = true;
+  if (!((/\/listing(\/|\?|$)/.test(location.pathname + location.search) && !/\/listings/.test(location.pathname)))) return;
   setInterval(function () {
     document.querySelectorAll('div.ihf-container').forEach(function (h) {
       var r = h.shadowRoot; if (!r) return;
@@ -3218,6 +3226,7 @@ if (type === 'click') st.eatBar = false;
 })();
 (function () {
   if (window.__ksShareMenu) return;
+  if (!((/\/listing(\/|\?|$)/.test(location.pathname + location.search) && !/\/listings/.test(location.pathname)))) return;
   var menu = null, anchor = null;
   function close() { if (menu) { var m = menu; menu = null; anchor = null; m.style.opacity = '0'; m.style.transform = 'translateY(-4px)'; setTimeout(function () { m.remove(); }, 160); } }
   function place() {
@@ -3440,7 +3449,9 @@ if (type === 'click') st.eatBar = false;
     el.setAttribute('data-ks-more-homes', '1');
     el.setAttribute('data-ihf-own', '1');
     el.style.cssText = 'margin-top:18px;font-family:Montserrat,system-ui,sans-serif;letter-spacing:-0.01em;';
-    el.innerHTML = '<a href="https://jacksonkesecker.com/listings?q=' + encodeURIComponent(city) + '" target="_self" style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 26px;border:1px solid #1a1a1a;border-radius:0;background:#ffffff;color:#1a1a1a;text-decoration:none;font-size:15px;font-weight:500;transition:background-color .3s ease,color .3s ease;" onmouseover="this.style.background=\'#1a1a1a\';this.style.color=\'#ffffff\'" onmouseout="this.style.background=\'#ffffff\';this.style.color=\'#1a1a1a\'">See more homes in ' + city.replace(/[<>&"]/g, '') + ' &rarr;</a>';
+    el.innerHTML = '<a data-ks-more-link href="https://jacksonkesecker.com/listings/?q=' + encodeURIComponent(city) + '" target="_self" style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 26px;border:1px solid #1a1a1a;border-radius:0;background:#ffffff;color:#1a1a1a;text-decoration:none;font-size:15px;font-weight:500;transition:background-color .3s ease,color .3s ease;" onmouseover="this.style.background=\'#1a1a1a\';this.style.color=\'#ffffff\'" onmouseout="this.style.background=\'#ffffff\';this.style.color=\'#1a1a1a\'">See more homes in ' + city.replace(/[<>&"]/g, '') + ' &rarr;</a>';
+    var lk = el.querySelector('[data-ks-more-link]');
+    lk.addEventListener('click', function () { try { sessionStorage.setItem('ksPrefillQ', city); sessionStorage.setItem('ksPrefillAt', String(Date.now())); } catch (e) {} });
     host.appendChild(el);
   }
   var MON = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
@@ -3533,6 +3544,7 @@ if (type === 'click') st.eatBar = false;
 (function () {
   if (window.__ksMenuLay) return;
   window.__ksMenuLay = true;
+  if (!(/\/listings/.test(location.pathname))) return;
   function lay(sr) {
     sr.querySelectorAll('ul').forEach(function (ul) {
       var boxes = ul.querySelectorAll('input[type="checkbox"]');
@@ -3648,6 +3660,7 @@ if (type === 'click') st.eatBar = false;
 (function () {
   if (window.__ksFieldNoFx) return;
   window.__ksFieldNoFx = true;
+  if (!(/\/listings/.test(location.pathname))) return;
   var CSS = '[data-ks-nofx]::before,[data-ks-nofx]::after{display:none !important;content:none !important;border:0 !important;transform:none !important;}'
     + '[data-ks-nofx],[data-ks-nofx]:hover,[data-ks-nofx]:focus-within{border-top:0 !important;border-left:0 !important;border-right:0 !important;border-bottom:0 !important;box-shadow:none !important;background-image:none !important;outline:none !important;transition:none !important;}'
     + '[data-ks-nofx="line"],[data-ks-nofx="line"]:hover,[data-ks-nofx="line"]:focus-within{border-bottom:1px solid #cccccc !important;}'
@@ -3694,6 +3707,7 @@ if (type === 'click') st.eatBar = false;
 (function () {
   if (window.__ksAreaClickAway) return;
   window.__ksAreaClickAway = true;
+  if (!(/\/listings/.test(location.pathname))) return;
   var eat = false;
   function openCard() {
     var h = document.querySelector('div.ihf-overlay-container');
@@ -3720,5 +3734,54 @@ if (type === 'click') st.eatBar = false;
     try { document.body.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, composed: true })); } catch (er) {}
     try { document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true })); } catch (er) {}
   }, true);
+})();
+(function () {
+  if (window.__ksFilterAlign) return;
+  window.__ksFilterAlign = true;
+  if (!/\/listings/.test(location.pathname)) return;
+  var S = function (el, p, v) { if (el.style.getPropertyValue(p) !== v) el.style.setProperty(p, v, 'important'); };
+  function run() {
+    var host = document.querySelector('div.ihf-container');
+    var sr = host && host.shadowRoot;
+    if (!sr) return;
+    var nav = sr.querySelector('.listings-search-top-nav');
+    if (!nav) return;
+    var inp = Array.prototype.find.call(nav.querySelectorAll('input'), function (i) { return /start your search|find an area/i.test(i.getAttribute('placeholder') || ''); });
+    var btns = Array.prototype.filter.call(nav.querySelectorAll('button'), function (b) { return b.offsetParent && /^(status|any price|any beds|beds|\$|property type|more|save search)/i.test((b.textContent || '').trim()) && !(inp && b.contains(inp)); });
+    if (btns.length < 2) return;
+    // smallest ancestor holding every button but not the search input
+    var group = btns[0].parentElement;
+    while (group && !btns.every(function (b) { return group.contains(b); })) group = group.parentElement;
+    if (!group || (inp && group.contains(inp))) return;
+    // each button's own wrapper chain up to the group: centered, no stray offsets (fixes staggered More)
+    S(group, 'display', 'flex'); S(group, 'flex-wrap', 'nowrap'); S(group, 'align-items', 'center'); S(group, 'gap', '8px');
+    Array.prototype.forEach.call(group.children, function (k) { S(k, 'align-self', 'center'); S(k, 'margin-top', '0'); S(k, 'margin-bottom', '0'); S(k, 'padding-top', '0'); S(k, 'padding-bottom', '0'); S(k, 'display', 'flex'); S(k, 'align-items', 'center'); });
+    btns.forEach(function (b) { for (var p = b.parentElement; p && p !== group; p = p.parentElement) { S(p, 'margin-top', '0'); S(p, 'margin-bottom', '0'); S(p, 'padding-top', '0'); S(p, 'padding-bottom', '0'); S(p, 'display', 'flex'); S(p, 'align-items', 'center'); S(p, 'top', 'auto'); } });
+    // measure from the natural position (no transform), then apply one offset
+    group.style.removeProperty('transform');
+    var gr = group.getBoundingClientRect();
+    var right = Math.max.apply(null, btns.map(function (b) { return b.getBoundingClientRect().right; }));
+    var midB = (gr.top + gr.bottom) / 2;
+    var dx = 0, dy = 0;
+    var map = Array.prototype.find.call(sr.querySelectorAll('.mapboxgl-map, [class*="map-container" i], [class*="mapContainer" i]'), function (m) { var r = m.getBoundingClientRect(); return r.width > 200 && r.height > 200; });
+    if (!map) { var cv = Array.prototype.find.call(sr.querySelectorAll('canvas'), function (m) { var r = m.getBoundingClientRect(); return r.width > 200 && r.height > 200; }); map = cv; }
+    if (map) { var card = map; for (var p = map.parentElement, i = 0; p && i < 6; p = p.parentElement, i++) { var cs = getComputedStyle(p); if (cs.boxShadow !== 'none' || cs.backgroundColor === 'rgb(255, 255, 255)') { card = p; } } dx = Math.round(card.getBoundingClientRect().right - right); }
+    if (inp) { var box = inp.closest('[class*="InputBase" i]') || inp.parentElement || inp; var ir = box.getBoundingClientRect(); dy = Math.round((ir.top + ir.bottom) / 2 - midB) + 8; }
+    if (dx || dy) S(group, 'transform', 'translate(' + dx + 'px,' + dy + 'px)');
+  }
+  var ZCSS = '[role="tooltip"]:not(:has([data-ihf-ap="card"])) > *{zoom:0.82;}'
+    + '*:has(> ul[role="menu"]):not([role="tooltip"] *){zoom:0.82;}';
+  function zoomMenus() {
+    var h = document.querySelector('div.ihf-overlay-container');
+    if (!h || !h.shadowRoot || h.shadowRoot.querySelector('style[data-ks-menu-zoom]')) return;
+    var st = document.createElement('style'); st.setAttribute('data-ks-menu-zoom', '1'); st.textContent = ZCSS; h.shadowRoot.appendChild(st);
+    var hs = host2();
+    if (hs && !hs.querySelector('style[data-ks-menu-zoom]')) { var s2 = st.cloneNode(true); hs.appendChild(s2); }
+  }
+  function host2() { var h = document.querySelector('div.ihf-container'); return h && h.shadowRoot; }
+  window.addEventListener('resize', function () { requestAnimationFrame(run); });
+  setInterval(function () { run(); zoomMenus(); }, 1500);
+  setTimeout(function () { run(); zoomMenus(); }, 600);
+  document.addEventListener('pointerdown', function () { setTimeout(zoomMenus, 0); }, true);
 })();
 </script>

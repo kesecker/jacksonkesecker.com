@@ -363,8 +363,14 @@ class Component extends DCLogic {
     this._ihfFixAllShadowRoots();
   };
   _ihfPrefillSearch = () => {
-    const q = (new URLSearchParams(window.location.search).get('q') || '').trim();
+    let q = (new URLSearchParams(window.location.search).get('q') || '').trim();
+    try {
+      const sq = sessionStorage.getItem('ksPrefillQ'), at = +sessionStorage.getItem('ksPrefillAt') || 0;
+      if (!q && sq && Date.now() - at < 60000) q = sq;
+      sessionStorage.removeItem('ksPrefillQ'); sessionStorage.removeItem('ksPrefillAt');
+    } catch (e) {}
     if (!q || this._ihfPrefillStarted) return;
+    console.log('[ks] prefill search:', q);
     this._ihfPrefillStarted = true;
     const start = Date.now();
     const setVal = (inp, v) => {
@@ -428,7 +434,7 @@ class Component extends DCLogic {
           n++;
           const card = theCard();
           const chips = card ? Array.from(card.querySelectorAll('[class*="chip" i], [role="button"]')).map((x) => (x.textContent || '').toLowerCase()).join(' ') : '';
-          if (chips.indexOf(ql) >= 0 || n > 20) { setTimeout(viewResults, 300); return; }
+          if (chips.indexOf(ql) >= 0 || n > 20) { console.log('[ks] prefill', chips.indexOf(ql) >= 0 ? 'city selected' : 'city not confirmed', '→ View Results'); setTimeout(viewResults, 300); return; }
           setTimeout(go, 200);
         };
         setTimeout(go, 500);

@@ -14,6 +14,7 @@
 <script src="./support.js"></script>
 </head>
 <body>
+
 <x-dc>
 <helmet>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..800;1,300..800&display=swap">
@@ -42,6 +43,7 @@
       activationToken: "84ee0119-74ff-4a71-885e-a3cc7e030850",
     };
   </script>
+  <script>(function(){function go(){try{if(window.__ksEarlyWidget!==undefined)return;if(!window.ihfKestrel||!window.ihfKestrel.render||!document.body)return;var h=document.createElement('div');h.id='ks-early-holder';h.setAttribute('aria-hidden','true');h.style.cssText='position:absolute;left:0;top:0;width:100%;max-width:1300px;height:0;overflow:visible;visibility:hidden;pointer-events:none;z-index:-1;';document.body.insertBefore(h,document.body.firstChild);var el=window.ihfKestrel.render();h.appendChild(el);window.__ksEarlyWidget=el;}catch(e){window.__ksEarlyWidget=null;}}if(document.body)go();else document.addEventListener('DOMContentLoaded',go);})();</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=block" rel="stylesheet">
   <style>
@@ -1278,7 +1280,9 @@ findAllMatches('Share').filter((s) => !s.closest('[data-ihf-own], [data-ihf-acti
     const doMount = () => {
       if (node.dataset.ihfMounted) return;
       node.dataset.ihfMounted = '1';
-      node.appendChild(window.ihfKestrel.render());
+      const early = window.__ksEarlyWidget;
+      if (early) { window.__ksEarlyWidget = null; const hold = document.getElementById('ks-early-holder'); node.appendChild(early); if (hold) hold.remove(); }
+      else node.appendChild(window.ihfKestrel.render());
       setTimeout(() => { if (!window.__ihfListingFixesLoaded) { console.warn('[ihf] IDX Content fixes not detected - using page fallback'); this._ihfStartCaseFix(); } }, 6000);
     };
     if (window.ihfKestrel && window.ihfKestrel.render) { doMount(); return; }
