@@ -418,7 +418,7 @@ const row = document.createElement('div');
 row.style.cssText = 'display:flex;align-items:center;gap:14px;font-size:' + fs + ';line-height:1.4;color:#1a1a1a;';
 row.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
 const ds = document.createElement('span');
-ds.textContent = r.date;
+ds.textContent = (function (d) { const M = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 }; const m = d.match(/^([A-Za-z]+day),?\s+([A-Za-z]{3})[a-z]*\.?\s+(\d{1,2})$/); return m && M[m[2].toLowerCase()] ? m[1] + ' ' + M[m[2].toLowerCase()] + '/' + (+m[3]) : d; })(r.date);
 ds.style.setProperty('font-weight', '400', 'important');
 row.appendChild(ds);
 if (r.time) {
@@ -1033,7 +1033,7 @@ style.textContent = scopeSel + " { --rh-font: 'Montserrat', system-ui, sans-seri
 + " .MuiFormControl-root:not(#ihf-x):not(#ihf-y), .MuiAutocomplete-root:not(#ihf-x):not(#ihf-y) { background-image: none !important; } .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *) { border: none !important; border-bottom: none !important; box-shadow: none !important; background-color: transparent !important; background-image: linear-gradient(to top, #cccccc 1px, transparent 1px) !important; background-repeat: no-repeat !important; background-position: left bottom, left bottom !important; background-size: 100% 100% !important; transition: background-size 0.3s ease !important; } .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *):hover, .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *):focus-within { background-size: 100% 100%, 100% 100% !important; } .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *)::before, .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *)::after { display: none !important; content: none !important; border: none !important; } .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *) fieldset, .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not([data-ihf-ap=\"card\"] *) .MuiOutlinedInput-notchedOutline { border: none !important; }";
 style.textContent += " /* ks-no-field-lines */ .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not(#ihf-z), .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not(#ihf-z):hover, .MuiInputBase-root:not(#ihf-x):not(#ihf-y):not(#ihf-z):focus-within, .MuiFormControl-root:not(#ihf-x):not(#ihf-y):not(#ihf-z):hover, .MuiFormControl-root:not(#ihf-x):not(#ihf-y):not(#ihf-z):focus-within, .MuiAutocomplete-root:not(#ihf-x):not(#ihf-y):not(#ihf-z):hover, .MuiAutocomplete-root:not(#ihf-x):not(#ihf-y):not(#ihf-z):focus-within { background-image: linear-gradient(to top, #cccccc 1px, transparent 1px) !important; background-size: 100% 100% !important; background-repeat: no-repeat !important; background-position: left bottom !important; transition: none !important; } .MuiFormControl-root:not(#ihf-x):not(#ihf-y):not(#ihf-z), .MuiAutocomplete-root:not(#ihf-x):not(#ihf-y):not(#ihf-z) { background-image: none !important; } input[type=\"number\"] { -moz-appearance: textfield !important; appearance: textfield !important; } input[type=\"number\"]::-webkit-inner-spin-button, input[type=\"number\"]::-webkit-outer-spin-button { -webkit-appearance: none !important; appearance: none !important; margin: 0 !important; display: none !important; }";
 style.textContent += " /* ks-round4: centered checkbox menus, Deselect All spacing, no field line animations (structural selectors — widget class names are obfuscated) */ *:has(> ul[role=\"menu\"]):not(#k1):not(#k2):not(#k3):not(#k4) { padding-left: 0 !important; padding-right: 0 !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4) { padding: 8px 0 !important; margin: 0 auto !important; width: max-content !important; min-width: 0 !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4) > li { padding-left: 28px !important; padding-right: 28px !important; margin: 0 !important; width: auto !important; box-sizing: border-box !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4) > li label > span:first-child { padding-left: 0 !important; margin-left: 0 !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4) > li:not(:has(input[type=\"checkbox\"])) { margin-bottom: 10px !important; } div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *), div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):hover, div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):focus-within { border: none !important; box-shadow: none !important; background-color: transparent !important; background-image: linear-gradient(to top, #cccccc 1px, transparent 1px) !important; background-size: 100% 100% !important; background-repeat: no-repeat !important; background-position: left bottom !important; transition: none !important; } div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *)::before, div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *)::after, div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):hover::before, div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):hover::after, div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):focus-within::before, div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):focus-within::after { display: none !important; content: none !important; border: none !important; } div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *) fieldset { border: none !important; } div:has(> div:has(> div:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])))):not(#k1):not(#k2):not(#k3):not(#k4) { background-image: none !important; }";
-style.textContent += " /* ks-round5: More-tab fields (lot sq ft etc.) — no black hover/focus line anywhere in the field; Property Type menu spacing */ *:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *)::after, *:has(> * > input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *)::after, *:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *)::before, *:has(> * > input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *)::before { display: none !important; content: none !important; border: none !important; transform: none !important; } *:has(> * > input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *), *:has(> * > input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):hover, *:has(> * > input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):focus-within { border-bottom: none !important; box-shadow: none !important; background-image: none !important; transition: none !important; } input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"]):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *) { border-bottom: none !important; box-shadow: none !important; outline: none !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5) { padding: 18px 0 22px !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5) > li:not(:has(input[type=\"checkbox\"])) { margin-top: -4px !important; margin-bottom: 16px !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5) > li:has(input[type=\"checkbox\"]) { padding-top: 7px !important; padding-bottom: 7px !important; }";
+style.textContent += " /* ks-round5: More-tab fields (lot sq ft etc.) — no black hover/focus line anywhere in the field; Property Type menu spacing */ *:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *)::after, *:has(> * > input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *)::after, *:has(> input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *)::before, *:has(> * > input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *)::before { display: none !important; content: none !important; border: none !important; transform: none !important; } *:has(> * > input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *), *:has(> * > input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):hover, *:has(> * > input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"])):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *):focus-within { border-bottom: none !important; box-shadow: none !important; background-image: none !important; transition: none !important; } input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"]):not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not([style*=border]):not(form *):not([data-ihf-ap=\"card\"] *):not([data-ks-price-ui] *) { border-bottom: none !important; box-shadow: none !important; outline: none !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5) { padding: 18px 0 22px !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5) > li:not(:has(input[type=\"checkbox\"])) { margin-top: -4px !important; margin-bottom: 16px !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5) > li:has(input[type=\"checkbox\"]) { padding-top: 7px !important; padding-bottom: 7px !important; }";
 style.textContent += " /* ks-round6: mortgage calculator inputs keep a visible grey underline so they read as editable */ [data-ihf-mc] input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"]):not(#m1):not(#m2):not(#m3):not(#m4):not(#m5):not(#m6) { border: none !important; border-bottom: 1px solid #cccccc !important; border-radius: 0 !important; box-shadow: none !important; padding-bottom: 6px !important; background: transparent !important; } [data-ihf-mc] input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"]):not(#m1):not(#m2):not(#m3):not(#m4):not(#m5):not(#m6):focus { border-bottom-color: #1a1a1a !important; outline: none !important; }";
 style.textContent += " /* ks-round7: mortgage calculator Loan Term buttons — sharp corners */ [data-ihf-mc] button:not(#m1):not(#m2):not(#m3):not(#m4):not(#m5):not(#m6), [data-ihf-mc] [role=\"button\"]:not(#m1):not(#m2):not(#m3):not(#m4):not(#m5):not(#m6), [data-ihf-mc] label:not(#m1):not(#m2):not(#m3):not(#m4):not(#m5):not(#m6) { border-radius: 0 !important; }";
 style.textContent += " /* ks-round8: kill every pseudo-element underline inside filter popups (More panel etc.); even vertical spacing in checkbox menus */ [role=\"tooltip\"] *:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not(#k6)::after, [role=\"tooltip\"] *:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not(#k6)::before, [role=\"presentation\"] *:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not(#k6)::after, [role=\"presentation\"] *:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not(#k6)::before { border-bottom-width: 0 !important; border-bottom-color: transparent !important; } [role=\"tooltip\"] *:focus-within:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not(#k6), [role=\"tooltip\"] *:hover:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not(#k6) { border-bottom-color: #cccccc !important; }  ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not(#k6) > li { padding-top: 11px !important; padding-bottom: 11px !important; margin: 0 !important; min-height: 0 !important; } ul[role=\"menu\"]:not(#k1):not(#k2):not(#k3):not(#k4):not(#k5):not(#k6) > li:not(:has(input[type=\"checkbox\"])) { padding-left: 64px !important; margin: 0 !important; }";
@@ -2921,8 +2921,8 @@ if (type === 'click') st.eatBar = false;
     + '[data-ks-price-panel]:not(#a):not(#b):not(#c) > :not([data-ks-price-ui]){position:absolute !important;left:0 !important;top:0 !important;width:1px !important;height:1px !important;overflow:hidden !important;opacity:0 !important;pointer-events:none !important;}'
     + '[data-ks-price-ui]{display:flex;flex-direction:column;gap:22px;font-family:Montserrat,system-ui,sans-serif;}'
     + '[data-ks-price-ui] .ksp-row{display:flex;align-items:center;gap:12px;}'
-    + '[data-ks-price-ui] input{flex:1 1 0;min-width:0;height:52px;box-sizing:border-box;border:1px solid #d6d6d6 !important;border-radius:0 !important;padding:0 14px !important;font:500 15px Montserrat,system-ui,sans-serif !important;color:#1a1a1a !important;background:#ffffff !important;background-image:none !important;outline:none;transition:border-color .2s ease;}'
-    + '[data-ks-price-ui] input:hover,[data-ks-price-ui] input:focus{border-color:#1a1a1a !important;}'
+    + '[data-ks-price-ui] input{flex:1 1 0;min-width:0;height:52px;box-sizing:border-box;border:1px solid #d6d6d6 !important;border-radius:0 !important;padding:0 14px !important;font:500 15px Montserrat,system-ui,sans-serif !important;color:#1a1a1a !important;background:#ffffff !important;background-image:none !important;outline:none;transition:none;}'
+    + '[data-ks-price-ui] input:hover,[data-ks-price-ui] input:focus{border-color:#d6d6d6 !important;outline:none !important;box-shadow:none !important;}'
     + '[data-ks-price-ui] input::placeholder{color:#999999;}'
     + '[data-ks-price-ui] .ksp-to{font-size:14px;color:#999999;}'
     + '[data-ks-price-ui] .ksp-track{position:relative;height:28px;margin:0 10px;touch-action:none;cursor:pointer;}'
@@ -3335,9 +3335,29 @@ if (type === 'click') st.eatBar = false;
     var q = encodeURIComponent(addr);
     wrap.innerHTML = '<h2 style="margin:0 0 20px;font-size:24px;line-height:1.25;color:#1a1a1a;font-weight:700 !important;text-align:left;font-family:Montserrat,system-ui,sans-serif;letter-spacing:-0.01em;">Location</h2>'
       + '<div data-ks-gmap-box style="position:relative;width:100%;height:420px;background:#f2f2f2;overflow:hidden;"></div>'
-      + '<a href="https://www.google.com/maps/dir/?api=1&destination=' + q + '" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:14px;font-size:14px;font-weight:500;color:#1a1a1a;text-decoration:none;font-family:Montserrat,system-ui,sans-serif;letter-spacing:-0.01em;">Get directions &rarr;</a>';
+      + '<div data-ks-gmap-actions style="display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:14px;font-family:Montserrat,system-ui,sans-serif;letter-spacing:-0.01em;">'
+      + '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px;">'
+      + '<a href="https://www.google.com/maps/dir/?api=1&destination=' + q + '" target="_blank" rel="noopener noreferrer" style="font-size:14px;font-weight:500;color:#1a1a1a;text-decoration:none;">Get directions &rarr;</a>'
+      + '<button type="button" data-ks-copy-addr style="display:inline-flex;align-items:center;gap:7px;padding:0;margin:0;border:none;border-radius:0;background:transparent;color:#1a1a1a;font:500 14px Montserrat,system-ui,sans-serif;letter-spacing:-0.01em;cursor:pointer;">'
+      + '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="1"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>'
+      + '<span data-ks-copy-label style="transition:opacity .2s ease;">Copy address</span></button>'
+      + '</div>'
+      + '<a data-ks-gs-link href="https://www.greatschools.org/search/search.page?q=' + encodeURIComponent(((addr.match(/\b\d{5}\b(?!.*\b\d{5}\b)/) || [])[0]) || addr.replace(/^[^,]*,\s*/, '')) + '" target="_blank" rel="noopener noreferrer" style="font-size:14px;font-weight:500;color:#1a1a1a;text-decoration:none;">View schools on GreatSchools.org &rarr;</a>'
+      + '</div>';
     var after = section.querySelector(':scope > .features') || section.querySelector(':scope > .listing-description');
     if (after) section.insertBefore(wrap, after.nextElementSibling); else section.appendChild(wrap);
+    var cb = wrap.querySelector('[data-ks-copy-addr]');
+    var cl = wrap.querySelector('[data-ks-copy-label]');
+    cb.addEventListener('click', function () {
+      var done = function () {
+        cl.style.opacity = '0';
+        setTimeout(function () { cl.textContent = 'Copied'; cl.style.opacity = '1'; }, 200);
+        clearTimeout(cb.__t);
+        cb.__t = setTimeout(function () { cl.style.opacity = '0'; setTimeout(function () { cl.textContent = 'Copy address'; cl.style.opacity = '1'; }, 200); }, 1800);
+      };
+      var fallback = function () { var t = document.createElement('textarea'); t.value = addr; t.style.cssText = 'position:fixed;top:-1000px;opacity:0;'; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); } catch (e) {} t.remove(); done(); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(addr).then(done, fallback); else fallback();
+    });
     var box = wrap.querySelector('[data-ks-gmap-box]');
     var load = function () {
       if (box.firstChild) return;
@@ -3400,38 +3420,92 @@ if (type === 'click') st.eatBar = false;
     return false;
   }
   function schools(root) {
-    if (isCommercial(root)) { var old = root.querySelector('[data-ks-schools]'); if (old) old.remove(); return; }
-    if (root.querySelector('[data-ks-schools]')) return;
+    var old = root.querySelector('[data-ks-schools]'); if (old) old.remove();
+    var gs = root.querySelector('[data-ks-gs-link]');
+    if (gs) { var com = isCommercial(root); var want = com ? 'none' : ''; if (gs.style.display !== want) gs.style.display = want; }
+  }
+  function moreHomes(root) {
     var section = root.querySelector('.listing-section');
-    var sim = root.querySelector('.similar-listings');
     if (!section) return;
     var addr = addressOf(root);
-    if (!addr || !/\d/.test(addr)) return;
+    var parts = addr.split(',').map(function (x) { return x.trim(); });
+    var city = parts.length >= 3 ? parts[parts.length - 2] : (parts[1] || '');
+    city = city.replace(/\b[A-Z]{2}\b.*$/, '').trim();
+    if (!city) return;
+    var host = root.querySelector('[data-ks-gmap-actions]');
+    var ex = root.querySelector('[data-ks-more-homes]');
+    if (ex) { if (host && ex.parentElement !== host) host.appendChild(ex); return; }
+    if (!host) return;
     var el = document.createElement('div');
-    el.setAttribute('data-ks-schools', '1');
+    el.setAttribute('data-ks-more-homes', '1');
     el.setAttribute('data-ihf-own', '1');
-    el.style.cssText = 'width:100%;max-width:1300px;margin:48px auto 0;box-sizing:border-box;font-family:Montserrat,system-ui,sans-serif;letter-spacing:-0.01em;';
-    el.innerHTML = '<h2 style="margin:0 0 20px;font-size:24px;line-height:1.25;color:#1a1a1a;font-weight:700 !important;text-align:left;">Nearby Schools</h2>'
-      + '<div data-ks-schools-box style="position:relative;width:100%;height:420px;background:#f2f2f2;overflow:hidden;margin-bottom:16px;"></div>'
-      + '<p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#555555;font-weight:500;">See school ratings, reviews and boundaries for this address.</p>'
-      + '<a href="https://www.greatschools.org/search/search.page?q=' + encodeURIComponent(((addr.match(/\b\d{5}\b(?!.*\b\d{5}\b)/) || [])[0]) || addr.replace(/^[^,]*,\s*/, '')) + '" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border:1px solid #1a1a1a;border-radius:0;color:#1a1a1a;background:#ffffff;text-decoration:none;font-size:14px;font-weight:500;transition:background-color .3s ease,color .3s ease;" onmouseover="this.style.background=\'#1a1a1a\';this.style.color=\'#ffffff\'" onmouseout="this.style.background=\'#ffffff\';this.style.color=\'#1a1a1a\'">View schools on GreatSchools &rarr;</a>';
-    if (sim && sim.parentElement) sim.parentElement.insertBefore(el, sim);
-    else section.appendChild(el);
-    var sbox = el.querySelector('[data-ks-schools-box]');
-    var sload = function () {
-      if (sbox.firstChild) return;
-      var f = document.createElement('iframe');
-      f.title = 'Schools near ' + addr;
-      f.loading = 'lazy';
-      f.referrerPolicy = 'no-referrer-when-downgrade';
-      f.src = 'https://maps.google.com/maps?q=' + encodeURIComponent('schools near ' + addr) + '&z=13&output=embed';
-      f.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;';
-      sbox.appendChild(f);
-    };
-    if ('IntersectionObserver' in window) {
-      var sio = new IntersectionObserver(function (es) { if (es.some(function (e) { return e.isIntersecting; })) { sio.disconnect(); sload(); } }, { rootMargin: '600px 0px' });
-      sio.observe(sbox);
-    } else sload();
+    el.style.cssText = 'margin-top:18px;font-family:Montserrat,system-ui,sans-serif;letter-spacing:-0.01em;';
+    el.innerHTML = '<a href="https://jacksonkesecker.com/listings?q=' + encodeURIComponent(city) + '" target="_self" style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 26px;border:1px solid #1a1a1a;border-radius:0;background:#ffffff;color:#1a1a1a;text-decoration:none;font-size:15px;font-weight:500;transition:background-color .3s ease,color .3s ease;" onmouseover="this.style.background=\'#1a1a1a\';this.style.color=\'#ffffff\'" onmouseout="this.style.background=\'#ffffff\';this.style.color=\'#1a1a1a\'">See more homes in ' + city.replace(/[<>&"]/g, '') + ' &rarr;</a>';
+    host.appendChild(el);
+  }
+  var MON = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+  function parseTimes(t) {
+    var m = (t || '').match(/(\d{1,2}):(\d{2})\s*(AM|PM)/gi) || [];
+    return m.map(function (x) { var p = x.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i); var h = +p[1] % 12; if (/pm/i.test(p[3])) h += 12; return [h, +p[2]]; });
+  }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function stamp(d, h, mi) { return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + 'T' + pad(h) + pad(mi) + '00'; }
+  function calendar(root) {
+    var sec = root.querySelector('[data-ihf-oh-sec]');
+    if (!sec) return;
+    var addr = addressOf(root);
+    Array.prototype.forEach.call(sec.querySelectorAll('div'), function (row) {
+      if (row.__ksCal || !row.querySelector(':scope > svg')) return;
+      var spans = row.querySelectorAll(':scope > span');
+      if (!spans.length) return;
+      var nd = (spans[0].textContent || '').match(/(\d{1,2})\/(\d{1,2})/);
+      var dm = (spans[0].textContent || '').match(/([A-Za-z]{3})[a-z]*\.?\s+(\d{1,2})/g);
+      var md = dm && dm[dm.length - 1].match(/([A-Za-z]{3})[a-z]*\.?\s+(\d{1,2})/);
+      if (nd) md = [null, ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'][+nd[1] - 1], nd[2]];
+      if (!md || !md[1] || MON[md[1].toLowerCase()] == null) return;
+      row.__ksCal = true;
+      var now = new Date();
+      var d = new Date(now.getFullYear(), MON[md[1].toLowerCase()], +md[2]);
+      if (d < new Date(now.getFullYear(), now.getMonth() - 2, 1)) d.setFullYear(d.getFullYear() + 1);
+      var tm = parseTimes(spans.length > 2 ? spans[2].textContent : '');
+      var st = tm[0] || [12, 0], en = tm[1] || [Math.min(st[0] + 2, 23), st[1]];
+      var title = 'Open House: ' + (addr.split(',')[0] || 'Listing');
+      var desc = 'Open house hosted by Jackson Kesecker, REALTOR\u00ae. Listing: ' + location.href;
+      var gUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(title) + '&dates=' + stamp(d, st[0], st[1]) + '/' + stamp(d, en[0], en[1]) + '&ctz=America/Los_Angeles&location=' + encodeURIComponent(addr) + '&details=' + encodeURIComponent(desc);
+      var ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Jackson Kesecker//Open House//EN', 'BEGIN:VEVENT', 'UID:' + stamp(d, st[0], st[1]) + '-' + Math.random().toString(36).slice(2) + '@jacksonkesecker.com', 'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, ''), 'DTSTART;TZID=America/Los_Angeles:' + stamp(d, st[0], st[1]), 'DTEND;TZID=America/Los_Angeles:' + stamp(d, en[0], en[1]), 'SUMMARY:' + title, 'LOCATION:' + addr.replace(/,/g, '\\,'), 'DESCRIPTION:' + desc.replace(/,/g, '\\,'), 'URL:' + location.href, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+      var wrap = document.createElement('span');
+      wrap.style.cssText = 'position:relative;display:inline-flex;margin-left:18px;';
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('aria-haspopup', 'true');
+      btn.style.cssText = 'display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid #1a1a1a;border-radius:0;background:#ffffff;color:#1a1a1a;font:500 13px Montserrat,system-ui,sans-serif;letter-spacing:-0.01em;cursor:pointer;transition:background-color .2s ease,color .2s ease;';
+      btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span>Add to calendar</span>';
+      btn.addEventListener('mouseenter', function () { btn.style.background = '#1a1a1a'; btn.style.color = '#ffffff'; });
+      btn.addEventListener('mouseleave', function () { if (!open) { btn.style.background = '#ffffff'; btn.style.color = '#1a1a1a'; } });
+      var menu = document.createElement('div');
+      menu.style.cssText = 'position:absolute;top:calc(100% + 6px);left:0;z-index:20;min-width:190px;background:#ffffff;box-shadow:0 10px 30px rgba(0,0,0,0.14);padding:6px 0;opacity:0;transform:translateY(-4px);pointer-events:none;transition:opacity .16s ease,transform .16s ease;';
+      var item = function (label, fn) {
+        var a = document.createElement('button');
+        a.type = 'button';
+        a.textContent = label;
+        a.style.cssText = 'display:block;width:100%;padding:10px 16px;border:none;border-radius:0;background:#ffffff;color:#1a1a1a;text-align:left;font:500 14px Montserrat,system-ui,sans-serif;letter-spacing:-0.01em;cursor:pointer;transition:background-color .15s ease;';
+        a.addEventListener('mouseenter', function () { a.style.background = '#f2f2f2'; });
+        a.addEventListener('mouseleave', function () { a.style.background = '#ffffff'; });
+        a.addEventListener('click', function (e) { e.stopPropagation(); fn(); setOpen(false); });
+        menu.appendChild(a);
+      };
+      var dl = function () { var u = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' })); var a = document.createElement('a'); a.href = u; a.download = 'open-house.ics'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 2000); };
+      item('Google Calendar', function () { window.open(gUrl, '_blank', 'noopener'); });
+      item('Apple Calendar', dl);
+      item('Outlook', dl);
+      var open = false;
+      var setOpen = function (v) { open = v; menu.style.opacity = v ? '1' : '0'; menu.style.transform = v ? 'translateY(0)' : 'translateY(-4px)'; menu.style.pointerEvents = v ? 'auto' : 'none'; btn.style.background = v ? '#1a1a1a' : '#ffffff'; btn.style.color = v ? '#ffffff' : '#1a1a1a'; };
+      btn.addEventListener('click', function (e) { e.stopPropagation(); setOpen(!open); });
+      document.addEventListener('pointerdown', function (e) { if (open && e.composedPath().indexOf(wrap) < 0) setOpen(false); }, true);
+      wrap.appendChild(btn);
+      wrap.appendChild(menu);
+      row.appendChild(wrap);
+    });
   }
   function blankGaps(root) {
     var section = root.querySelector('.listing-section');
@@ -3451,7 +3525,7 @@ if (type === 'click') st.eatBar = false;
     });
   }
   function tick() {
-    document.querySelectorAll('div.ihf-container').forEach(function (h) { if (h.shadowRoot) { build(h.shadowRoot); schools(h.shadowRoot); blankGaps(h.shadowRoot); } });
+    document.querySelectorAll('div.ihf-container').forEach(function (h) { if (h.shadowRoot) { build(h.shadowRoot); schools(h.shadowRoot); calendar(h.shadowRoot); moreHomes(h.shadowRoot); blankGaps(h.shadowRoot); } });
   }
   setInterval(tick, 1500);
   setTimeout(tick, 800);

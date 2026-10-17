@@ -402,13 +402,52 @@ class Component extends DCLogic {
       };
       tryPick();
     };
+    const theCard = () => {
+      const h = document.querySelector('div.ihf-overlay-container');
+      const card = h && h.shadowRoot && h.shadowRoot.querySelector('[data-ihf-ap="card"]');
+      return card && card.getBoundingClientRect().width ? card : null;
+    };
+    const cardInput = () => {
+      const card = theCard();
+      return card ? (Array.from(card.querySelectorAll('input')).find((i) => i.type !== 'hidden' && i.offsetParent !== null) || null) : null;
+    };
+    const viewResults = () => {
+      const card = theCard();
+      const b = card && Array.from(card.querySelectorAll('button')).find((x) => /view results/i.test(x.textContent || ''));
+      if (b) b.click();
+    };
+    const typeInCard = (ci) => {
+      ci.focus();
+      ci.click();
+      setVal(ci, q);
+      setTimeout(() => {
+        pickOption(ci);
+        let n = 0;
+        const ql = q.toLowerCase();
+        const go = () => {
+          n++;
+          const card = theCard();
+          const chips = card ? Array.from(card.querySelectorAll('[class*="chip" i], [role="button"]')).map((x) => (x.textContent || '').toLowerCase()).join(' ') : '';
+          if (chips.indexOf(ql) >= 0 || n > 20) { setTimeout(viewResults, 300); return; }
+          setTimeout(go, 200);
+        };
+        setTimeout(go, 500);
+      }, 300);
+    };
     const tick = () => {
       const inp = findInput();
       if (inp) {
         inp.focus();
         inp.click();
-        setVal(inp, q);
-        setTimeout(() => pickOption(inp), 250);
+        const t1 = Date.now();
+        const waitCard = () => {
+          const ci = cardInput();
+          if (ci) { setTimeout(() => typeInCard(cardInput() || ci), 500); return; }
+          if (Date.now() - t1 < 2500) { setTimeout(waitCard, 150); return; }
+          setVal(inp, q);
+          setTimeout(() => pickOption(inp), 250);
+        };
+        waitCard();
         return;
       }
       if (Date.now() - start < 15000) setTimeout(tick, 200);
