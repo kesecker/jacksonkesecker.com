@@ -43,7 +43,9 @@
       #about-content { flex-direction: column-reverse !important; text-align: center !important; padding-left: 36px !important; padding-right: 36px !important; }
       #about-text-block { align-items: center !important; text-align: center !important; }
     }
-  </style>
+  
+    /* ks body tracking */ html body, html body *:not(#hero-logo):not(#hero-logo *) { letter-spacing: -0.01em !important; }
+</style>
   <style>
     button[aria-label="Menu"], #nav-burger-fixed { transition: opacity 0.3s ease; }
     body:has(div[style*="z-index: 2147483005"]) button[aria-label="Menu"], body:has(div[style*="z-index: 2147483005"]) #nav-burger-fixed { opacity: 0 !important; pointer-events: none !important; }

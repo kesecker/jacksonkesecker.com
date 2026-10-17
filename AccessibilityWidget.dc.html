@@ -13,7 +13,9 @@
   <style>
     :root { --rh-font: 'Inter', system-ui, sans-serif; --rh-accent: #1a1a1a; --rh-accent-hover: #000000; --rh-accent-light: #ededed; --rh-bg: #ffffff; --rh-surface: #f9f9f9; --rh-text-primary: #1a1a1a; --rh-text-secondary: #666666; --rh-text-muted: #999999; --rh-border: #e0e0e0; }
     @keyframes rhDropdownFade { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-  </style>
+  
+    /* ks body tracking */ html body, html body *:not(#hero-logo):not(#hero-logo *) { letter-spacing: -0.01em !important; }
+</style>
 </helmet>
 
 <div style="{{ a11yButtonWrapStyle }} z-index: 2147483010;">
