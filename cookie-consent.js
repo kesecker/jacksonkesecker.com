@@ -48,7 +48,14 @@
     bar.setAttribute('aria-label', 'Cookie notice');
     bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:' + Z + ';background:#ffffff;box-shadow:0 -8px 30px rgba(0,0,0,0.12);font-family:' + FONT + ';letter-spacing:-0.01em;color:#1a1a1a;opacity:0;transform:translateY(16px);transition:opacity .45s ease,transform .45s ease;';
     var inner = document.createElement('div');
-    inner.style.cssText = 'max-width:1600px;margin:0 auto;padding:22px clamp(20px,3vw,40px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px 40px;box-sizing:border-box;';
+    inner.id = 'ks-cookie-inner';
+    inner.style.cssText = 'max-width:1600px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px 40px;box-sizing:border-box;';
+    if (!document.getElementById('ks-cookie-css')) {
+      var cs = document.createElement('style');
+      cs.id = 'ks-cookie-css';
+      cs.textContent = '#ks-cookie-inner{padding:22px 112px;}@media (max-width:700px){#ks-cookie-inner{padding:20px 20px 92px;}}';
+      document.head.appendChild(cs);
+    }
     var txt = document.createElement('div');
     txt.style.cssText = 'flex:1 1 520px;min-width:0;';
     txt.innerHTML = '<h2 style="margin:0 0 8px;font:700 22px ' + FONT + ';letter-spacing:-0.01em;color:#1a1a1a;">We value your privacy</h2>'
