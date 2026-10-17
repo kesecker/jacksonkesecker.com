@@ -364,48 +364,6 @@ class Component extends DCLogic {
     }
     this._ihfFixAllShadowRoots();
   };
-  _ksCityIds = () => {
-    let m = { soledad: 883 };
-    try { Object.assign(m, JSON.parse(localStorage.getItem('ksCityIds') || '{}')); } catch (e) {}
-    return m;
-  };
-  _ksSearchOpts = () => {
-    const opts = { component: 'listingSearchWidget' };
-    const p = new URLSearchParams(window.location.search);
-    let id = parseInt(p.get('cityId') || '', 10);
-    let q = (p.get('q') || '').trim();
-    try { const sq = sessionStorage.getItem('ksPrefillQ'), at = +sessionStorage.getItem('ksPrefillAt') || 0; if (!q && sq && Date.now() - at < 60000) q = sq; } catch (e) {}
-    if (!id && q) id = this._ksCityIds()[q.toLowerCase()] || 0;
-    if (id) {
-      Object.assign(opts, { cityIds: [id], status: 'active', propertyType: ['SFR', 'CND'], sort: 'importDate', header: true, includeMap: true });
-      this._ihfPrefillStarted = true;
-      try { sessionStorage.removeItem('ksPrefillQ'); sessionStorage.removeItem('ksPrefillAt'); } catch (e) {}
-      console.log('[ks] search opened pre-filtered to cityId', id, q ? '(' + q + ')' : '');
-    } else if (q) {
-      this._ksLearnCity(q);
-    }
-    return opts;
-  };
-  _ksLearnCity = (q) => {
-    if (window.__ksLearnHooked) { window.__ksLearnQ = q; return; }
-    window.__ksLearnHooked = true; window.__ksLearnQ = q;
-    const seen = (url) => {
-      try {
-        const u = String(url || '');
-        if (!/kestrel\/listings\.json/.test(u) || !window.__ksLearnQ) return;
-        const m = u.match(/[?&]cityId=(\d+)(?:&|$)/);
-        if (!m) return;
-        const map = JSON.parse(localStorage.getItem('ksCityIds') || '{}');
-        map[window.__ksLearnQ.toLowerCase()] = +m[1];
-        localStorage.setItem('ksCityIds', JSON.stringify(map));
-        console.log('[ks] learned cityId', window.__ksLearnQ, '=', m[1]);
-        window.__ksLearnQ = null;
-      } catch (e) {}
-    };
-    const xo = XMLHttpRequest.prototype.open;
-    XMLHttpRequest.prototype.open = function (meth, url) { seen(url); return xo.apply(this, arguments); };
-    if (window.fetch) { const fo = window.fetch; window.fetch = function (input) { seen(typeof input === 'string' ? input : input && input.url); return fo.apply(this, arguments); }; }
-  };
   _ihfPrefillSearch = () => {
     let q = (new URLSearchParams(window.location.search).get('q') || '').trim();
     try {
@@ -511,7 +469,7 @@ class Component extends DCLogic {
     const doMount = () => {
       if (node.dataset.ihfMounted) return;
       node.dataset.ihfMounted = '1';
-      node.appendChild(window.ihfKestrel.render(this._ksSearchOpts()));
+      node.appendChild(window.ihfKestrel.render({ component: 'listingSearchWidget' }));
       this._ihfStartCaseFix();
     };
     setTimeout(() => this._ihfPrefillSearch(), 0);
