@@ -3770,6 +3770,7 @@ if (type === 'click') st.eatBar = false;
     if (dx || dy) S(group, 'transform', 'translate(' + dx + 'px,' + dy + 'px)');
   }
   var ZCSS = '[role="tooltip"]:not(:has([data-ihf-ap="card"])) > *{zoom:0.82;}'
+    + '[data-ihf-ap="card"]{zoom:0.82;}'
     + '*:has(> ul[role="menu"]):not([role="tooltip"] *){zoom:0.82;}';
   function zoomMenus() {
     var h = document.querySelector('div.ihf-overlay-container');

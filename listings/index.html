@@ -396,9 +396,11 @@ class Component extends DCLogic {
         let opts = [];
         roots().forEach((r) => { opts = opts.concat(Array.from(r.querySelectorAll('[role="option"], li.MuiAutocomplete-option'))); });
         opts = opts.filter((o) => o.offsetParent !== null && (o.textContent || '').trim());
-        if (opts.length) {
-          const ql = q.toLowerCase();
-          const best = opts.find((o) => (o.textContent || '').trim().toLowerCase().startsWith(ql)) || opts[0];
+        const ql = q.toLowerCase();
+        const exact = opts.find((o) => (o.textContent || '').trim().toLowerCase().startsWith(ql));
+        if (exact || (opts.length && Date.now() - t0 > 5000)) {
+          const best = exact || opts.find((o) => (o.textContent || '').toLowerCase().indexOf(ql) >= 0) || opts[0];
+          console.log('[ks] prefill picking option:', (best.textContent || '').trim());
           best.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, composed: true }));
           best.click();
           return;
