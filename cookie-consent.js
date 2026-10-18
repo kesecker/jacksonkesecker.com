@@ -55,19 +55,19 @@
       try { topOk = !!(window.top.ksOpenCookieSettings); } catch (e) {}
       if (topOk) return;
     }
-    if (bar || document.getElementById('ks-cookie-bar')) return;
+    if (bar || document.getElementById('ks-pref-panel')) return;
     bar = document.createElement('div');
-    bar.id = 'ks-cookie-bar';
+    bar.id = 'ks-pref-panel';
     bar.setAttribute('role', 'region');
-    bar.setAttribute('aria-label', 'Cookie notice');
+    bar.setAttribute('aria-label', 'Privacy choices');
     bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:' + Z + ';background:#ffffff;box-shadow:0 -8px 30px rgba(0,0,0,0.12);font-family:' + FONT + ';letter-spacing:-0.01em;color:#1a1a1a;opacity:0;transform:translateY(16px);transition:opacity .45s ease,transform .45s ease;';
     var inner = document.createElement('div');
-    inner.id = 'ks-cookie-inner';
+    inner.id = 'ks-pref-inner';
     inner.style.cssText = 'max-width:1600px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px 40px;box-sizing:border-box;';
-    if (!document.getElementById('ks-cookie-css')) {
+    if (!document.getElementById('ks-pref-css')) {
       var cs = document.createElement('style');
-      cs.id = 'ks-cookie-css';
-      cs.textContent = '#ks-cookie-inner{padding:22px 112px;}@media (max-width:700px){#ks-cookie-inner{padding:20px 20px 92px;}}';
+      cs.id = 'ks-pref-css';
+      cs.textContent = '#ks-pref-inner{padding:22px 112px;}@media (max-width:700px){#ks-pref-inner{padding:20px 20px 92px;}}';
       document.head.appendChild(cs);
     }
     var txt = document.createElement('div');
