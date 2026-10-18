@@ -74,7 +74,19 @@
     requestAnimationFrame(function () { requestAnimationFrame(function () { bar.style.opacity = '1'; bar.style.transform = 'translateY(0)'; }); });
   }
   function closeBar() { if (!bar) return; var b = bar; bar = null; b.style.transform = 'translateY(16px)'; fadeOut(b); }
-  window.ksOpenCookieSettings = function () { try { localStorage.removeItem(KEY); } catch (e) {} prefs = null; showBar(); };
+  window.ksOpenCookieSettings = function () {
+    if (inFrame) { try { if (window.top.ksOpenCookieSettings) { window.top.ksOpenCookieSettings(); return; } } catch (e) {} }
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    prefs = null; showBar();
+  };
+  document.addEventListener('click', function (e) {
+    var path = e.composedPath ? e.composedPath() : [e.target];
+    for (var i = 0; i < path.length; i++) {
+      var el = path[i];
+      if (el && el.tagName === 'A' && /#cookie-preferences$/.test(el.getAttribute('href') || '')) { e.preventDefault(); e.stopPropagation(); window.ksOpenCookieSettings(); return; }
+    }
+  }, true);
+  if (location.hash === '#cookie-preferences') setTimeout(function () { window.ksOpenCookieSettings(); }, 300);
   if (prefs) return;
   function start() {
     var intro = function () { return document.querySelector('[style*="z-index: 2147483600"]'); };
