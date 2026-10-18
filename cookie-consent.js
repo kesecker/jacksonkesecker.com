@@ -39,9 +39,23 @@
     var sb = document.getElementById('hero-search-bar'), off = 0;
     if (sb) { var r = sb.getBoundingClientRect(); if (r.height && r.top < window.innerHeight) off = Math.round(window.innerHeight - r.top); }
     bar.style.bottom = off + 'px';
+    var top = Z;
+    Array.prototype.forEach.call(document.querySelectorAll('body > iframe, body > div'), function (el) {
+      if (el === bar) return;
+      var cs = getComputedStyle(el);
+      if (cs.position !== 'fixed' || cs.display === 'none' || cs.visibility === 'hidden') return;
+      var z = parseInt(cs.zIndex, 10) || 0;
+      if (z >= top && z < 2147483500 && el.offsetWidth > window.innerWidth * 0.6 && el.offsetHeight > window.innerHeight * 0.6) top = z + 1;
+    });
+    if (String(bar.style.zIndex) !== String(top)) bar.style.zIndex = top;
   }
   function showBar() {
-    if (inFrame || bar || document.getElementById('ks-cookie-bar')) return;
+    if (inFrame) {
+      var topOk = false;
+      try { topOk = !!(window.top.ksOpenCookieSettings); } catch (e) {}
+      if (topOk) return;
+    }
+    if (bar || document.getElementById('ks-cookie-bar')) return;
     bar = document.createElement('div');
     bar.id = 'ks-cookie-bar';
     bar.setAttribute('role', 'region');
@@ -71,9 +85,10 @@
     placeBar();
     window.addEventListener('resize', placeBar);
     window.addEventListener('scroll', placeBar, { passive: true });
+    bar.__ksT = setInterval(placeBar, 700);
     requestAnimationFrame(function () { requestAnimationFrame(function () { bar.style.opacity = '1'; bar.style.transform = 'translateY(0)'; }); });
   }
-  function closeBar() { if (!bar) return; var b = bar; bar = null; b.style.transform = 'translateY(16px)'; fadeOut(b); }
+  function closeBar() { if (!bar) return; clearInterval(bar.__ksT); var b = bar; bar = null; b.style.transform = 'translateY(16px)'; fadeOut(b); }
   window.ksOpenCookieSettings = function () {
     if (inFrame) { try { if (window.top.ksOpenCookieSettings) { window.top.ksOpenCookieSettings(); return; } } catch (e) {} }
     try { localStorage.removeItem(KEY); } catch (e) {}

@@ -3787,4 +3787,20 @@ if (type === 'click') st.eatBar = false;
   setTimeout(function () { run(); zoomMenus(); }, 600);
   document.addEventListener('pointerdown', function () { setTimeout(zoomMenus, 0); }, true);
 })();
+(function () {
+  if (window.__ksListingReady) return;
+  window.__ksListingReady = true;
+  if (!/\/listing(\/|$)/.test(location.pathname)) return;
+  var t0 = Date.now();
+  (function check() {
+    var host = document.querySelector('div.ihf-container');
+    var sr = host && host.shadowRoot;
+    var det = sr && sr.querySelector('.listing-detail');
+    if (det) {
+      var col = sr.querySelector('.ihf-info-col');
+      if ((col && col.offsetHeight > 0) || Date.now() - t0 > 2500) { det.setAttribute('data-ks-ready', '1'); return; }
+    }
+    if (Date.now() - t0 < 6000) setTimeout(check, 60);
+  })();
+})();
 </script>
