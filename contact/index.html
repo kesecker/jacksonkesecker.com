@@ -30,7 +30,7 @@ a{color:#ffffff;} a:hover{color:#ffffff;}
 .ks-opt.sel{text-decoration:underline;text-decoration-color:#ffffff;text-decoration-thickness:2px;text-underline-offset:3px;font-weight:600;}
 .ks-send{width:100%;padding:14px;font-size:14px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;font-family:Montserrat,system-ui,sans-serif;color:#1a1a1a;background:#ffffff;border:none;border-radius:0;cursor:pointer;transition:opacity .2s ease;}
 .ks-send:hover{opacity:0.85;}
-@media (max-width:760px){ .ks-navrow{display:none !important;} .ks-left{border-right:none !important;padding-right:0 !important;} }
+@media (max-width:760px){ .ks-navrow{display:none !important;} .ks-left{border-right:none !important;padding-right:0 !important;text-align:center !important;} .ks-left *{text-align:center !important;} .ks-ctitle{text-align:center !important;} }
 </style>
 <style data-ks-sb-mobile>@media (max-width:767px){input[placeholder^="Search Address"],input[placeholder^="Busca Direcci"]{font-size:13px !important;}input[placeholder^="Search Address"]::placeholder,input[placeholder^="Busca Direcci"]::placeholder{font-size:13px !important;}div:has(> div > input[placeholder^="Search Address"]) > a,div:has(> div > input[placeholder^="Busca Direcci"]) > a{font-size:13px !important;}div:has(> div > input[placeholder^="Search Address"]) > div > :first-child,div:has(> div > input[placeholder^="Busca Direcci"]) > div > :first-child{font-size:20px !important;}}</style>
 </head>
@@ -52,7 +52,7 @@ a{color:#ffffff;} a:hover{color:#ffffff;}
     </div>
   </section>
   <section>
-    <h2 style="font-size:clamp(30px,4.14vw,44px);font-weight:600;color:#ffffff;margin:0 0 32px;letter-spacing:-0.01em;">Send Me a Message</h2>
+    <h2 class="ks-ctitle" style="font-size:clamp(30px,4.14vw,44px);font-weight:600;color:#ffffff;margin:0 0 32px;letter-spacing:-0.01em;">Send Me a Message</h2>
     <form id="ks-contact" novalidate style="display:flex;flex-direction:column;gap:22px;">
       <div style="display:flex;flex-direction:column;gap:6px;"><label style="font-size:12px;font-weight:600;letter-spacing:-0.01em;color:rgba(255,255,255,0.55);" for="c-name">Full Name *</label><input class="ks-in" id="c-name" name="name" required autocomplete="name" style="width:100%;box-sizing:border-box;padding:8px 2px;font-size:14px;font-family:Montserrat,system-ui,sans-serif;color:#ffffff;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.3);border-radius:0;outline:none;transition:border-color 0.2s ease;"></div>
       <div style="display:flex;flex-direction:column;gap:6px;"><label style="font-size:12px;font-weight:600;letter-spacing:-0.01em;color:rgba(255,255,255,0.55);" for="c-email">Email *</label><input class="ks-in" id="c-email" name="email" type="email" required autocomplete="email" style="width:100%;box-sizing:border-box;padding:8px 2px;font-size:14px;font-family:Montserrat,system-ui,sans-serif;color:#ffffff;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.3);border-radius:0;outline:none;transition:border-color 0.2s ease;"></div>

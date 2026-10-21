@@ -168,6 +168,7 @@
     body { scrollbar-gutter: stable; }
     image-slot::part(ring) { display: none !important; }
   </style>
+  <style>@media (max-width: 760px) { [data-ks-cleft] { border-right: none !important; padding-right: 0 !important; text-align: center !important; } [data-ks-cleft] * { text-align: center !important; } [data-ks-ctitle] { text-align: center !important; } }</style>
 </helmet>
 
 <div style="font-family: var(--rh-font); color: var(--rh-text-primary); background: var(--rh-bg); width: 100%; overflow-x: hidden; position: relative;">
@@ -473,7 +474,7 @@
       <div style="position: fixed; pointer-events: none; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.82) 100%);"></div>
       <button data-ks-x="1" onClick="{{ closeContactModal }}" aria-label="Close" style="position: fixed; top: 24px; right: clamp(20px, 4vw, 40px); background: none; border: none; font-size: 32px; line-height: 1; cursor: pointer; color: #ffffff; z-index: 2; transition: opacity 0.2s ease;">&times;</button>
       <div style="position: relative; z-index: 1; min-height: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 56px; max-width: 1200px; margin: 0 auto; padding: clamp(72px, 10vh, 120px) clamp(24px, 6vw, 64px) 64px; animation: {{ contactModalCardAnimation }};">
-        <div style="border-right: 1px solid rgba(255,255,255,0.18); padding-right: clamp(0px, 4vw, 48px);">
+        <div data-ks-cleft="1" style="border-right: 1px solid rgba(255,255,255,0.18); padding-right: clamp(0px, 4vw, 48px);">
           <h2 data-ks-scaled="1" style="font-size: clamp(30px, 4.14vw, 44px); font-weight: 600; color: #ffffff; margin: 0 0 32px; letter-spacing: -0.01em;">{{ t.contactModalTitle }}</h2>
           <div style="display: flex; flex-direction: column; gap: 36px; font-size: 15px; color: rgba(255,255,255,0.85);">
             <div>
@@ -497,7 +498,7 @@
           </div>
         </div>
         <div>
-          <h2 data-ks-scaled="1" style="font-size: clamp(30px, 4.14vw, 44px); font-weight: 600; color: #ffffff; margin: 0 0 32px; letter-spacing: -0.01em;">{{ t.contactModalFormTitle }}</h2>
+          <h2 data-ks-ctitle="1" data-ks-scaled="1" style="font-size: clamp(30px, 4.14vw, 44px); font-weight: 600; color: #ffffff; margin: 0 0 32px; letter-spacing: -0.01em;">{{ t.contactModalFormTitle }}</h2>
           <form onSubmit="{{ handleContactSubmit }}" style="display: flex; flex-direction: column; gap: 22px;">
             <div style="display: flex; flex-direction: column; gap: 6px;">
               <label style="font-size: 12px; font-weight: 600; letter-spacing: -0.01em; color: rgba(255,255,255,0.55);">{{ t.formFullName }} *</label>
