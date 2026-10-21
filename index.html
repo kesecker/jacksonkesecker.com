@@ -25,6 +25,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&amp;display=block">
 <script src="./support.js"></script>
+<style data-ks-sb-mobile>@media (max-width:767px){input[placeholder^="Search Address"],input[placeholder^="Busca Direcci"]{font-size:13px !important;}input[placeholder^="Search Address"]::placeholder,input[placeholder^="Busca Direcci"]::placeholder{font-size:13px !important;}div:has(> div > input[placeholder^="Search Address"]) > a,div:has(> div > input[placeholder^="Busca Direcci"]) > a{font-size:13px !important;}div:has(> div > input[placeholder^="Search Address"]) > div > :first-child,div:has(> div > input[placeholder^="Busca Direcci"]) > div > :first-child{font-size:20px !important;}}</style>
 </head>
 <body>
 <x-dc>
@@ -130,9 +131,14 @@
     }
     @media (max-width: 767px) {
       [data-reveal-key] { opacity: 1 !important; transform: none !important; transition: none !important; }
-      html #testimonials-viewport { padding: 0 64px !important; }
-      #testimonials-viewport > div { gap: 128px !important; }
-      #testimonials-viewport > div > * { width: calc(100vw - 128px) !important; box-sizing: border-box !important; }
+      html #testimonials-viewport { padding: 0 44px !important; }
+      #testimonials-viewport > div { gap: 88px !important; }
+      #testimonials-viewport > div > * { width: calc(100vw - 88px) !important; box-sizing: border-box !important; padding: 26px 8px !important; }
+      #testimonials-viewport > div > * > p { font-size: 14px !important; line-height: 1.75 !important; }
+      div:has(> #testimonials-viewport) > button { width: 36px !important; height: 36px !important; }
+      div:has(> #testimonials-viewport) > button[aria-label="Previous"] { left: 4px !important; }
+      div:has(> #testimonials-viewport) > button[aria-label="Next"] { right: 4px !important; }
+      div:has(> #testimonials-viewport) > button svg { width: 16px !important; height: 16px !important; }
     }
     @media (max-width: 700px) {
     }
@@ -1338,6 +1344,20 @@ class Component extends DCLogic {
       this.marqueeOffset -= (this.marqueeSetW / 220) * dt;
       if (this.marqueeOffset <= -this.marqueeSetW) this.marqueeOffset += this.marqueeSetW;
       if (this.marqueeTrackEl) this.marqueeTrackEl.style.transform = 'translate3d(' + this.marqueeOffset + 'px,0,0)';
+    } else if (window.innerWidth <= 767 && !this._mqAnimating) {
+      const vp = this.marqueeViewportEl, track = this.marqueeTrackEl;
+      if (vp && track && track.children.length && (this._mqCW !== window.innerWidth || !this._mqCentered)) {
+        this._mqMeasure();
+        const vr = vp.getBoundingClientRect(), mid = vr.left + vr.width / 2;
+        let best = Infinity, nx = 0;
+        Array.from(track.children).forEach((c) => { const r = c.getBoundingClientRect(); if (!r.width) return; const x = r.left + r.width / 2; if (Math.abs(x - mid) < best) { best = Math.abs(x - mid); nx = x; } });
+        if (best < Infinity) {
+          this.marqueeOffset = Math.round(this.marqueeOffset + (mid - nx));
+          track.style.transition = 'none';
+          track.style.transform = 'translate3d(' + this.marqueeOffset + 'px,0,0)';
+          this._mqCW = window.innerWidth; this._mqCentered = true;
+        }
+      }
     }
   };
 
