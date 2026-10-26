@@ -132,7 +132,7 @@
     @media (max-width: 767px) {
       [data-reveal-key] { opacity: 1 !important; transform: none !important; transition: none !important; }
       #ks-testi-desktop { display: none !important; }
-      #hero-paragraph { font-size: 12.5px !important; line-height: 1.55 !important; max-width: 340px !important; }
+      #hero-paragraph { font-size: 12px !important; line-height: 1.55 !important; max-width: 340px !important; }
       #ks-testi-mobile { display: flex !important; }
       html #testimonials-viewport { padding: 0 44px !important; }
       #testimonials-viewport > div { gap: 88px !important; }
@@ -214,9 +214,9 @@
           </div>
         </div>
         <div style="align-self: center; width: 100%; box-sizing: border-box; transform: translateY(calc(-8vh - 40px));">
-        <div id="hero-text-block" style="box-sizing: border-box; padding-left: clamp(20px, 6vw, 73px); padding-right: 24px; display: flex; flex-direction: column; gap: clamp(6px, 1vw, 10px); text-align: left; max-width: 774px;"><span id="hero-eyebrow-span" style="font-family: var(--rh-font); font-size: clamp(12px, 1.1vw, 17px); font-weight: 400; letter-spacing: 0.06em; color: #ffffff;">Keller Williams Salinas Valley | KW Coastal Estates | DRE#02196405</span><div id="hero-heading-wrap" style="display: flex; align-items: center; overflow: hidden; min-height: clamp(68px, 12vw, 124px);">
+        <div id="hero-text-block" style="box-sizing: border-box; padding-left: clamp(20px, 6vw, 73px); padding-right: 24px; display: flex; flex-direction: column; gap: clamp(6px, 1vw, 10px); text-align: left; max-width: 774px;"><span id="hero-eyebrow-span" style="font-family: var(--rh-font); font-size: clamp(11px, 1vw, 15px); font-weight: 400; letter-spacing: 0.06em; color: #ffffff;">Keller Williams Salinas Valley | KW Coastal Estates | DRE#02196405</span><div id="hero-heading-wrap" style="display: flex; align-items: center; overflow: hidden; min-height: clamp(68px, 12vw, 124px);">
           <h1 id="hero-heading" style="font-size: clamp(24px, 3.4vw, 52px); font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; margin: 0; color: #ffffff; text-align: left; opacity: {{ heroTextOpacity }}; transform: {{ heroTextTransform }}; transition: opacity 0.81s ease, transform 0.81s ease;">{{ rotatingHeroText }}</h1>
-        </div><p id="hero-paragraph" style="font-size: clamp(14px, 1.2vw, 18px); line-height: 1.6; color: rgba(255,255,255,0.88); max-width: 620px; margin: 0">{{ t.heroParagraph }}</p><a href="https://jacksonkesecker.com/listings" style="margin-top: 34px; display: inline-flex; align-items: center; justify-content: center; width: fit-content; min-height: 48px; padding: 0 28px; box-sizing: border-box; border: 1.5px solid #ffffff; border-radius: 0; background: #ffffff; text-decoration: none; color: #000000; font-size: 16px; font-weight: 500; letter-spacing: -0.01em; text-transform: none; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;" style-hover="background: transparent; color: #ffffff; border-color: transparent;">Search for Properties</a></div>
+        </div><p id="hero-paragraph" style="font-size: clamp(13px, 1.1vw, 16px); line-height: 1.6; color: rgba(255,255,255,0.88); max-width: 620px; margin: 0">{{ t.heroParagraph }}</p><a href="https://jacksonkesecker.com/listings" style="margin-top: 34px; display: inline-flex; align-items: center; justify-content: center; width: fit-content; min-height: 48px; padding: 0 28px; box-sizing: border-box; border: 1.5px solid #ffffff; border-radius: 0; background: #ffffff; text-decoration: none; color: #000000; font-size: 16px; font-weight: 500; letter-spacing: -0.01em; text-transform: none; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;" style-hover="background: transparent; color: #ffffff; border-color: transparent;">Search for Properties</a></div>
         </div>
       </div>
       <div id="nav-burger-wrapper" style="position: fixed; top: 20px; right: clamp(16px, 3vw, 32px); z-index: 2147483001; opacity: {{ burgerOpacity }}; pointer-events: {{ burgerPointerEvents }}; transition: opacity 0.35s ease;">
@@ -598,7 +598,7 @@
   </div>
 
   <div onClick="{{ closeA11yPanel }}" style="{{ a11yOverlayStyle }} position: fixed; inset: 0; z-index: 2147483011; background: transparent;"></div>
-  <div id="a11y-panel" onClick="{{ stopPropagation }}" style="position: fixed; z-index: 2147483012; width: 380px; max-width: calc(100vw - 32px); overflow-y: auto; {{ a11yPanelStyle }} {{ a11yPanelFadeStyle }} background: #ffffff; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.35); font-family: var(--rh-font);">
+  <div id="a11y-panel" onClick="{{ stopPropagation }}" style="position: fixed; z-index: 2147483012; width: 340px; zoom: 0.9; max-width: calc(100vw - 32px); overflow-y: auto; {{ a11yPanelStyle }} {{ a11yPanelFadeStyle }} background: #ffffff; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.35); font-family: var(--rh-font);">
       <div style="position: sticky; top: 0; background: #ffffff; display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid var(--rh-border); z-index: 1;">
         <div style="display: flex; align-items: center; gap: 8px;">
           <div style="width: 26px; height: 26px; border-radius: 50%; background: #ffffff; border: 1px solid var(--rh-border); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
@@ -1917,10 +1917,10 @@ class Component extends DCLogic {
         'bottom-right': 'position: fixed; right: 24px; bottom: 146px;',
       }[this.state.a11yPosition],
       a11yPanelStyle: {
-        'top-left': 'left: 24px; top: 90px; max-height: min(80vh, calc(100vh - 110px));',
-        'top-right': 'right: 24px; top: 90px; max-height: min(80vh, calc(100vh - 110px));',
-        'bottom-left': 'left: 24px; bottom: 140px; max-height: min(80vh, calc(100vh - 172px));',
-        'bottom-right': 'right: 24px; bottom: 218px; max-height: min(80vh, calc(100vh - 250px));',
+        'top-left': 'left: 24px; top: 90px; max-height: min(72vh, calc(100vh - 140px)); max-height: min(72dvh, calc(100dvh - 140px));',
+        'top-right': 'right: 24px; top: 90px; max-height: min(72vh, calc(100vh - 140px)); max-height: min(72dvh, calc(100dvh - 140px));',
+        'bottom-left': 'left: 24px; bottom: 140px; max-height: min(72vh, calc(100vh - 202px)); max-height: min(72dvh, calc(100dvh - 202px));',
+        'bottom-right': 'right: 24px; bottom: 218px; max-height: min(72vh, calc(100vh - 280px)); max-height: min(72dvh, calc(100dvh - 280px));',
       }[this.state.a11yPosition],
       setPositionTL: this.setPositionTL,
       setPositionTR: this.setPositionTR,
