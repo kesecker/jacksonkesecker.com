@@ -245,7 +245,8 @@
       <div id="hero-search-bar" style="position: fixed; bottom: 0; left: 0; width: 100%; box-sizing: border-box; z-index: 100; background: #1a1a1a; display: flex; align-items: center; justify-content: space-between; padding: 20px 32px 20px 40px; gap: 24px;">
         <div style="display: flex; align-items: center; gap: 14px; flex: 1; max-width: 520px;">
           <span onClick="{{ goToListings }}" style="color: #ffffff; font-size: 24px; line-height: 1; cursor: pointer;">⌕</span>
-          <input type="text" value="{{ heroSearchValue }}" onChange="{{ handleHeroSearchChange }}" onKeyDown="{{ handleHeroSearchKeyDown }}" placeholder="{{ t.searchPlaceholder }}" style="background: transparent; border: none; outline: none; color: #ffffff; font-family: var(--rh-font); font-size: 15px; width: 100%;">
+          <input id="ks-bar-fallback" type="text" value="{{ heroSearchValue }}" onChange="{{ handleHeroSearchChange }}" onKeyDown="{{ handleHeroSearchKeyDown }}" placeholder="{{ t.searchPlaceholder }}" style="background: transparent; border: none; outline: none; color: #ffffff; font-family: var(--rh-font); font-size: 15px; width: 100%;">
+          <div id="ks-quick-search" ref="{{ quickSearchRef }}" data-placeholder="{{ t.searchPlaceholder }}" style="display: none; flex: 1; min-width: 0;"></div>
         </div>
         <a href="#" onClick="{{ openContactModal }}" style="flex-shrink: 0; display: inline-flex; align-items: center; align-self: center; font-size: 15px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.2; color: rgba(255,255,255,0.6); text-decoration: none; padding: 0; margin: 0; transition: color 0.3s ease;" style-hover="color: #ffffff;">{{ t.navContact }}</a>
       </div>
@@ -1152,6 +1153,49 @@ class Component extends DCLogic {
   };
 
   carouselTransition = 'transform 2.8s cubic-bezier(0.16, 1, 0.3, 1)';
+  // Bottom search bar: iHomefinder Quick Search widget (native suggestions incl. clickable listings), restyled to match the bar.
+  // Our own input stays as the fallback until the widget's input actually renders.
+  quickSearchRef = (node) => {
+    if (!node || node.dataset.ksMounted) return;
+    const CSS = ":host{all:initial;display:block;width:100%;font-family:Montserrat,sans-serif!important;}"
+      + "*{font-family:Montserrat,sans-serif!important;letter-spacing:-0.01em!important;box-shadow:none!important;}"
+      + "form,div,fieldset{background:transparent!important;border:none!important;margin:0!important;padding:0!important;min-height:0!important;}"
+      + "label,legend,.MuiInputLabel-root,.MuiFormLabel-root{display:none!important;}"
+      + "input{background:transparent!important;border:none!important;outline:none!important;color:#ffffff!important;font-size:15px!important;font-weight:400!important;padding:6px 0!important;width:100%!important;height:auto!important;}"
+      + "input::placeholder{color:rgba(255,255,255,0.6)!important;opacity:1!important;}"
+      + ".MuiOutlinedInput-notchedOutline,.MuiInput-underline:before,.MuiInput-underline:after{display:none!important;border:none!important;}"
+      + "svg{color:#ffffff!important;fill:currentColor!important;}"
+      + "button{background:transparent!important;color:#ffffff!important;border:none!important;border-radius:0!important;}"
+      + "button[type='submit'],button:not([aria-label]){display:none!important;}"
+      + ".MuiChip-root{background:rgba(255,255,255,0.14)!important;color:#ffffff!important;border-radius:0!important;}"
+      + ".MuiChip-label{color:#ffffff!important;font-size:13px!important;}";
+    const go = () => {
+      if (node.dataset.ksMounted) return;
+      node.dataset.ksMounted = '1';
+      try { node.appendChild(window.ihfKestrel.render({ component: 'quickSearchWidget', style: 'universal' })); } catch (e) { return; }
+      let n = 0;
+      const wait = () => {
+        const host = node.querySelector('div.ihf-container') || node.firstElementChild;
+        const sr = host && host.shadowRoot;
+        const inp = sr && Array.from(sr.querySelectorAll('input')).find((i) => !/^(hidden|checkbox|radio)$/i.test(i.type || ''));
+        if (inp) {
+          if (!sr.querySelector('style[data-ks-qs]')) { const st = document.createElement('style'); st.setAttribute('data-ks-qs', '1'); st.textContent = CSS; sr.appendChild(st); }
+          const ph = node.getAttribute('data-placeholder');
+          if (ph) inp.setAttribute('placeholder', ph);
+          node.style.display = 'block';
+          const fb = document.getElementById('ks-bar-fallback');
+          if (fb) fb.style.display = 'none';
+          return;
+        }
+        if (++n < 60) setTimeout(wait, 250);
+        else { node.style.display = 'none'; }
+      };
+      wait();
+    };
+    if (window.ihfKestrel && window.ihfKestrel.render) { go(); return; }
+    const ks = document.querySelector('script[src*="ihf-kestrel.js"]');
+    if (ks) ks.addEventListener('load', go, { once: true });
+  };
   marqueeTrackEl = null;
   marqueeTrackRef = (el) => { this.marqueeTrackEl = el; };
   marqueeViewportEl = null;
@@ -1745,6 +1789,7 @@ class Component extends DCLogic {
       handleHeroSearchChange: this.handleHeroSearchChange,
       handleHeroSearchKeyDown: this.handleHeroSearchKeyDown,
       goToListings: this.goToListings,
+      quickSearchRef: this.quickSearchRef,
       cityGroups: this.getCityGroups(),
       topGroups: this.getCityGroups().slice(0, 2),
       bottomGroup: this.getCityGroups()[2],
