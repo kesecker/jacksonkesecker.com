@@ -397,6 +397,14 @@ class Component extends DCLogic {
       const test = (o) => { const t = norm(o.textContent); return mls ? t.indexOf(qn) >= 0 || /^\d/.test(t) : t.indexOf(qn) === 0 || t.indexOf(' ' + qn) >= 0; };
       return ok.find(test) || (mls ? ok.find((o) => /^\s*\d/.test(o.textContent || '')) : null) || opts.find(test) || null;
     };
+    // Picking a listing suggestion opens it in a new tab (control panel setting); a script-triggered new tab gets popup-blocked, so open it in this tab instead.
+    window.__ksOpenListing = (opt) => {
+      const orig = window.open;
+      window.open = function (u) { window.open = orig; if (u) { location.href = u; return null; } return orig.apply(window, arguments); };
+      setTimeout(() => { if (window.open !== orig) window.open = orig; }, 3000);
+      opt.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, composed: true }));
+      opt.click();
+    };
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Enter') return;
       const inp = e.composedPath ? e.composedPath()[0] : e.target;
@@ -443,7 +451,7 @@ class Component extends DCLogic {
       const tryPick = () => {
         if (isAddr) {
           const hit = window.__ksFindListingOption(q);
-          if (hit) { console.log('[ks] prefill picking listing:', (hit.textContent || '').trim()); hit.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, composed: true })); hit.click(); return; }
+          if (hit) { console.log('[ks] prefill picking listing:', (hit.textContent || '').trim()); window.__ksOpenListing(hit); return; }
           if (Date.now() - t0 < 8000) setTimeout(tryPick, 200);
           return;
         }
@@ -479,6 +487,7 @@ class Component extends DCLogic {
       if (b) b.click();
     };
     const typeInCard = (ci) => {
+      if (isAddr) { ci.focus(); ci.click(); setVal(ci, q); setTimeout(() => pickOption(ci), 300); return; }
       ci.focus();
       ci.click();
       setVal(ci, q);
@@ -502,13 +511,12 @@ class Component extends DCLogic {
         inp.focus();
         inp.click();
         const t1 = Date.now();
-        if (isAddr) { setVal(inp, q); setTimeout(() => pickOption(inp), 300); return; }
         const waitCard = () => {
           const ci = cardInput();
           if (ci) { setTimeout(() => typeInCard(cardInput() || ci), 500); return; }
           if (Date.now() - t1 < 2500) { setTimeout(waitCard, 150); return; }
           setVal(inp, q);
-          setTimeout(() => pickOption(inp), 250);
+          setTimeout(() => pickOption(inp), isAddr ? 400 : 250);
         };
         waitCard();
         return;
