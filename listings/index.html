@@ -380,7 +380,36 @@ class Component extends DCLogic {
     }
     this._ihfFixAllShadowRoots();
   };
+  // Address / MLS # search: iHomefinder lists matching homes under "Listings" in the dropdown, but Enter (and our ?q= handoff) picked the first suggestion — always a city.
+  _ksAddrEnter = () => {
+    if (window.__ksAddrEnterOn) return;
+    window.__ksAddrEnterOn = true;
+    const norm = (s) => (s || '').toLowerCase().replace(/[.,#]/g, ' ').replace(/\b(street|st)\b/g, 'st').replace(/\b(avenue|ave)\b/g, 'ave').replace(/\b(court|ct)\b/g, 'ct').replace(/\b(drive|dr)\b/g, 'dr').replace(/\b(road|rd)\b/g, 'rd').replace(/\b(lane|ln)\b/g, 'ln').replace(/\b(boulevard|blvd)\b/g, 'blvd').replace(/\b(place|pl)\b/g, 'pl').replace(/\b(circle|cir)\b/g, 'cir').replace(/\b(way)\b/g, 'way').replace(/\s+/g, ' ').trim();
+    window.__ksIsAddrQuery = (v) => /^\s*\d+[a-z]?\s+[a-z]/i.test(v || '') || /^\s*ml\d{6,}/i.test(v || '');
+    window.__ksFindListingOption = (v) => {
+      const qn = norm(v);
+      if (!qn) return null;
+      let opts = [];
+      [document, ...Array.from(document.querySelectorAll('div.ihf-container, div.ihf-overlay-container')).map((h) => h.shadowRoot).filter(Boolean)].forEach((r) => { opts = opts.concat(Array.from(r.querySelectorAll('[role="option"], li.MuiAutocomplete-option'))); });
+      opts = opts.filter((o) => o.offsetParent !== null && /\d/.test(o.textContent || ''));
+      const ok = opts.filter((o) => !/does not match/i.test(o.textContent || ''));
+      const mls = /^ml\d{6,}/.test(qn);
+      const test = (o) => { const t = norm(o.textContent); return mls ? t.indexOf(qn) >= 0 || /^\d/.test(t) : t.indexOf(qn) === 0 || t.indexOf(' ' + qn) >= 0; };
+      return ok.find(test) || (mls ? ok.find((o) => /^\s*\d/.test(o.textContent || '')) : null) || opts.find(test) || null;
+    };
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      const inp = e.composedPath ? e.composedPath()[0] : e.target;
+      if (!inp || inp.tagName !== 'INPUT' || !window.__ksIsAddrQuery(inp.value)) return;
+      const hit = window.__ksFindListingOption(inp.value);
+      if (!hit) return;
+      e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+      hit.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, composed: true }));
+      hit.click();
+    }, true);
+  };
   _ihfPrefillSearch = () => {
+    this._ksAddrEnter();
     let q = (new URLSearchParams(window.location.search).get('q') || '').trim();
     try {
       const sq = sessionStorage.getItem('ksPrefillQ'), at = +sessionStorage.getItem('ksPrefillAt') || 0;
@@ -408,9 +437,16 @@ class Component extends DCLogic {
       }
       return null;
     };
+    const isAddr = window.__ksIsAddrQuery(q);
     const pickOption = (inp) => {
       const t0 = Date.now();
       const tryPick = () => {
+        if (isAddr) {
+          const hit = window.__ksFindListingOption(q);
+          if (hit) { console.log('[ks] prefill picking listing:', (hit.textContent || '').trim()); hit.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, composed: true })); hit.click(); return; }
+          if (Date.now() - t0 < 8000) setTimeout(tryPick, 200);
+          return;
+        }
         let opts = [];
         roots().forEach((r) => { opts = opts.concat(Array.from(r.querySelectorAll('[role="option"], li.MuiAutocomplete-option'))); });
         opts = opts.filter((o) => o.offsetParent !== null && (o.textContent || '').trim());
@@ -466,6 +502,7 @@ class Component extends DCLogic {
         inp.focus();
         inp.click();
         const t1 = Date.now();
+        if (isAddr) { setVal(inp, q); setTimeout(() => pickOption(inp), 300); return; }
         const waitCard = () => {
           const ci = cardInput();
           if (ci) { setTimeout(() => typeInCard(cardInput() || ci), 500); return; }
@@ -482,6 +519,7 @@ class Component extends DCLogic {
   };
   ihfListingSearchRef = (node) => {
     if (!node || node.dataset.ihfMounted) return;
+    this._ksAddrEnter();
     const doMount = () => {
       if (node.dataset.ihfMounted) return;
       node.dataset.ihfMounted = '1';
