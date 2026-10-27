@@ -1103,7 +1103,7 @@ class Component extends DCLogic {
       navHome: 'Home', navListings: 'Search', navSearch: 'Notable Sales', navNeighborhoods: 'Communities', navAbout: 'About', navContact: 'Contact',
       heroPhrases: ['Monterey County REALTOR®', 'Trusted Real Estate Advisor', 'Local Expertise', 'International Reach', 'Results You Can Count On'],
       heroParagraph: 'Lifelong, 11th-generation Monterey County native with deep local roots, extensive regional knowledge and a proven track record.',
-      searchPlaceholder: 'Search Address, City, or Community',
+      searchPlaceholder: 'Search Address or City',
       aboutEyebrow: 'Meet Your Agent',
       aboutParagraph: 'Born in Monterey and raised in Soledad, Jackson is an 11th-generation Monterey County resident. He grew up between the Peninsula\'s beaches and the Salinas Valley\'s farmland and mountains, and he knows this market from the coast to the valley floor.\n\nBuying or selling a home is one of the biggest decisions you\'ll ever make. It deserves an agent who understands the local neighborhoods and economy, and who measures success by whether his clients reach their goals, not by the size of the commission.\n\nJackson has made it his mission to help his Central Coast community achieve the dream of homeownership. Whether you\'re a first-time buyer, a growing family, or a homeowner ready to sell, he\'ll give you honest advice and clear communication from the first conversation to closing day.', aboutReady: 'Ready to get started?', aboutGetInTouch: 'Get in touch',
       aboutParagraphRest: 'Born in Monterey and raised in Soledad, Jackson is an 11th-generation Monterey County resident. He grew up between the Peninsula\'s beaches and the Salinas Valley\'s farmland and mountains, and he knows this market from the coast to the valley floor.\n\nBuying or selling a home is one of the biggest decisions you\'ll ever make. It deserves an agent who understands the local neighborhoods and economy, and who measures success by whether his clients reach their goals, not by the size of the commission.\n\nJackson has made it his mission to help his Central Coast community achieve the dream of homeownership. Whether you\'re a first-time buyer, a growing family, or a homeowner ready to sell, he\'ll give you honest advice and clear communication from the first conversation to closing day.',
@@ -1128,7 +1128,7 @@ class Component extends DCLogic {
       navHome: 'Inicio', navListings: 'Buscar', navSearch: 'Ventas Notables', navNeighborhoods: 'Comunidades', navAbout: 'Nosotros', navContact: 'Contacto',
       heroPhrases: ['Agente de Bienes Raíces del Condado de Monterey', 'Asesor de Bienes Raíces de Confianza', 'Experiencia Local', 'Alcance Internacional', 'Resultados en los que Puedes Confiar'],
       heroParagraph: 'Nacido y criado en el Condado de Monterey, con raíces locales profundas y resultados comprobados.',
-      searchPlaceholder: 'Busca Dirección, Ciudad o Comunidad',
+      searchPlaceholder: 'Busca Dirección o Ciudad',
       aboutEyebrow: 'Conoce a Tu Agente',
       aboutParagraph: 'Nacido en Monterey y criado en Soledad, Jackson es residente de undécima generación del Condado de Monterey. Creció entre las playas de la Península y los campos agrícolas y montañas del Valle de Salinas, y conoce este mercado desde la costa hasta el fondo del valle.\n\nComprar o vender una casa es una de las decisiones más importantes de su vida. Merece un agente que entienda los vecindarios y la economía local, y que mida el éxito por si sus clientes alcanzan sus metas, no por el tamaño de la comisión.\n\nJackson ha hecho su misión ayudar a su comunidad de la Costa Central a lograr el sueño de ser propietarios. Ya sea que usted compre por primera vez, tenga una familia en crecimiento o esté listo para vender, le dará consejos honestos y una comunicación clara desde la primera conversación hasta el día del cierre.', aboutReady: '¿Listo para comenzar?', aboutGetInTouch: 'Contáctenos',
       aboutParagraphRest: 'Nacido en Monterey y criado en Soledad, Jackson es residente de undécima generación del Condado de Monterey. Creció entre las playas de la Península y los campos agrícolas y montañas del Valle de Salinas, y conoce este mercado desde la costa hasta el fondo del valle.\n\nComprar o vender una casa es una de las decisiones más importantes de su vida. Merece un agente que entienda los vecindarios y la economía local, y que mida el éxito por si sus clientes alcanzan sus metas, no por el tamaño de la comisión.\n\nJackson ha hecho su misión ayudar a su comunidad de la Costa Central a lograr el sueño de ser propietarios. Ya sea que usted compre por primera vez, tenga una familia en crecimiento o esté listo para vender, le dará consejos honestos y una comunicación clara desde la primera conversación hasta el día del cierre.',
@@ -1176,7 +1176,8 @@ class Component extends DCLogic {
     const go = () => {
       if (node.dataset.ksMounted) return;
       node.dataset.ksMounted = '1';
-      try { node.appendChild(window.ihfKestrel.render({ component: 'quickSearchWidget', style: 'universal' })); } catch (e) { return; }
+      window.__ksQs = 'rendering';
+      try { node.appendChild(window.ihfKestrel.render({ component: 'quickSearchWidget', style: 'universal' })); } catch (e) { window.__ksQs = 'error: ' + (e && e.message); return; }
       let n = 0;
       const wait = () => {
         const host = node.querySelector('div.ihf-container') || node.firstElementChild;
@@ -1189,16 +1190,18 @@ class Component extends DCLogic {
           node.style.display = 'block';
           const fb = document.getElementById('ks-bar-fallback');
           if (fb) fb.style.display = 'none';
+          window.__ksQs = 'ready';
           this.startQsDropdown(sr, inp);
           return;
         }
         if (++n < 60) setTimeout(wait, 250);
-        else { node.style.display = 'none'; }
+        else { node.style.display = 'none'; window.__ksQs = 'no input: ' + (host ? host.tagName + '.' + host.className + (host.shadowRoot ? ' (shadow)' : ' (no shadow)') : 'nothing rendered'); }
       };
       wait();
     };
     if (window.ihfKestrel && window.ihfKestrel.render) { go(); return; }
     const ks = document.querySelector('script[src*="ihf-kestrel.js"]');
+    window.__ksQs = ks ? 'waiting for iHomefinder script' : 'iHomefinder script missing';
     if (ks) ks.addEventListener('load', go, { once: true });
   };
   // Bar sits at the bottom of the page: open the suggestions ABOVE it (white panel), and fix ALL-CAPS cities ("SOLEDAD" → "Soledad").
@@ -1213,7 +1216,7 @@ class Component extends DCLogic {
       const rect = inp.getBoundingClientRect();
       if (sr.activeElement === inp) {
         const tw0 = document.createTreeWalker(sr, NodeFilter.SHOW_TEXT); let t0;
-        while ((t0 = tw0.nextNode())) { const v = t0.nodeValue; if (v && /[A-Z]{3}[A-Z'.\- ]*,\s*[A-Z]{2}\b/.test(v)) { const fx = v.replace(/\b([A-Z][A-Z'.\-]+(?:\s+[A-Z][A-Z'.\-]+)*)(,\s*[A-Z]{2}\b)/g, (m, c, r) => c.toLowerCase().replace(/(^|[\s\-])([a-z])/g, (q, p, ch) => p + ch.toUpperCase()) + r); if (fx !== v) t0.nodeValue = fx; } }
+        while ((t0 = tw0.nextNode())) { const v = t0.nodeValue; if (v && /,\s*[A-Z]{2}\b/.test(v)) { const fx = v.replace(/\b([A-Z][A-Z'.\-]+(?:\s+[A-Z][A-Z'.\-]+)*)(,\s*[A-Z]{2}\b)/g, (m, c, r) => c.toLowerCase().replace(/(^|[\s\-])([a-z])/g, (q, p, ch) => p + ch.toUpperCase()) + r); const fx2 = fx.replace(/^(.*\b(?:Street|Avenue|Road|Drive|Lane|Court|Place|Way|Circle|Boulevard|Terrace|Trail|Parkway|Highway|Loop|Row|Square|Ridge|Hill|Run|Path|Pass|View|Point|Crossing|Cove|Glen|Grove|Heights|Plaza|Alley|Walk|Bend|Vista|St|Ave|Av|Rd|Dr|Ln|Ct|Pl|Cir|Blvd|Ter|Trl|Pkwy|Hwy|Sq|Xing|Pt|Cv|Hts|Vw|Aly)\.?(?:\s+(?:#|Unit|Apt|Ste)\s*[\w-]+)?)\s+([A-Z][^,]*,\s*[A-Z]{2}\b)/, '$1, $2'); if (fx2 !== v) t0.nodeValue = fx2; } }
       }
       roots().forEach((r) => {
         r.querySelectorAll('.MuiAutocomplete-popper, .MuiPopper-root, [role="listbox"]').forEach((p) => {
