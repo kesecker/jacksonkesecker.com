@@ -1207,6 +1207,27 @@ class Component extends DCLogic {
   // Bar sits at the bottom of the page: open the suggestions ABOVE it (white panel), and fix ALL-CAPS cities ("SOLEDAD" → "Soledad").
   startQsDropdown(sr, inp) {
     if (this._qsTimer) return;
+    // Enter in the quick search: pick the top suggestion and let iHomefinder submit its own search (proper city filter). Fallback: /listings?q=
+    inp.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' || this._qsGo) return;
+      const q = (inp.value || '').trim();
+      if (!q) return;
+      const rts = [sr]; document.querySelectorAll('div.ihf-overlay-container').forEach((h) => { if (h.shadowRoot) rts.push(h.shadowRoot); });
+      const opts = []; rts.forEach((r) => r.querySelectorAll('[role="option"], li.MuiAutocomplete-option').forEach((o) => { if (o.offsetParent !== null) opts.push(o); }));
+      const ql = q.toLowerCase();
+      const opt = opts.find((o) => (o.textContent || '').trim().toLowerCase().indexOf(ql) === 0) || opts[0];
+      if (!opt) return;
+      e.preventDefault(); e.stopPropagation();
+      this._qsGo = true;
+      opt.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, composed: true })); opt.click();
+      const here = location.href;
+      setTimeout(() => {
+        if (location.href !== here) return;
+        const btn = Array.from(sr.querySelectorAll('button')).find((b) => b.type === 'submit' || /search/i.test((b.textContent || '') + (b.getAttribute('aria-label') || '')));
+        if (btn) btn.click();
+      }, 350);
+      setTimeout(() => { if (location.href === here) location.href = 'https://jacksonkesecker.com/listings?q=' + encodeURIComponent(q); }, 2200);
+    }, true);
     const KEEP = /^(CA|NV|OR|AZ|USA|NE|NW|SE|SW|ML\d+|[A-Z]?\d+[A-Z]?|II|III|IV)$/;
     const fixCase = (s) => s.replace(/\b[A-Z][A-Z'\-]{1,}\b/g, (w) => (KEEP.test(w) ? w : w.charAt(0) + w.slice(1).toLowerCase()));
     const set = (el, k, v) => { if (el.style.getPropertyValue(k) !== v || el.style.getPropertyPriority(k) !== 'important') el.style.setProperty(k, v, 'important'); };
