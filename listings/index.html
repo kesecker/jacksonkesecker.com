@@ -467,7 +467,7 @@ class Component extends DCLogic {
           best.click();
           return;
         }
-        if (Date.now() - t0 < 6000) setTimeout(tryPick, 150);
+        if (Date.now() - t0 < 6000) setTimeout(tryPick, 60);
         else inp.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, bubbles: true, composed: true }));
       };
       tryPick();
@@ -498,11 +498,11 @@ class Component extends DCLogic {
           n++;
           const card = theCard();
           const chips = card ? Array.from(card.querySelectorAll('[class*="chip" i], [role="button"]')).map((x) => (x.textContent || '').toLowerCase()).join(' ') : '';
-          if (chips.indexOf(ql) >= 0 || n > 20) { console.log('[ks] prefill', chips.indexOf(ql) >= 0 ? 'city selected' : 'city not confirmed', '→ View Results'); setTimeout(viewResults, 300); return; }
-          setTimeout(go, 200);
+          if (chips.indexOf(ql) >= 0 || n > 20) { console.log('[ks] prefill', chips.indexOf(ql) >= 0 ? 'city selected' : 'city not confirmed', '→ View Results'); setTimeout(viewResults, 60); return; }
+          setTimeout(go, 80);
         };
-        setTimeout(go, 500);
-      }, 300);
+        setTimeout(go, 150);
+      }, 120);
     };
     const tick = () => {
       const inp = findInput();
@@ -514,8 +514,8 @@ class Component extends DCLogic {
         const t1 = Date.now();
         const waitCard = () => {
           const ci = cardInput();
-          if (ci) { setTimeout(() => typeInCard(cardInput() || ci), 500); return; }
-          if (Date.now() - t1 < 2500) { setTimeout(waitCard, 150); return; }
+          if (ci) { setTimeout(() => typeInCard(cardInput() || ci), 120); return; }
+          if (Date.now() - t1 < 2500) { setTimeout(waitCard, 60); return; }
           setVal(inp, q);
           setTimeout(() => pickOption(inp), isAddr ? 400 : 250);
         };
