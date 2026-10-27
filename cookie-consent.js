@@ -25,8 +25,8 @@
     var b = document.createElement('button');
     b.type = 'button';
     b.textContent = label;
-    var on = function (fill) { b.style.background = fill ? '#1a1a1a' : '#ffffff'; b.style.color = fill ? '#ffffff' : '#1a1a1a'; };
-    b.style.cssText = 'min-height:46px;padding:0 24px;border:1px solid ' + (solid ? '#1a1a1a' : '#d6d6d6') + ';border-radius:999px;font:600 13px ' + FONT + ';letter-spacing:-0.01em;cursor:pointer;white-space:nowrap;transition:background-color .25s ease,color .25s ease,border-color .25s ease;';
+    var on = function (fill) { b.style.background = fill ? '#1a1a1a' : '#ffffff'; b.style.color = fill ? '#ffffff' : '#1a1a1a'; b.style.boxShadow = 'none'; };
+    b.style.cssText = 'min-height:46px;padding:0 24px;border:1px solid ' + (solid ? '#1a1a1a' : '#d6d6d6') + ';border-radius:12px;font:600 13px ' + FONT + ';letter-spacing:-0.01em;cursor:pointer;white-space:nowrap;transition:background-color .25s ease,color .25s ease,border-color .25s ease,box-shadow .25s ease;';
     on(solid);
     b.addEventListener('mouseenter', function () { on(!solid); b.style.borderColor = '#1a1a1a'; });
     b.addEventListener('mouseleave', function () { on(solid); b.style.borderColor = solid ? '#1a1a1a' : '#d6d6d6'; });
