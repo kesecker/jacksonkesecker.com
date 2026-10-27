@@ -246,6 +246,7 @@
         <div style="display: flex; align-items: center; gap: 14px; flex: 1; max-width: 520px;">
           <span onClick="{{ goToListings }}" style="color: #ffffff; font-size: 24px; line-height: 1; cursor: pointer;">⌕</span>
           <input id="ks-bar-fallback" type="text" value="{{ heroSearchValue }}" onChange="{{ handleHeroSearchChange }}" onKeyDown="{{ handleHeroSearchKeyDown }}" placeholder="{{ t.searchPlaceholder }}" style="background: transparent; border: none; outline: none; color: #ffffff; font-family: var(--rh-font); font-size: 15px; width: 100%;">
+          <div ref="{{ quickSearchRef }}" data-placeholder="{{ t.searchPlaceholder }}" style="display: none; flex: 1; min-width: 0;"></div>
         </div>
         <a href="#" onClick="{{ openContactModal }}" style="flex-shrink: 0; display: inline-flex; align-items: center; align-self: center; font-size: 15px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.2; color: rgba(255,255,255,0.6); text-decoration: none; padding: 0; margin: 0; transition: color 0.3s ease;" style-hover="color: #ffffff;">{{ t.navContact }}</a>
       </div>
@@ -1210,6 +1211,10 @@ class Component extends DCLogic {
     this._qsTimer = setInterval(() => {
       if (!inp.isConnected) return;
       const rect = inp.getBoundingClientRect();
+      if (sr.activeElement === inp) {
+        const tw0 = document.createTreeWalker(sr, NodeFilter.SHOW_TEXT); let t0;
+        while ((t0 = tw0.nextNode())) { const v = t0.nodeValue; if (v && /[A-Z]{3}[A-Z'.\- ]*,\s*[A-Z]{2}\b/.test(v)) { const fx = v.replace(/\b([A-Z][A-Z'.\-]+(?:\s+[A-Z][A-Z'.\-]+)*)(,\s*[A-Z]{2}\b)/g, (m, c, r) => c.toLowerCase().replace(/(^|[\s\-])([a-z])/g, (q, p, ch) => p + ch.toUpperCase()) + r); if (fx !== v) t0.nodeValue = fx; } }
+      }
       roots().forEach((r) => {
         r.querySelectorAll('.MuiAutocomplete-popper, .MuiPopper-root, [role="listbox"]').forEach((p) => {
           if (p.parentElement && p.parentElement.closest('.MuiAutocomplete-popper, .MuiPopper-root, [role="listbox"]')) return;
