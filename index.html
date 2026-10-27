@@ -1167,7 +1167,11 @@ class Component extends DCLogic {
       + "button{background:transparent!important;color:#ffffff!important;border:none!important;border-radius:0!important;}"
       + "button[type='submit'],button:not([aria-label]){display:none!important;}"
       + ".MuiChip-root{background:rgba(255,255,255,0.14)!important;color:#ffffff!important;border-radius:0!important;}"
-      + ".MuiChip-label{color:#ffffff!important;font-size:13px!important;}";
+      + ".MuiChip-label{color:#ffffff!important;font-size:13px!important;}"
+      + "[class*='opper'] svg,[role='listbox'] svg{color:#1a1a1a!important;}"
+      + "[role='option'],[class*='opper'] li{padding:9px 16px!important;font-size:13px!important;font-weight:500!important;color:#1a1a1a!important;cursor:pointer;}"
+      + "[role='option']:hover,[role='option'].Mui-focused{background:#f2f2f2!important;}"
+      + "[class*='opper'] [class*='roupLabel' i],[class*='opper'] [class*='ubheader' i]{font-size:12px!important;font-weight:700!important;color:#1a1a1a!important;padding:12px 16px 4px!important;background:#ffffff!important;}";
     const go = () => {
       if (node.dataset.ksMounted) return;
       node.dataset.ksMounted = '1';
@@ -1184,6 +1188,7 @@ class Component extends DCLogic {
           node.style.display = 'block';
           const fb = document.getElementById('ks-bar-fallback');
           if (fb) fb.style.display = 'none';
+          this.startQsDropdown(sr, inp);
           return;
         }
         if (++n < 60) setTimeout(wait, 250);
@@ -1195,6 +1200,33 @@ class Component extends DCLogic {
     const ks = document.querySelector('script[src*="ihf-kestrel.js"]');
     if (ks) ks.addEventListener('load', go, { once: true });
   };
+  // Bar sits at the bottom of the page: open the suggestions ABOVE it (white panel), and fix ALL-CAPS cities ("SOLEDAD" → "Soledad").
+  startQsDropdown(sr, inp) {
+    if (this._qsTimer) return;
+    const KEEP = /^(CA|NV|OR|AZ|USA|NE|NW|SE|SW|ML\d+|[A-Z]?\d+[A-Z]?|II|III|IV)$/;
+    const fixCase = (s) => s.replace(/\b[A-Z][A-Z'\-]{1,}\b/g, (w) => (KEEP.test(w) ? w : w.charAt(0) + w.slice(1).toLowerCase()));
+    const set = (el, k, v) => { if (el.style.getPropertyValue(k) !== v || el.style.getPropertyPriority(k) !== 'important') el.style.setProperty(k, v, 'important'); };
+    const roots = () => { const r = [sr]; document.querySelectorAll('div.ihf-overlay-container').forEach((h) => { if (h.shadowRoot) r.push(h.shadowRoot); }); return r; };
+    this._qsTimer = setInterval(() => {
+      if (!inp.isConnected) return;
+      const rect = inp.getBoundingClientRect();
+      roots().forEach((r) => {
+        r.querySelectorAll('.MuiAutocomplete-popper, .MuiPopper-root, [role="listbox"]').forEach((p) => {
+          if (p.parentElement && p.parentElement.closest('.MuiAutocomplete-popper, .MuiPopper-root, [role="listbox"]')) return;
+          const w = Math.min(Math.max(rect.width + 40, 340), window.innerWidth - 24);
+          const left = Math.max(12, Math.min(rect.left - 20, window.innerWidth - w - 12));
+          set(p, 'position', 'fixed'); set(p, 'transform', 'none'); set(p, 'inset', 'auto');
+          set(p, 'left', Math.round(left) + 'px'); set(p, 'bottom', Math.round(window.innerHeight - rect.top + 14) + 'px');
+          set(p, 'width', Math.round(w) + 'px'); set(p, 'max-height', Math.max(160, Math.round(rect.top - 90)) + 'px');
+          set(p, 'overflow-y', 'auto'); set(p, 'z-index', '2147482900');
+          set(p, 'background', '#ffffff'); set(p, 'color', '#1a1a1a'); set(p, 'border-radius', '0'); set(p, 'padding', '6px 0');
+          set(p, 'box-shadow', '0 -8px 30px rgba(0,0,0,0.18)'); set(p, 'text-align', 'left');
+          const tw = document.createTreeWalker(p, NodeFilter.SHOW_TEXT); let n;
+          while ((n = tw.nextNode())) { const v = n.nodeValue; if (v && /[A-Z]{3}/.test(v)) { const f = fixCase(v); if (f !== v) n.nodeValue = f; } }
+        });
+      });
+    }, 150);
+  }
   marqueeTrackEl = null;
   marqueeTrackRef = (el) => { this.marqueeTrackEl = el; };
   marqueeViewportEl = null;
