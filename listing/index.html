@@ -155,7 +155,7 @@
           <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 14px; padding: 12px 0 8px; animation: ks-fade-in 0.35s ease;">
             <p style="margin: 0; font-size: 18px; font-weight: 600;">Thank you! Your tour request was sent.</p>
             <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #444444;">Jackson will reach out to find a time that works. For faster service, call or text (831) 821-0398.</p>
-            <button type="button" onClick="{{ closeTour }}" style="margin-top: 8px; height: 44px; padding: 0 24px; border-radius: 12px; border: none; background: #1a1a1a; color: #ffffff; font-size: 14px; font-weight: 600; font-family: 'Montserrat', system-ui, sans-serif; cursor: pointer; transition: background 0.2s ease, color 0.2s ease, box-shadow .3s ease;">Done</button>
+            <button type="button" onClick="{{ closeTour }}" style="margin-top: 8px; height: 44px; padding: 0 24px; border-radius: 8px; border: none; background: #1a1a1a; color: #ffffff; font-size: 14px; font-weight: 600; font-family: 'Montserrat', system-ui, sans-serif; cursor: pointer; transition: background 0.2s ease, color 0.2s ease, box-shadow .3s ease;">Done</button>
           </div>
         </sc-if>
         <sc-if value="{{ tourFormVisible }}" hint-placeholder-val="{{ true }}">
@@ -170,7 +170,7 @@
             <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0;">
             <p style="margin: 0; font-size: 14px; color: #c62828; overflow: hidden; max-height: {{ tourErrH }}; opacity: {{ tourErrOp }}; transition: opacity 0.25s ease, max-height 0.25s ease;">{{ tourErrText }}</p>
             <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px;">
-              <button type="submit" disabled="{{ tourSending }}" style="height: 48px; padding: 0 32px; border-radius: 12px; border: none; background: #1a1a1a; color: #ffffff; font-size: 14px; font-weight: 600; font-family: 'Montserrat', system-ui, sans-serif; cursor: pointer; transition: background 0.2s ease, color 0.2s ease, box-shadow .3s ease;" style-hover="background: #ffffff; color: #1a1a1a;">{{ tourSubmitLabel }}</button>
+              <button type="submit" disabled="{{ tourSending }}" style="height: 48px; padding: 0 32px; border-radius: 8px; border: none; background: #1a1a1a; color: #ffffff; font-size: 14px; font-weight: 600; font-family: 'Montserrat', system-ui, sans-serif; cursor: pointer; transition: background 0.2s ease, color 0.2s ease, box-shadow .3s ease;" style-hover="background: #ffffff; color: #1a1a1a;">{{ tourSubmitLabel }}</button>
               <p style="margin: 0; flex: 1 1 260px; font-size: 11px; line-height: 1.5; color: #999999;">By submitting, you agree to our <a href="https://jacksonkesecker.com/privacy/" style="color: inherit; text-decoration: underline;">Privacy Policy</a>. This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy" target="_blank" style="color: #666666; text-decoration: underline;">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" style="color: #666666; text-decoration: underline;">Terms of Service</a> apply.</p>
             </div>
           </form>
@@ -317,7 +317,7 @@ class Component extends DCLogic {
   if (host.querySelector('style[data-ihf-btn-style]')) return;
   const st = document.createElement('style');
   st.dataset.ihfBtnStyle = '1';
-  st.textContent = '.ihf-invert-btn{font-family:inherit;font-size:14px;padding:8px 16px;border-radius:12px;border:1px solid #1a1a1a;cursor:pointer;background:#1a1a1a;color:#ffffff;display:inline-flex;align-items:center;gap:8px;line-height:1.2;transition:background .2s ease,color .2s ease;}'
+  st.textContent = '.ihf-invert-btn{font-family:inherit;font-size:14px;padding:8px 16px;border-radius:8px;border:1px solid #1a1a1a;cursor:pointer;background:#1a1a1a;color:#ffffff;display:inline-flex;align-items:center;gap:8px;line-height:1.2;transition:background .2s ease,color .2s ease;}'
   + '.ihf-invert-btn:hover{background:#ffffff;color:#1a1a1a;}'
   + '.ihf-save-btn path{stroke-dasharray:100;stroke-dashoffset:0;transition:fill .2s ease,stroke .2s ease;}'
   + '.ihf-save-btn:hover path{animation:ihfHeartTrace .7s ease forwards;stroke:#e53935;}'
