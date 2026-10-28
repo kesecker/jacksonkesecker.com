@@ -1870,6 +1870,7 @@ class Component extends DCLogic {
       heroListingsUnderlineWidth: this.state.heroListingsHover ? '100%' : '0%',
       featuredListingsRef: this.featuredListingsRef,
       notableSalesRef: this.notableSalesRef,
+      horizontalSearchRef: this.horizontalSearchRef,
       mReview: baseCards[((this.state.mReview || 0) % baseCards.length + baseCards.length) % baseCards.length],
       mReviewPos: ((((this.state.mReview || 0) % baseCards.length + baseCards.length) % baseCards.length) + 1) + ' / ' + baseCards.length,
       mReviewPrev: () => this.setState(s => ({ mReview: (s.mReview || 0) - 1 })),
