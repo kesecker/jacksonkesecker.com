@@ -1,4 +1,58 @@
 (function () {
+  if (window.__ksNoTouchHover) return;
+  window.__ksNoTouchHover = true;
+  var mq = window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)');
+  if (!mq || !mq.matches) return;
+  var H = /:hover/i;
+  function cleanRules(list, owner) {
+    for (var i = list.length - 1; i >= 0; i--) {
+      var r = list[i];
+      try {
+        if (r.cssRules && !r.selectorText) { cleanRules(r.cssRules, r); continue; }
+        if (!r.selectorText || !H.test(r.selectorText)) continue;
+        var keep = r.selectorText.split(',').filter(function (s) { return !H.test(s); });
+        if (keep.length) r.selectorText = keep.join(',');
+        else owner.deleteRule(i);
+      } catch (e) {}
+    }
+  }
+  function sweep() {
+    var ss = document.styleSheets;
+    for (var i = 0; i < ss.length; i++) {
+      var s = ss[i];
+      if (s.__ksSwept === s.cssRules) continue;
+      try { cleanRules(s.cssRules, s); s.__ksSwept = s.cssRules; } catch (e) {}
+    }
+  }
+  var ins = CSSStyleSheet.prototype.insertRule;
+  CSSStyleSheet.prototype.insertRule = function (rule, idx) {
+    if (typeof rule === 'string' && H.test(rule.split('{')[0])) {
+      var sel = rule.split('{')[0], body = rule.slice(sel.length);
+      var keep = sel.split(',').filter(function (s) { return !H.test(s); });
+      if (!keep.length) return typeof idx === 'number' ? idx : this.cssRules.length;
+      rule = keep.join(',') + body;
+    }
+    return ins.call(this, rule, idx);
+  };
+  ['mouseover', 'mouseout', 'mouseenter', 'mouseleave'].forEach(function (t) {
+    window.addEventListener(t, function (e) { e.stopPropagation(); }, true);
+  });
+  var queued = false;
+  function queue() { if (queued) return; queued = true; requestAnimationFrame(function () { queued = false; sweep(); }); }
+  sweep();
+  document.addEventListener('DOMContentLoaded', queue);
+  window.addEventListener('load', queue);
+  new MutationObserver(function (ms) {
+    for (var i = 0; i < ms.length; i++) {
+      var a = ms[i].addedNodes;
+      for (var j = 0; j < a.length; j++) {
+        var n = a[j];
+        if (n.nodeName === 'STYLE' || n.nodeName === 'LINK') { if (n.nodeName === 'LINK') n.addEventListener('load', queue); queue(); return; }
+      }
+    }
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+(function () {
   if (window.__ksCookie) return;
   window.__ksCookie = true;
   var KEY = 'ksCookiePrefs';
