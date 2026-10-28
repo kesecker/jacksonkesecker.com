@@ -1216,16 +1216,12 @@ class Component extends DCLogic {
       const opts = []; rts.forEach((r) => r.querySelectorAll('[role="option"], li.MuiAutocomplete-option').forEach((o) => { if (o.offsetParent !== null) opts.push(o); }));
       const ql = q.toLowerCase();
       const opt = opts.find((o) => (o.textContent || '').trim().toLowerCase().indexOf(ql) === 0) || opts[0];
-      if (!opt) return;
       e.preventDefault(); e.stopPropagation();
       this._qsGo = true;
+      // City names: always hand the text to the listings page (iHomefinder's own submit drops the city). Addresses / MLS #: keep iHomefinder's picker.
+      if (!/\d/.test(q) || !opt) { location.href = 'https://jacksonkesecker.com/listings?q=' + encodeURIComponent(opt && !/\d/.test(q) ? ((opt.textContent || q).trim().split(',')[0] || q) : q); return; }
       opt.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, composed: true })); opt.click();
       const here = location.href;
-      setTimeout(() => {
-        if (location.href !== here) return;
-        const btn = Array.from(sr.querySelectorAll('button')).find((b) => b.type === 'submit' || /search/i.test((b.textContent || '') + (b.getAttribute('aria-label') || '')));
-        if (btn) btn.click();
-      }, 350);
       setTimeout(() => { if (location.href === here) location.href = 'https://jacksonkesecker.com/listings?q=' + encodeURIComponent(q); }, 2200);
     }, true);
     const KEEP = /^(CA|NV|OR|AZ|USA|NE|NW|SE|SW|ML\d+|[A-Z]?\d+[A-Z]?|II|III|IV)$/;
