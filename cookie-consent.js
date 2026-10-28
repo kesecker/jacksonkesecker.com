@@ -3,6 +3,10 @@
   window.__ksNoTouchHover = true;
   var mq = window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)');
   if (!mq || !mq.matches) return;
+  var st = document.createElement('style');
+  st.id = 'ks-no-touch-hover';
+  st.textContent = '[data-ks-ring]{stroke-dashoffset:195!important;transition:none!important}[style*="background-size: 0"],[style*="background-size:0"]{background-size:0 100%!important;transition:none!important}[data-ks-x],[data-ks-x] svg path,[data-ks-x] svg line{transition:none!important}';
+  (document.head || document.documentElement).appendChild(st);
   var H = /:hover/i;
   function cleanRules(list, owner) {
     for (var i = list.length - 1; i >= 0; i--) {
