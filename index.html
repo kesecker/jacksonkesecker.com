@@ -150,7 +150,7 @@
       #listings, #idx, #neighborhoods, #footer-legal, #about { padding-left: 24px !important; padding-right: 24px !important; }
       #listings-viewport, #testimonials-viewport, #notable-viewport { padding-left: 24px !important; padding-right: 24px !important; }
       #hero-logo { font-size: 60px !important; }
-      #hero-search-bar { padding: 10px 12px !important; }
+      #hero-search-bar { padding: 14px 20px !important; }
       #footer-bottom-bar { height: 60px !important; }
       #footer-legal-secondary-row { gap: 28px !important; margin-top: 18px !important; }
       #footer-bottom-copyright { white-space: normal !important; width: 90% !important; }
@@ -242,8 +242,13 @@
       </div>
 
       
-      <div id="hero-search-bar" style="position: fixed; bottom: 0; left: 0; width: 100%; box-sizing: border-box; z-index: 100; background: #1a1a1a; padding: 12px clamp(16px, 3vw, 40px);">
-        <div ref="{{ horizontalSearchRef }}" style="max-width: 1200px; margin: 0 auto; width: 100%;"></div>
+      <div id="hero-search-bar" style="position: fixed; bottom: 0; left: 0; width: 100%; box-sizing: border-box; z-index: 100; background: #1a1a1a; display: flex; align-items: center; justify-content: space-between; padding: 20px 32px 20px 40px; gap: 24px;">
+        <div style="display: flex; align-items: center; gap: 14px; flex: 1; max-width: 520px;">
+          <span onClick="{{ goToListings }}" style="color: #ffffff; font-size: 24px; line-height: 1; cursor: pointer;">⌕</span>
+          <input id="ks-bar-fallback" type="text" value="{{ heroSearchValue }}" onChange="{{ handleHeroSearchChange }}" onKeyDown="{{ handleHeroSearchKeyDown }}" placeholder="{{ t.searchPlaceholder }}" style="background: transparent; border: none; outline: none; color: #ffffff; font-family: var(--rh-font); font-size: 15px; width: 100%;">
+          <div ref="{{ quickSearchRef }}" data-placeholder="{{ t.searchPlaceholder }}" style="display: none; flex: 1; min-width: 0;"></div>
+        </div>
+        <a href="#" onClick="{{ openContactModal }}" style="flex-shrink: 0; display: inline-flex; align-items: center; align-self: center; font-size: 15px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.2; color: rgba(255,255,255,0.6); text-decoration: none; padding: 0; margin: 0; transition: color 0.3s ease;" style-hover="color: #ffffff;">{{ t.navContact }}</a>
       </div>
     </div>
   
