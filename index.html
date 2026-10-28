@@ -449,6 +449,11 @@
     </div>
   </sc-if>
 
+  <!-- HORIZONTAL QUICK SEARCH -->
+  <div id="ihf-quick-search-horizontal" style="background: #ffffff; padding: 56px clamp(20px, 5vw, 64px); box-sizing: border-box;">
+    <div ref="{{ horizontalSearchRef }}" style="max-width: 1200px; margin: 0 auto; width: 100%;"></div>
+  </div>
+
   <!-- LEGAL DISCLAIMER -->
   <div id="footer-legal" style="position: relative; margin-top: -2px; background: #000000; padding: 10px 64px 10px; display: grid; grid-template-columns: minmax(0, max-content); justify-content: center;">
     <div id="footer-logos-row" style="display: flex; align-items: center; justify-content: center; gap: clamp(10px, 4vw, 28px); flex-wrap: nowrap; justify-self: center;">
@@ -1434,6 +1439,17 @@ class Component extends DCLogic {
         resultsPerPage: 4,
       }));
       this._ihfStartCaseFix();
+    };
+    if (window.ihfKestrel && window.ihfKestrel.render) { doMount(); return; }
+    const ks = document.querySelector('script[src*="ihf-kestrel.js"]');
+    if (ks) ks.addEventListener('load', doMount, { once: true });
+  };
+  horizontalSearchRef = (node) => {
+    if (!node || node.dataset.ihfMounted) return;
+    const doMount = () => {
+      if (node.dataset.ihfMounted) return;
+      node.dataset.ihfMounted = '1';
+      node.appendChild(window.ihfKestrel.render({ component: 'quickSearchWidget', style: 'horizontal', propertyType: true }));
     };
     if (window.ihfKestrel && window.ihfKestrel.render) { doMount(); return; }
     const ks = document.querySelector('script[src*="ihf-kestrel.js"]');
