@@ -45,6 +45,20 @@
 
   <div style="width: 100%; max-width: 920px; margin: 0 auto; padding: 32px clamp(16px, 4vw, 32px) 120px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px;">
 
+    <div style="background: #000000; color: #ffffff; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h2 style="margin: 0; font-size: 19px; font-weight: 700; color: #ffffff;">Import from MLS</h2>
+        <span style="font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5;">Type the MLS # (or paste the listing’s link from jacksonkesecker.com). Address, price, facts, description, features and photos fill in automatically. Review everything before publishing.</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+        <input type="text" value="{{ importQ }}" onChange="{{ onImportQ }}" onKeyDown="{{ onImportKey }}" placeholder="ML82028688" style="flex: 1 1 260px; height: 46px; padding: 0 14px; border: 1px solid rgba(255,255,255,0.35); border-radius: 8px; background: #111111; color: #ffffff; box-sizing: border-box;">
+        <button onClick="{{ importMls }}" disabled="{{ importing }}" style="height: 46px; padding: 0 22px; border-radius: 8px; border: none; background: #ffffff; color: #000000; font-size: 14px; font-weight: 700; cursor: pointer; opacity: {{ importOpacity }};">{{ importBtn }}</button>
+      </div>
+      <sc-if value="{{ hasImportMsg }}" hint-placeholder-val="{{ false }}">
+        <span style="font-size: 13px; line-height: 1.6; color: {{ importMsgColor }};">{{ importMsg }}</span>
+      </sc-if>
+    </div>
+
     <div style="background: #ffffff; border-radius: 8px; padding: 22px 24px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px;">
       <div style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 6px;">
         <span style="font-size: 13px; font-weight: 600; color: #555555;">Edit a property you already published</span>
@@ -313,6 +327,7 @@ class Component extends DCLogic {
     for (let i = 0; i < this.state.photos.length; i++) {
       const p = this.state.photos[i];
       if (p.kind === 'existing') { photoPaths.push(p.path); continue; }
+      if (p.kind === 'remote') { photoPaths.push(p.url); continue; }
       const blob = await this.compress(p.file, 2560);
       const path = 'photos/' + String(i + 1).padStart(2, '0') + '-' + this.uid() + '.jpg';
       files.push({ path: dir + path, blob }); photoPaths.push(path);
@@ -437,6 +452,149 @@ class Component extends DCLogic {
     } catch (e) { alert('Could not load "' + slug + '": ' + e.message); }
   };
 
+  // ---- MLS import: load our own /listing page (iHomefinder) in a hidden same-origin frame and read the rendered details ----
+  importMls = async () => {
+    const q = (this.state.importQ || '').trim();
+    if (!q || this.state.importing) return;
+    if (!/jacksonkesecker\.com$/.test(location.hostname)) { this.setState({ importMsg: 'Import only works on the live builder: jacksonkesecker.com/admin/property-builder/', importErr: true }); return; }
+    let url, mlsGuess = '';
+    if (/^https?:\/\//i.test(q) || /^\/?listing\?/i.test(q)) {
+      try { const u = new URL(q, location.origin); url = '/listing' + u.search; mlsGuess = (u.searchParams.get('id') || '').replace(/_\d+$/, ''); } catch (e) {}
+    }
+    if (!url) { mlsGuess = q.toUpperCase().replace(/^MLS\s*#?\s*/, '').replace(/\s+/g, ''); url = '/listing?id=' + encodeURIComponent(mlsGuess); }
+    this.setState({ importing: true, importErr: false, importMsg: 'Loading the listing from the MLS…' });
+    const fr = document.createElement('iframe');
+    fr.setAttribute('aria-hidden', 'true'); fr.tabIndex = -1;
+    fr.style.cssText = 'position:fixed;left:-20000px;top:0;width:1280px;height:1000px;border:0;pointer-events:none;';
+    fr.src = url;
+    document.body.appendChild(fr);
+    try {
+      const d = await this.scrapeFrame(fr, mlsGuess);
+      this.setState({ importMsg: 'Found ' + (d.f.street || 'the listing') + '. Copying ' + d.photos.length + ' photos…' });
+      await this.applyImport(d);
+    } catch (e) {
+      this.setState({ importErr: true, importMsg: String(e.message || e) });
+    } finally { fr.remove(); this.setState({ importing: false }); }
+  };
+
+  scrapeFrame(fr, mlsGuess) {
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    const txt = (el) => (el ? (el.innerText || el.textContent || '') : '').replace(/\s+/g, ' ').trim();
+    const getRoots = (doc) => { const out = []; const walk = (r) => { out.push(r); r.querySelectorAll('*').forEach((el) => { if (el.shadowRoot) walk(el.shadowRoot); }); }; doc.querySelectorAll('div.ihf-container, div.ihf-overlay-container').forEach((h) => { if (h.shadowRoot) walk(h.shadowRoot); }); return out; };
+    const q1 = (roots, sel) => { for (const r of roots) { const e = r.querySelector(sel); if (e) return e; } return null; };
+    const qa = (roots, sel) => { let a = []; roots.forEach((r) => { a = a.concat(Array.from(r.querySelectorAll(sel))); }); return a; };
+    const PHOTO = /(mlslmedia|idxhome|ihomefinder|mlslistings|cloudfront|photos?\.)/i;
+    const photosOf = (roots) => {
+      const seen = new Set(), out = [];
+      const add = (u) => { if (!u) return; u = u.trim(); if (!/^https?:/i.test(u) || !PHOTO.test(u) || /logo|agent|broker|icon|avatar|sprite|placeholder|mapbox|maps\.google|staticmap/i.test(u)) return; const k = u.split('?')[0].replace(/_(\d{2,4})x(\d{2,4})(?=\.\w+$)/, ''); if (seen.has(k)) return; seen.add(k); out.push(u); };
+      qa(roots, '.listing-photo-carousel img, [class*="gallery" i] img, [class*="photo" i] img, .listing-detail img').forEach((im) => {
+        if (im.closest('.similar-listings, [class*="similar" i], [class*="agent" i]')) return;
+        add(im.getAttribute('data-src') || ''); add((im.getAttribute('srcset') || '').split(',').pop().trim().split(' ')[0]); add(im.currentSrc || im.getAttribute('src') || '');
+      });
+      qa(roots, '.listing-photo-carousel [style*="background-image"], [class*="gallery" i] [style*="background-image"]').forEach((el) => { const m = (el.getAttribute('style') || '').match(/url\(["']?([^"')]+)/); if (m) add(m[1]); });
+      return out;
+    };
+    return (async () => {
+      const t0 = Date.now();
+      let roots = [];
+      while (true) {
+        await sleep(600);
+        let doc = null; try { doc = fr.contentDocument; } catch (e) {}
+        if (doc) {
+          roots = getRoots(doc);
+          const all = roots.map((r) => txt(r.querySelector('*') && r.firstElementChild ? r.host || r : r)).join(' ');
+          if (q1(roots, '.listing-address-1') && q1(roots, '.listing-detail') && q1(roots, '.list-price, .sold-price')) break;
+          if (roots.length && /no longer available|listing (was )?not found|could not be found|no listing/i.test(roots.map((r) => r.textContent || '').join(' ').slice(0, 20000))) throw new Error('iHomefinder says that listing isn’t available. Check the MLS #, or paste the listing’s link from the site.');
+        }
+        if (Date.now() - t0 > 30000) throw new Error('The listing didn’t load. If the MLS # is right, open the listing on jacksonkesecker.com and paste its link here instead.');
+      }
+      await sleep(1800);
+      roots = getRoots(fr.contentDocument);
+      const leaves = [];
+      roots.forEach((r) => r.querySelectorAll('*').forEach((el) => {
+        if (el.children.length || /^(SCRIPT|STYLE|SVG|PATH)$/i.test(el.tagName)) return;
+        if (el.closest('.similar-listings, [class*="similar" i], [data-ihf-mc], [role="dialog"], [data-ks-ri-top]')) return;
+        const t = txt(el); if (t) leaves.push(t);
+      }));
+      const val = (re) => { for (let i = 0; i < leaves.length - 1; i++) { if (re.test(leaves[i].replace(/[:\s]+$/, ''))) return leaves[i + 1].replace(/^[:\s]+/, ''); } return ''; };
+      const num = (s) => { const m = String(s || '').replace(/,/g, '').match(/\d+(\.\d+)?/); return m ? m[0] : ''; };
+      const head = txt(q1(roots, '.listing-header')) + ' ' + txt(q1(roots, '.ihf-stats-clone')) + ' ' + txt(q1(roots, '.ihf-info-col'));
+      const hm = (re) => { const m = head.replace(/,/g, '').match(re); return m ? m[1] : ''; };
+      const street = txt(q1(roots, '.listing-address-1')).replace(/,\s*$/, '');
+      const l2 = txt(q1(roots, '.listing-address-2'));
+      const am = l2.match(/^(.*?),\s*([A-Za-z]{2})\.?\s*(\d{5})?/);
+      const listP = num(txt(q1(roots, '.list-price')));
+      const soldP = num(txt(q1(roots, '.sold-price')));
+      const stRaw = val(/^(status|listing status)$/i) + ' ' + head;
+      const sold = !!soldP || /\bsold\b|\bclosed\b/i.test(val(/^(status|listing status)$/i)) || /\bsold\b/i.test(txt(q1(roots, '.listing-header [class*="status" i], .ihf-info-col [class*="status" i]')));
+      const status = sold ? 'Sold' : /pending|contingent|under contract/i.test(stRaw) ? 'Pending' : /coming soon/i.test(stRaw) ? 'Coming Soon' : 'For Sale';
+      const isoDate = (s) => { const m = String(s || '').match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/); if (!m) return ''; const y = m[3].length === 2 ? '20' + m[3] : m[3]; return y + '-' + m[1].padStart(2, '0') + '-' + m[2].padStart(2, '0'); };
+      const soldDate = sold ? (isoDate(val(/^(sold|close|closed|closing|sale|settled) date$/i)) || isoDate(txt(q1(roots, '[data-ks-sold-date]')))) : '';
+      const lotRaw = val(/^lot (size|area)( \(?(acres|sq\.? ?ft\.?)\)?)?$/i) || val(/^(acres|lot acres|lot sq\.? ?ft\.?)$/i);
+      const lotAc = /acre/i.test(lotRaw) || /acres?\)?$/i.test(leaves[leaves.indexOf(lotRaw) - 1] || '');
+      let type = val(/^property sub\s*-?\s*type$/i) || val(/^property type$/i);
+      if (/^(sfr|single family|single family residence|residential)$/i.test(type)) type = 'Single family residence';
+      const descEl = q1(roots, '.listing-description');
+      let desc = '';
+      if (descEl) {
+        const ps = Array.from(descEl.querySelectorAll('p')).map(txt).filter((t) => t.length > 40);
+        desc = ps.length ? ps.join('\n\n') : txt(descEl).replace(/^about this (property|home)\s*/i, '');
+        desc = desc.replace(/\s*(read|show) (more|less)\s*$/i, '').trim();
+      }
+      const INT = /^(flooring|floors?|fireplaces?|fireplace features|appliances?|kitchen( features)?|laundry( features)?|heating|cooling|interior( features)?|rooms?|dining room|family room|primary (bedroom|suite)( features)?|master bedroom|window features|accessibility( features)?)$/i;
+      const EXT = /^(roof|roofing|pool( features)?|spa( features)?|parking( features)?|garage( spaces)?|exterior( features)?|foundation|construction( materials)?|fencing|fence|patio( and porch features)?|lot features|water( source)?|sewer|utilities|other structures|horse( amenities)?|irrigation|road surface)$/i;
+      const feats = (re) => { const out = [], seen = new Set(); for (let i = 0; i < leaves.length - 1; i++) { const lab = leaves[i].replace(/[:\s]+$/, ''); const v = leaves[i + 1]; if (lab.length > 40 || !re.test(lab) || seen.has(lab.toLowerCase()) || !v || v.length > 400 || INT.test(v) || EXT.test(v)) continue; seen.add(lab.toLowerCase()); out.push({ label: lab.replace(/\b\w/, (c) => c.toUpperCase()), value: v }); } return out; };
+      // open the full photo gallery so every photo is in the DOM
+      const btn = qa(roots, 'button, a, [role="button"]').find((b) => /^(view all|see all|show all)?\s*(\d+\s*)?photos?$|^\d+\s*\/\s*\d+$|^(view )?gallery$/i.test(txt(b)) && !b.closest('.similar-listings'));
+      let photos = photosOf(roots);
+      if (btn) { try { btn.click(); await sleep(1800); roots = getRoots(fr.contentDocument); const more = photosOf(roots); if (more.length > photos.length) photos = more; } catch (e) {} }
+      const f = {
+        street, city: am ? am[1].trim() : '', state: am ? am[2].toUpperCase() : 'CA', zip: am && am[3] ? am[3] : (l2.match(/\b\d{5}\b/) || [''])[0],
+        status, price: listP || soldP, soldPrice: sold ? soldP : '', soldDate,
+        mls: val(/^(mls|listing|mls listing)\s*(#|number|id|no\.?)$/i).replace(/\s/g, '') || mlsGuess,
+        beds: num(val(/^(beds?|bedrooms?|total bedrooms|bedrooms total)$/i)) || hm(/(\d+(?:\.\d+)?)\s*(?:bd|beds?|bedrooms?)\b/i),
+        baths: num(val(/^(baths?|bathrooms?|total baths|total bathrooms|bathrooms total)$/i)) || hm(/(\d+(?:\.\d+)?)\s*(?:ba|baths?|bathrooms?)\b/i),
+        fullBaths: num(val(/^(full baths?|full bathrooms?|bathrooms full)$/i)), halfBaths: num(val(/^(half|partial) (baths?|bathrooms?)$|^bathrooms (half|partial)$/i)),
+        sqft: num(val(/^(sq\.?\s*ft\.?|square (feet|footage)|living (area|sq\.? ?ft\.?)|building area|interior sq\.? ?ft\.?|approx\.? sq\.? ?ft\.?)$/i)) || hm(/([\d.]+)\s*(?:sq\.?\s*ft|sqft|square feet)/i),
+        lot: num(lotRaw), lotUnit: lotAc ? 'Acres' : 'Sq ft', yearBuilt: num(val(/^year built$/i)), type, stories: num(val(/^(stories|levels|# of stories|number of stories|stories total)$/i)),
+        neighborhood: val(/^(neighborhood|subdivision|subdivision name)$/i), view: val(/^(view|views)$/i), schoolDistrict: val(/^(school district|high school district|unified school district)$/i),
+        hoa: val(/^(hoa|association) (fee|dues)s?$/i), description: desc,
+      };
+      if (!f.street) throw new Error('Couldn’t read that listing’s details. Paste the listing’s link from the site instead.');
+      return { f, interior: feats(INT), exterior: feats(EXT), photos: photos.slice(0, 80) };
+    })();
+  }
+
+  async applyImport(d) {
+    const cur = this.state.f;
+    if (cur.street && cur.street.trim().toLowerCase() !== d.f.street.toLowerCase() && !confirm('Replace the current form (' + cur.street + ') with ' + d.f.street + '?')) { this.setState({ importMsg: 'Import cancelled.' }); return; }
+    const f = Object.assign({}, cur);
+    Object.keys(d.f).forEach((k) => { if (d.f[k] !== '' && d.f[k] != null) f[k] = String(d.f[k]); });
+    if (!cur.communityName && f.city) f.communityName = f.city;
+    const merge = (rows, add) => { rows = rows.map((r) => Object.assign({}, r)); add.forEach((a) => { const hit = rows.find((r) => r.label.toLowerCase() === a.label.toLowerCase() || (r.label.toLowerCase().split(' ')[0] === a.label.toLowerCase().split(' ')[0] && !r.value)); if (hit && !hit.value) hit.value = a.value; else if (!hit) rows.push({ id: this.uid(), label: a.label, value: a.value }); }); return rows; };
+    const next = { f, interior: merge(this.state.interior, d.interior), exterior: merge(this.state.exterior, d.exterior) };
+    let photos = this.state.photos, copied = 0, linked = 0;
+    if (d.photos.length && (!photos.length || confirm('Replace the ' + photos.length + ' photos already added with the ' + d.photos.length + ' MLS photos?'))) {
+      photos = [];
+      for (let i = 0; i < d.photos.length; i++) {
+        const u = d.photos[i];
+        try {
+          const r = await fetch(u, { mode: 'cors', credentials: 'omit' });
+          if (!r.ok) throw 0;
+          const b = await r.blob();
+          if (!/^image\//.test(b.type)) throw 0;
+          const file = new File([b], 'mls-' + (i + 1) + '.jpg', { type: b.type });
+          photos.push({ id: this.uid(), kind: 'new', file, url: URL.createObjectURL(file) }); copied++;
+        } catch (e) { photos.push({ id: this.uid(), kind: 'remote', url: u }); linked++; }
+        if ((i + 1) % 6 === 0) this.setState({ importMsg: 'Copying photos… ' + (i + 1) + ' / ' + d.photos.length });
+      }
+    }
+    next.photos = photos;
+    const missing = ['price', 'beds', 'baths', 'sqft', 'description'].filter((k) => !f[k]);
+    const msg = 'Imported ' + d.f.street + '.' + (d.photos.length ? ' Photos: ' + (copied ? copied + ' copied' : '') + (copied && linked ? ', ' : '') + (linked ? linked + ' linked from the MLS (they can disappear when the listing leaves the feed; upload your originals to be safe)' : '') + '.' : ' No photos found; add them below.') + (missing.length ? ' Not found, please fill in: ' + missing.join(', ') + '.' : '') + ' Review everything, then Preview.';
+    this.setState(Object.assign(next, { importMsg: msg, importErr: false }), this.saveDraft);
+  }
+
   preview = () => {
     const w = window.open(this.base() + 'properties/template/index.html?preview=1', 'ks-property-preview');
     this._pw = w;
@@ -539,6 +697,10 @@ class Component extends DCLogic {
       hasLog: s.log.length > 0, logLines: s.log, hasLiveLink: s.live,
       loadSlug: s.loadSlug, onLoadSlug: (e) => this.setState({ loadSlug: e.target.value }), loadExisting: this.loadExisting,
       preview: this.preview, resetAll: this.resetAll,
+      importQ: s.importQ || '', onImportQ: (e) => this.setState({ importQ: e.target.value }),
+      onImportKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.importMls(); } },
+      importMls: this.importMls, importing: !!s.importing, importOpacity: s.importing ? 0.5 : 1, importBtn: s.importing ? 'Importing…' : 'Import',
+      hasImportMsg: !!s.importMsg, importMsg: s.importMsg || '', importMsgColor: s.importErr ? '#ff8a80' : 'rgba(255,255,255,0.85)',
     };
   }
 }
