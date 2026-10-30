@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-light.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-dark.png" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="/assets/favicon-light.png">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Property Builder | Jackson Kesecker</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=block">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..800;1,300..800&display=swap">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Property Builder | Jackson Kesecker</title>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <style>
+    html, body { margin: 0; background: #f4f4f2; }
+    html body *:not(svg):not(path) { font-family: 'Montserrat', system-ui, sans-serif !important; letter-spacing: -0.01em; }
+    a { color: #1a1a1a; }
+    a:hover { color: #000000; }
+    input, select, textarea { font-size: 15px; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: #000000 !important; }
+  </style>
+</helmet>
+
+<div style="min-height: 100vh; color: #1a1a1a; display: flex; flex-direction: column;">
+  <div style="position: sticky; top: 0; z-index: 50; height: 72px; background: #000000; color: #ffffff; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 clamp(16px, 4vw, 40px);">
+    <div style="display: flex; align-items: center; gap: 18px; min-width: 0;">
+      <img src="/uploads/JKR-key-white.png" alt="JK" style="height: 28px; width: auto;">
+      <span style="font-size: 16px; font-weight: 700;">Property Builder</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <button onClick="{{ preview }}" style="height: 42px; padding: 0 18px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.7); background: transparent; color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background: #ffffff; color: #000000;">Preview</button>
+      <button onClick="{{ resetAll }}" style="height: 42px; padding: 0 14px; border-radius: 8px; border: none; background: transparent; color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 600; cursor: pointer;" style-hover="color: #ffffff;">Start new</button>
+    </div>
+  </div>
+
+  <div style="width: 100%; max-width: 920px; margin: 0 auto; padding: 32px clamp(16px, 4vw, 32px) 120px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px;">
+
+    <div style="background: #ffffff; border-radius: 8px; padding: 22px 24px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px;">
+      <div style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 13px; font-weight: 600; color: #555555;">Edit a property you already published</span>
+        <input type="text" value="{{ loadSlug }}" onChange="{{ onLoadSlug }}" placeholder="e.g. 33900-fabry-road-soledad" style="height: 46px; padding: 0 14px; border: 1px solid #d4d4d4; border-radius: 8px; background: #ffffff; box-sizing: border-box; width: 100%;">
+      </div>
+      <button onClick="{{ loadExisting }}" style="height: 46px; padding: 0 20px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background: #000000; color: #ffffff;">Load</button>
+    </div>
+
+    <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+      <div style="background: #ffffff; border-radius: 8px; padding: 26px 24px 28px; display: flex; flex-direction: column; gap: 18px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <h2 style="margin: 0; font-size: 19px; font-weight: 700;">{{ g.title }}</h2>
+          <sc-if value="{{ g.hasNote }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: #666666; line-height: 1.5;">{{ g.note }}</span></sc-if>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 16px;">
+          <sc-for list="{{ g.fields }}" as="f" hint-placeholder-count="4">
+            <label style="display: flex; flex-direction: column; gap: 6px; grid-column: {{ f.span }};">
+              <span style="font-size: 13px; font-weight: 600; color: #555555;">{{ f.label }}</span>
+              <sc-if value="{{ f.isInput }}" hint-placeholder-val="{{ true }}">
+                <input type="{{ f.type }}" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.placeholder }}" inputmode="{{ f.inputmode }}" style="height: 46px; padding: 0 14px; border: 1px solid #d4d4d4; border-radius: 8px; background: #ffffff; box-sizing: border-box; width: 100%; color: #1a1a1a;">
+              </sc-if>
+              <sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}">
+                <select value="{{ f.value }}" onChange="{{ f.onChange }}" style="height: 46px; padding: 0 12px; border: 1px solid #d4d4d4; border-radius: 8px; background: #ffffff; box-sizing: border-box; width: 100%; color: #1a1a1a;">
+                  <sc-for list="{{ f.options }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for>
+                </select>
+              </sc-if>
+              <sc-if value="{{ f.isTextarea }}" hint-placeholder-val="{{ false }}">
+                <textarea value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.placeholder }}" rows="{{ f.rows }}" style="padding: 12px 14px; border: 1px solid #d4d4d4; border-radius: 8px; background: #ffffff; box-sizing: border-box; width: 100%; line-height: 1.6; resize: vertical; color: #1a1a1a;"></textarea>
+              </sc-if>
+            </label>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+
+    <div style="background: #ffffff; border-radius: 8px; padding: 26px 24px 28px; display: flex; flex-direction: column; gap: 18px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h2 style="margin: 0; font-size: 19px; font-weight: 700;">Photos</h2>
+        <span style="font-size: 13px; color: #666666; line-height: 1.5;">Drag to reorder. The first photo is the cover and share image; the first few rotate in the hero. Photos are resized and compressed automatically.</span>
+      </div>
+      <div onDragOver="{{ zoneOver }}" onDragLeave="{{ zoneLeave }}" onDrop="{{ zoneDrop }}" onClick="{{ pickPhotos }}" style="border: 2px dashed {{ zoneBorder }}; border-radius: 8px; padding: 34px 20px; text-align: center; cursor: pointer; background: #fafafa; transition: border-color 0.2s ease; display: flex; flex-direction: column; gap: 6px; align-items: center;">
+        <span style="font-size: 15px; font-weight: 600;">Drop photos here or click to choose</span>
+        <span style="font-size: 13px; color: #666666;">JPG, PNG or WebP · {{ photoSummary }}</span>
+      </div>
+      <input ref="{{ photoInputRef }}" type="file" accept="image/jpeg,image/png,image/webp" multiple="true" onChange="{{ onPhotoFiles }}" style="display: none;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px;">
+        <sc-for list="{{ photoItems }}" as="p" hint-placeholder-count="0">
+          <div draggable="true" onDragStart="{{ p.dragStart }}" onDragOver="{{ p.dragOver }}" onDrop="{{ p.drop }}" style="position: relative; display: flex; flex-direction: column; gap: 6px; opacity: {{ p.opacity }}; cursor: grab;">
+            <div style="position: relative; aspect-ratio: 4 / 3; background: #eeeeee; border-radius: 6px; overflow: hidden; outline: {{ p.outline }};">
+              <img src="{{ p.url }}" alt="" draggable="false" style="width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none;">
+              <span style="position: absolute; left: 6px; top: 6px; height: 22px; min-width: 22px; padding: 0 7px; border-radius: 999px; background: #ffffff; color: #1a1a1a; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">{{ p.badge }}</span>
+              <button data-ks-x="1" onClick="{{ p.remove }}" aria-label="Remove photo" style="position: absolute; right: 6px; top: 6px; width: 26px; height: 26px; border-radius: 50%; border: none; background: rgba(0,0,0,0.7); color: #ffffff; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
+            </div>
+            <div style="display: flex; justify-content: space-between; gap: 6px;">
+              <button onClick="{{ p.left }}" aria-label="Move earlier" style="flex: 1; height: 30px; border-radius: 6px; border: 1px solid #d4d4d4; background: #ffffff; font-size: 13px; cursor: pointer;">←</button>
+              <button onClick="{{ p.right }}" aria-label="Move later" style="flex: 1; height: 30px; border-radius: 6px; border: 1px solid #d4d4d4; background: #ffffff; font-size: 13px; cursor: pointer;">→</button>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <sc-for list="{{ rowLists }}" as="rl" hint-placeholder-count="2">
+      <div style="background: #ffffff; border-radius: 8px; padding: 26px 24px 28px; display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <h2 style="margin: 0; font-size: 19px; font-weight: 700;">{{ rl.title }}</h2>
+          <span style="font-size: 13px; color: #666666;">Leave a row empty to hide it. Rename any label.</span>
+        </div>
+        <sc-for list="{{ rl.rows }}" as="r" hint-placeholder-count="3">
+          <div style="display: grid; grid-template-columns: minmax(120px, 1fr) minmax(0, 2.2fr) 40px; gap: 10px; align-items: start;">
+            <input type="text" value="{{ r.label }}" onChange="{{ r.onLabel }}" placeholder="Label" style="height: 46px; padding: 0 12px; border: 1px solid #d4d4d4; border-radius: 8px; box-sizing: border-box; width: 100%; font-weight: 600; color: #1a1a1a;">
+            <textarea value="{{ r.value }}" onChange="{{ r.onValue }}" placeholder="Details" rows="1" style="min-height: 46px; padding: 12px; border: 1px solid #d4d4d4; border-radius: 8px; box-sizing: border-box; width: 100%; line-height: 1.5; resize: vertical; color: #1a1a1a;"></textarea>
+            <button data-ks-x="1" onClick="{{ r.remove }}" aria-label="Remove row" style="width: 40px; height: 46px; border: none; background: transparent; color: #888888; font-size: 15px; cursor: pointer;">✕</button>
+          </div>
+        </sc-for>
+        <button onClick="{{ rl.add }}" style="align-self: flex-start; height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; font-size: 13px; font-weight: 600; cursor: pointer;" style-hover="background: #000000; color: #ffffff;">+ Add row</button>
+      </div>
+    </sc-for>
+
+    <div style="background: #ffffff; border-radius: 8px; padding: 26px 24px 28px; display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h2 style="margin: 0; font-size: 19px; font-weight: 700;">Open houses</h2>
+        <span style="font-size: 13px; color: #666666;">Shown only while the property isn’t sold.</span>
+      </div>
+      <sc-for list="{{ ohItems }}" as="o" hint-placeholder-count="0">
+        <div style="display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) 40px; gap: 10px;">
+          <input type="date" value="{{ o.date }}" onChange="{{ o.onDate }}" style="height: 46px; padding: 0 10px; border: 1px solid #d4d4d4; border-radius: 8px; box-sizing: border-box; width: 100%;">
+          <input type="time" value="{{ o.start }}" onChange="{{ o.onStart }}" style="height: 46px; padding: 0 10px; border: 1px solid #d4d4d4; border-radius: 8px; box-sizing: border-box; width: 100%;">
+          <input type="time" value="{{ o.end }}" onChange="{{ o.onEnd }}" style="height: 46px; padding: 0 10px; border: 1px solid #d4d4d4; border-radius: 8px; box-sizing: border-box; width: 100%;">
+          <button data-ks-x="1" onClick="{{ o.remove }}" aria-label="Remove" style="width: 40px; height: 46px; border: none; background: transparent; color: #888888; cursor: pointer;">✕</button>
+        </div>
+      </sc-for>
+      <button onClick="{{ addOh }}" style="align-self: flex-start; height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; font-size: 13px; font-weight: 600; cursor: pointer;" style-hover="background: #000000; color: #ffffff;">+ Add open house</button>
+    </div>
+
+    <div style="background: #ffffff; border-radius: 8px; padding: 26px 24px 28px; display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h2 style="margin: 0; font-size: 19px; font-weight: 700;">Downloads</h2>
+        <span style="font-size: 13px; color: #666666;">Floor plans, fact sheets, disclosures (PDF).</span>
+      </div>
+      <sc-for list="{{ dlItems }}" as="d" hint-placeholder-count="0">
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 40px; gap: 10px; align-items: center;">
+          <input type="text" value="{{ d.label }}" onChange="{{ d.onLabel }}" placeholder="Label, e.g. Floor plan" style="height: 46px; padding: 0 12px; border: 1px solid #d4d4d4; border-radius: 8px; box-sizing: border-box; width: 100%;">
+          <span style="font-size: 13px; color: #555555; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ d.name }}</span>
+          <button data-ks-x="1" onClick="{{ d.remove }}" aria-label="Remove" style="width: 40px; height: 46px; border: none; background: transparent; color: #888888; cursor: pointer;">✕</button>
+        </div>
+      </sc-for>
+      <input ref="{{ dlInputRef }}" type="file" accept="application/pdf" multiple="true" onChange="{{ onDlFiles }}" style="display: none;">
+      <button onClick="{{ pickDl }}" style="align-self: flex-start; height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; font-size: 13px; font-weight: 600; cursor: pointer;" style-hover="background: #000000; color: #ffffff;">+ Add PDF</button>
+    </div>
+
+    <div style="background: #ffffff; border-radius: 8px; padding: 26px 24px 28px; display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h2 style="margin: 0; font-size: 19px; font-weight: 700;">Community photo</h2>
+        <span style="font-size: 13px; color: #666666;">Optional image beside the community paragraph.</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+        <sc-if value="{{ hasCommImg }}" hint-placeholder-val="{{ false }}">
+          <img src="{{ commImgUrl }}" alt="" style="width: 160px; height: 106px; object-fit: cover; border-radius: 6px; background: #eeeeee;">
+        </sc-if>
+        <input ref="{{ commInputRef }}" type="file" accept="image/jpeg,image/png,image/webp" onChange="{{ onCommFile }}" style="display: none;">
+        <button onClick="{{ pickComm }}" style="height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; font-size: 13px; font-weight: 600; cursor: pointer;" style-hover="background: #000000; color: #ffffff;">{{ commBtnLabel }}</button>
+        <sc-if value="{{ hasCommImg }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ clearComm }}" style="height: 40px; padding: 0 12px; border: none; background: transparent; color: #666666; font-size: 13px; font-weight: 600; cursor: pointer;">Remove</button>
+        </sc-if>
+      </div>
+    </div>
+
+    <div style="background: #000000; color: #ffffff; border-radius: 8px; padding: 28px 24px 30px; display: flex; flex-direction: column; gap: 18px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <h2 style="margin: 0; font-size: 19px; font-weight: 700; color: #ffffff;">Publish</h2>
+        <span style="font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.6;">Page address: <span style="color: #ffffff; font-weight: 600; word-break: break-all;">{{ pageUrl }}</span></span>
+      </div>
+      <label style="display: flex; flex-direction: column; gap: 6px; max-width: 520px;">
+        <span style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.75);">Page address ending (auto from the address)</span>
+        <input type="text" value="{{ slugValue }}" onChange="{{ onSlug }}" placeholder="{{ autoSlug }}" style="height: 46px; padding: 0 14px; border: 1px solid rgba(255,255,255,0.35); border-radius: 8px; background: #111111; color: #ffffff; box-sizing: border-box; width: 100%;">
+      </label>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+        <button onClick="{{ publish }}" disabled="{{ busy }}" style="height: 50px; padding: 0 24px; border-radius: 8px; border: none; background: #ffffff; color: #000000; font-size: 14px; font-weight: 700; cursor: pointer; opacity: {{ busyOpacity }};">Publish to website</button>
+        <button onClick="{{ downloadZip }}" disabled="{{ busy }}" style="height: 50px; padding: 0 24px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.7); background: transparent; color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; opacity: {{ busyOpacity }};" style-hover="background: #ffffff; color: #000000;">Download package (.zip)</button>
+        <button onClick="{{ toggleSettings }}" style="height: 50px; padding: 0 16px; border: none; background: transparent; color: rgba(255,255,255,0.75); font-size: 13px; font-weight: 600; cursor: pointer;" style-hover="color: #ffffff;">{{ settingsLabel }}</button>
+      </div>
+      <sc-if value="{{ showSettings }}" hint-placeholder-val="{{ false }}">
+        <div style="border-top: 1px solid rgba(255,255,255,0.18); padding-top: 18px; display: flex; flex-direction: column; gap: 14px;">
+          <span style="font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.75);">One-time setup: on GitHub go to Settings → Developer settings → Fine-grained tokens → Generate. Repository access: only <span style="color: #ffffff; font-weight: 600;">{{ repoValue }}</span>. Permissions: Contents → Read and write. Paste the token below. It’s saved only in this browser.</span>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 12px;">
+            <label style="display: flex; flex-direction: column; gap: 6px; grid-column: 1 / -1;">
+              <span style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.75);">GitHub token</span>
+              <input type="password" value="{{ tokenValue }}" onChange="{{ onToken }}" placeholder="github_pat_…" style="height: 46px; padding: 0 14px; border: 1px solid rgba(255,255,255,0.35); border-radius: 8px; background: #111111; color: #ffffff; box-sizing: border-box; width: 100%;">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.75);">Repository</span>
+              <input type="text" value="{{ repoValue }}" onChange="{{ onRepo }}" style="height: 46px; padding: 0 14px; border: 1px solid rgba(255,255,255,0.35); border-radius: 8px; background: #111111; color: #ffffff; box-sizing: border-box; width: 100%;">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.75);">Branch</span>
+              <input type="text" value="{{ branchValue }}" onChange="{{ onBranch }}" style="height: 46px; padding: 0 14px; border: 1px solid rgba(255,255,255,0.35); border-radius: 8px; background: #111111; color: #ffffff; box-sizing: border-box; width: 100%;">
+            </label>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hasLog }}" hint-placeholder-val="{{ false }}">
+        <div style="background: #111111; border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; max-height: 240px; overflow: auto;">
+          <sc-for list="{{ logLines }}" as="l" hint-placeholder-count="0">
+            <span style="font-size: 13px; line-height: 1.5; color: {{ l.color }}; word-break: break-word;">{{ l.text }}</span>
+          </sc-for>
+          <sc-if value="{{ hasLiveLink }}" hint-placeholder-val="{{ false }}">
+            <a href="{{ pageUrl }}" target="_blank" rel="noopener" style="margin-top: 6px; color: #ffffff; font-size: 14px; font-weight: 700; text-decoration: underline;">Open the live page</a>
+          </sc-if>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  static FIELDS = {
+    street: '', city: '', state: 'CA', zip: '', title: '', headline: '', status: 'For Sale', price: '', soldPrice: '', soldDate: '', mls: '',
+    beds: '', baths: '', fullBaths: '', halfBaths: '', sqft: '', lot: '', lotUnit: 'Acres', yearBuilt: '', type: 'Single family residence', stories: '',
+    description: '', neighborhood: '', view: '', schoolDistrict: '', hoa: '', taxes: '',
+    video: '', matterport: '', heroCount: '5', communityName: '', communityText: '', slug: '',
+  };
+  static INTERIOR = ['Kitchen', 'Primary suite', 'Flooring', 'Fireplace', 'Appliances', 'Other interior features'];
+  static EXTERIOR = ['Pool', 'Roof', 'Heating', 'Cooling', 'Parking', 'Other exterior features'];
+
+  constructor(p) {
+    super(p);
+    let draft = null;
+    try { draft = JSON.parse(localStorage.getItem('ks-builder-draft') || 'null'); } catch (e) {}
+    const rows = (labels) => labels.map((l) => ({ id: Math.random().toString(36).slice(2), label: l, value: '' }));
+    this.state = {
+      f: Object.assign({}, Component.FIELDS, draft && draft.f),
+      interior: (draft && draft.interior) || rows(Component.INTERIOR),
+      exterior: (draft && draft.exterior) || rows(Component.EXTERIOR),
+      oh: (draft && draft.oh) || [],
+      photos: [], dls: [], comm: null,
+      zoneHot: false, dragId: null, busy: false, log: [], live: false, showSettings: false, loadSlug: '',
+      token: localStorage.getItem('ks-gh-token') || '', repo: localStorage.getItem('ks-gh-repo') || 'kesecker/jacksonkesecker.com', branch: localStorage.getItem('ks-gh-branch') || 'main',
+    };
+  }
+
+  base() { return /jacksonkesecker\.com$/.test(location.hostname) ? '/' : 'export/'; }
+  saveDraft = () => { clearTimeout(this._dt); this._dt = setTimeout(() => { try { localStorage.setItem('ks-builder-draft', JSON.stringify({ f: this.state.f, interior: this.state.interior, exterior: this.state.exterior, oh: this.state.oh })); } catch (e) {} }, 400); };
+  setF = (k, v) => { this.setState((s) => ({ f: Object.assign({}, s.f, { [k]: v }) }), this.saveDraft); };
+  slugify(s) { return String(s || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80); }
+  autoSlug() { const f = this.state.f; return this.slugify([f.street, f.city].filter(Boolean).join(' ')); }
+  slug() { return this.slugify(this.state.f.slug) || this.autoSlug(); }
+  uid() { return Math.random().toString(36).slice(2, 8); }
+  log = (text, kind) => this.setState((s) => ({ log: s.log.concat([{ text, color: kind === 'err' ? '#ff8a80' : kind === 'ok' ? '#9be7a8' : 'rgba(255,255,255,0.8)' }]) }));
+
+  addPhotoFiles = (files) => {
+    const list = Array.from(files || []).filter((f) => /^image\/(jpeg|png|webp)$/i.test(f.type));
+    const bad = Array.from(files || []).length - list.length;
+    if (bad) alert(bad + ' file(s) skipped. Use JPG, PNG or WebP (iPhone HEIC photos: export as JPG first).');
+    const items = list.map((file) => ({ id: this.uid(), kind: 'new', file, url: URL.createObjectURL(file) }));
+    this.setState((s) => ({ photos: s.photos.concat(items) }));
+  };
+  movePhoto = (id, to) => this.setState((s) => { const a = s.photos.slice(); const i = a.findIndex((p) => p.id === id); if (i < 0) return null; const [it] = a.splice(i, 1); a.splice(Math.max(0, Math.min(a.length, to)), 0, it); return { photos: a }; });
+
+  rowsHandlers(key) {
+    return this.state[key].map((r, i) => ({
+      label: r.label, value: r.value,
+      onLabel: (e) => { const v = e.target.value; this.setState((s) => ({ [key]: s[key].map((x, j) => j === i ? Object.assign({}, x, { label: v }) : x) }), this.saveDraft); },
+      onValue: (e) => { const v = e.target.value; this.setState((s) => ({ [key]: s[key].map((x, j) => j === i ? Object.assign({}, x, { value: v }) : x) }), this.saveDraft); },
+      remove: () => this.setState((s) => ({ [key]: s[key].filter((_, j) => j !== i) }), this.saveDraft),
+    }));
+  }
+
+  async compress(file, max) {
+    const bmp = await createImageBitmap(file);
+    const sc = Math.min(1, max / Math.max(bmp.width, bmp.height));
+    const c = document.createElement('canvas'); c.width = Math.round(bmp.width * sc); c.height = Math.round(bmp.height * sc);
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    return await new Promise((res) => c.toBlob(res, 'image/jpeg', 0.84));
+  }
+  esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  dataFor(paths) {
+    const f = this.state.f;
+    const keep = (rows) => rows.filter((r) => r.label && String(r.value || '').trim()).map((r) => ({ label: r.label.trim(), value: String(r.value).trim() }));
+    const d = Object.assign({}, f, {
+      slug: this.slug(),
+      interior: keep(this.state.interior), exterior: keep(this.state.exterior),
+      openHouses: this.state.oh.filter((o) => o.date).map((o) => ({ date: o.date, start: o.start || '', end: o.end || '' })),
+      photos: paths.photos, downloads: paths.downloads, communityImage: paths.comm || '',
+      updated: new Date().toISOString(),
+    });
+    delete d.slug_; return d;
+  }
+
+  validate() {
+    const f = this.state.f, errs = [];
+    if (!f.street.trim()) errs.push('Street address');
+    if (!f.city.trim()) errs.push('City');
+    if (!this.state.photos.length) errs.push('At least one photo');
+    if (/sold/i.test(f.status) && !f.soldDate) errs.push('Sold date');
+    if (errs.length) { alert('Please add: ' + errs.join(', ')); return false; }
+    return true;
+  }
+
+  async buildFiles() {
+    const slug = this.slug(), dir = 'properties/' + slug + '/', files = [];
+    this.log('Preparing ' + this.state.photos.length + ' photos…');
+    const photoPaths = [];
+    for (let i = 0; i < this.state.photos.length; i++) {
+      const p = this.state.photos[i];
+      if (p.kind === 'existing') { photoPaths.push(p.path); continue; }
+      const blob = await this.compress(p.file, 2560);
+      const path = 'photos/' + String(i + 1).padStart(2, '0') + '-' + this.uid() + '.jpg';
+      files.push({ path: dir + path, blob }); photoPaths.push(path);
+      if ((i + 1) % 5 === 0) this.log('  ' + (i + 1) + ' photos done');
+    }
+    const downloads = [];
+    for (const d of this.state.dls) {
+      if (d.kind === 'existing') { downloads.push({ label: d.label || 'Download', href: d.href }); continue; }
+      const name = 'files/' + (this.slugify(d.label || d.file.name.replace(/\.pdf$/i, '')) || 'document') + '-' + this.uid() + '.pdf';
+      files.push({ path: dir + name, blob: d.file }); downloads.push({ label: d.label || d.file.name, href: name });
+    }
+    let comm = '';
+    if (this.state.comm) {
+      if (this.state.comm.kind === 'existing') comm = this.state.comm.path;
+      else { comm = 'community-' + this.uid() + '.jpg'; files.push({ path: dir + comm, blob: await this.compress(this.state.comm.file, 2000) }); }
+    }
+    const data = this.dataFor({ photos: photoPaths, downloads, comm });
+    const tplRes = await fetch(this.base() + 'properties/template/index.html', { cache: 'no-store' });
+    if (!tplRes.ok) throw new Error('Could not load the page template (' + tplRes.status + '). Is /properties/template/ published?');
+    let html = await tplRes.text();
+    const url = 'https://jacksonkesecker.com/' + dir;
+    const name = data.title || data.street;
+    const title = name + (data.title ? '' : ', ' + data.city) + ' | Jackson Kesecker, REALTOR®';
+    const facts = [data.beds && data.beds + ' bed', data.baths && data.baths + ' bath', data.sqft && Number(data.sqft).toLocaleString('en-US') + ' sq ft'].filter(Boolean).join(' · ');
+    const desc = (/sold/i.test(data.status) ? 'Sold' : data.status) + ' · ' + [data.street, data.city].filter(Boolean).join(', ') + (facts ? ' · ' + facts : '') + '. ' + String(data.description || '').replace(/\s+/g, ' ').slice(0, 120);
+    const json = JSON.stringify(data).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+    html = html.split('__KS_TITLE__').join(this.esc(title)).split('__KS_DESC__').join(this.esc(desc.trim())).split('__KS_URL__').join(url).split('__KS_IMAGE__').join(url + photoPaths[0]);
+    html = html.replace(/\s*<meta name="robots" content="noindex" data-ks-tpl>/, '');
+    if (html.indexOf('window.KS_PROPERTY = null;/*KS_DATA*/') < 0) throw new Error('Template is missing its data marker.');
+    html = html.replace('window.KS_PROPERTY = null;/*KS_DATA*/', () => 'window.KS_PROPERTY = ' + json + ';/*KS_DATA*/');
+    files.push({ path: dir + 'index.html', text: html });
+    for (const n of ['support.js', 'AccessibilityWidget.dc.html', 'ContactModal.dc.html', 'ContactModalV2.dc.html']) {
+      const r = await fetch(this.base() + 'properties/template/' + n, { cache: 'no-store' });
+      if (r.ok) files.push({ path: dir + n, text: await r.text() });
+    }
+    return { files, url, slug };
+  }
+
+  sitemapWith(xml, url) {
+    if (!xml || xml.indexOf(url) >= 0) return null;
+    const today = new Date().toISOString().slice(0, 10);
+    return xml.replace('</urlset>', '  <url>\n    <loc>' + url + '</loc>\n    <lastmod>' + today + '</lastmod>\n  </url>\n</urlset>');
+  }
+
+  downloadZip = async () => {
+    if (this.state.busy || !this.validate()) return;
+    if (!window.JSZip) { alert('Zip tool still loading, try again in a moment.'); return; }
+    this.setState({ busy: true, log: [], live: false });
+    try {
+      const { files, url, slug } = await this.buildFiles();
+      const zip = new window.JSZip();
+      files.forEach((f) => zip.file(f.path, f.blob || f.text));
+      try { const r = await fetch(this.base() + 'sitemap.xml', { cache: 'no-store' }); if (r.ok) { const s = this.sitemapWith(await r.text(), url); if (s) zip.file('sitemap.xml', s); } } catch (e) {}
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'property-' + slug + '.zip'; document.body.appendChild(a); a.click(); a.remove();
+      this.log('Package downloaded. Upload its contents to the repo root (keep the folders).', 'ok');
+    } catch (e) { this.log(String(e.message || e), 'err'); }
+    this.setState({ busy: false });
+  };
+
+  b64 = (blob) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(blob); });
+  async gh(path, opts) {
+    const r = await fetch('https://api.github.com' + path, Object.assign({}, opts, { headers: { Authorization: 'Bearer ' + this.state.token.trim(), Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' } }));
+    if (!r.ok) { let m = ''; try { m = (await r.json()).message; } catch (e) {} throw new Error('GitHub ' + r.status + ': ' + (m || r.statusText) + (r.status === 401 || r.status === 403 ? ' (check the token and its permissions)' : '')); }
+    return r.json();
+  }
+  publish = async () => {
+    if (this.state.busy) return;
+    if (!this.state.token.trim()) { this.setState({ showSettings: true }); alert('Add your GitHub token first (one-time setup below).'); return; }
+    if (!this.validate()) return;
+    this.setState({ busy: true, log: [], live: false });
+    try {
+      const repo = this.state.repo.trim(), br = this.state.branch.trim() || 'main';
+      const { files, url, slug } = await this.buildFiles();
+      this.log('Uploading ' + files.length + ' files to GitHub…');
+      const tree = [];
+      for (let i = 0; i < files.length; i++) {
+        const f = files[i];
+        const content = f.blob ? await this.b64(f.blob) : f.text;
+        const b = await this.gh('/repos/' + repo + '/git/blobs', { method: 'POST', body: JSON.stringify(f.blob ? { content, encoding: 'base64' } : { content, encoding: 'utf-8' }) });
+        tree.push({ path: f.path, mode: '100644', type: 'blob', sha: b.sha });
+        if ((i + 1) % 5 === 0) this.log('  ' + (i + 1) + ' / ' + files.length + ' uploaded');
+      }
+      try {
+        const sm = await this.gh('/repos/' + repo + '/contents/sitemap.xml?ref=' + encodeURIComponent(br));
+        const xml = new TextDecoder().decode(Uint8Array.from(atob(sm.content.replace(/\n/g, '')), (c) => c.charCodeAt(0)));
+        const next = this.sitemapWith(xml, url);
+        if (next) { const b = await this.gh('/repos/' + repo + '/git/blobs', { method: 'POST', body: JSON.stringify({ content: next, encoding: 'utf-8' }) }); tree.push({ path: 'sitemap.xml', mode: '100644', type: 'blob', sha: b.sha }); this.log('Added to sitemap.'); }
+      } catch (e) { this.log('Sitemap not updated: ' + e.message); }
+      const ref = await this.gh('/repos/' + repo + '/git/ref/heads/' + br);
+      const head = await this.gh('/repos/' + repo + '/git/commits/' + ref.object.sha);
+      const t = await this.gh('/repos/' + repo + '/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: head.tree.sha, tree }) });
+      const c = await this.gh('/repos/' + repo + '/git/commits', { method: 'POST', body: JSON.stringify({ message: 'Property page: ' + slug, tree: t.sha, parents: [ref.object.sha] }) });
+      await this.gh('/repos/' + repo + '/git/refs/heads/' + br, { method: 'PATCH', body: JSON.stringify({ sha: c.sha }) });
+      this.log('Published. The page goes live in about 1–2 minutes.', 'ok');
+      this.setState({ live: true, loadSlug: slug });
+    } catch (e) { this.log(String(e.message || e), 'err'); }
+    this.setState({ busy: false });
+  };
+
+  loadExisting = async () => {
+    const slug = this.slugify(this.state.loadSlug.replace(/^.*\/properties\//, '').replace(/\/.*$/, ''));
+    if (!slug) return;
+    try {
+      const dir = this.base() + 'properties/' + slug + '/';
+      const r = await fetch(dir + 'index.html', { cache: 'no-store' });
+      if (!r.ok) throw new Error('Not found (' + r.status + ')');
+      const m = (await r.text()).match(/window\.KS_PROPERTY = (\{[\s\S]*?\});\/\*KS_DATA\*\//);
+      if (!m) throw new Error('No property data in that page');
+      const d = JSON.parse(m[1]);
+      const f = {}; Object.keys(Component.FIELDS).forEach((k) => { f[k] = d[k] != null ? String(d[k]) : Component.FIELDS[k]; });
+      f.slug = slug;
+      const toRows = (arr, presets) => { const rows = (arr || []).map((x) => ({ id: this.uid(), label: x.label, value: x.value })); presets.forEach((l) => { if (!rows.some((x) => x.label === l)) rows.push({ id: this.uid(), label: l, value: '' }); }); return rows; };
+      this.setState({
+        f, interior: toRows(d.interior, Component.INTERIOR), exterior: toRows(d.exterior, Component.EXTERIOR),
+        oh: (d.openHouses || []).map((o) => ({ id: this.uid(), date: o.date, start: o.start, end: o.end })),
+        photos: (d.photos || []).map((p) => ({ id: this.uid(), kind: 'existing', path: p, url: dir + p })),
+        dls: (d.downloads || []).map((x) => ({ id: this.uid(), kind: 'existing', label: x.label, href: x.href, name: x.href.split('/').pop() })),
+        comm: d.communityImage ? { kind: 'existing', path: d.communityImage, url: dir + d.communityImage } : null,
+        log: [], live: false,
+      }, this.saveDraft);
+    } catch (e) { alert('Could not load "' + slug + '": ' + e.message); }
+  };
+
+  preview = () => {
+    const w = window.open(this.base() + 'properties/template/index.html?preview=1', 'ks-property-preview');
+    this._pw = w;
+    if (w && this._readyFired) setTimeout(() => this.sendPreview(w), 300);
+  };
+  sendPreview = (w) => {
+    const d = this.dataFor({ photos: this.state.photos.map((p) => p.url), downloads: this.state.dls.map((x) => ({ label: x.label || x.name, href: x.kind === 'existing' ? this.base() + 'properties/' + this.slug() + '/' + x.href : x.url })), comm: this.state.comm ? this.state.comm.url : '' });
+    try { w.postMessage({ type: 'ks-property', data: d }, location.origin); } catch (e) {}
+  };
+  onMsg = (e) => { if (e.origin === location.origin && e.data && e.data.type === 'ks-preview-ready') { this._readyFired = true; this.sendPreview(e.source); } };
+  componentDidMount() { window.addEventListener('message', this.onMsg); }
+  componentWillUnmount() { window.removeEventListener('message', this.onMsg); }
+
+  resetAll = () => {
+    if (!confirm('Clear the form and start a new property?')) return;
+    localStorage.removeItem('ks-builder-draft');
+    const rows = (labels) => labels.map((l) => ({ id: this.uid(), label: l, value: '' }));
+    this.setState({ f: Object.assign({}, Component.FIELDS), interior: rows(Component.INTERIOR), exterior: rows(Component.EXTERIOR), oh: [], photos: [], dls: [], comm: null, log: [], live: false, loadSlug: '' });
+  };
+
+  renderVals() {
+    const s = this.state, f = s.f;
+    const fld = (key, label, o) => Object.assign({ key, label, value: f[key], onChange: (e) => this.setF(key, e.target.value), isInput: true, isSelect: false, isTextarea: false, type: 'text', placeholder: '', inputmode: 'text', span: 'auto', rows: 3, options: [] }, o || {});
+    const num = { inputmode: 'decimal' };
+    const sold = /sold/i.test(f.status);
+    const groups = [
+      { title: 'Address & status', fields: [
+        fld('street', 'Street address', { placeholder: '33900 Fabry Road', span: '1 / -1' }),
+        fld('city', 'City', { placeholder: 'Soledad' }), fld('state', 'State'), fld('zip', 'ZIP', { inputmode: 'numeric' }),
+        fld('status', 'Status', { isInput: false, isSelect: true, options: ['For Sale', 'Coming Soon', 'Pending', 'Sold'] }),
+        fld('price', sold ? 'List price' : 'Price', Object.assign({ placeholder: '1800000' }, num)),
+        ...(sold ? [fld('soldPrice', 'Sold price', Object.assign({ placeholder: '1800000' }, num)), fld('soldDate', 'Sold date', { type: 'date' })] : []),
+        fld('mls', 'MLS #', { placeholder: 'ML82028688' }),
+        fld('title', 'Property name (optional)', { placeholder: 'e.g. The Summit at Tehama', span: '1 / -1' }),
+      ] },
+      { title: 'Key facts', fields: [
+        fld('beds', 'Bedrooms', num), fld('baths', 'Total bathrooms', Object.assign({ placeholder: '2.5' }, num)), fld('fullBaths', 'Full baths', num), fld('halfBaths', 'Half baths', num),
+        fld('sqft', 'Living area (sq ft)', num), fld('lot', 'Lot size', num), fld('lotUnit', 'Lot unit', { isInput: false, isSelect: true, options: ['Acres', 'Sq ft'] }), fld('yearBuilt', 'Year built', { inputmode: 'numeric' }),
+        fld('type', 'Property type', { placeholder: 'Single family residence' }), fld('stories', 'Stories', num),
+        fld('neighborhood', 'Neighborhood'), fld('view', 'View', { placeholder: 'Ocean, mountains' }), fld('schoolDistrict', 'School district'), fld('hoa', 'HOA', { placeholder: '$250/mo' }), fld('taxes', 'Property taxes'),
+      ] },
+      { title: 'Story', hasNote: true, note: 'Leave a blank line between paragraphs. The heading is optional; by default it reads “Welcome to …” or “A recent sale in …”.', fields: [
+        fld('headline', 'Section heading (optional)', { span: '1 / -1' }),
+        fld('description', 'Description', { isInput: false, isTextarea: true, rows: 10, span: '1 / -1' }),
+      ] },
+      { title: 'Video, 3D tour & hero', fields: [
+        fld('video', 'Video link (YouTube, Vimeo or .mp4)', { span: '1 / -1', placeholder: 'https://youtu.be/…' }),
+        fld('matterport', 'Matterport / 3D tour link', { span: '1 / -1', placeholder: 'https://my.matterport.com/show/?m=…' }),
+        fld('heroCount', 'Photos in the hero slideshow', { isInput: false, isSelect: true, options: ['1', '3', '5', '7', '10'] }),
+      ] },
+      { title: 'Community', fields: [
+        fld('communityName', 'Community name', { placeholder: f.city || 'Carmel' }),
+        fld('communityText', 'Short paragraph about the community', { isInput: false, isTextarea: true, rows: 4, span: '1 / -1' }),
+      ] },
+    ];
+    const n = s.photos.length;
+    const photoItems = s.photos.map((p, i) => ({
+      url: p.url, badge: i === 0 ? 'Cover' : String(i + 1),
+      outline: i === 0 ? '2px solid #000000' : 'none', opacity: s.dragId === p.id ? 0.4 : 1,
+      remove: (e) => { e.stopPropagation(); this.setState((st) => ({ photos: st.photos.filter((x) => x.id !== p.id) })); },
+      left: () => this.movePhoto(p.id, i - 1), right: () => this.movePhoto(p.id, i + 1),
+      dragStart: (e) => { e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', p.id); } catch (_) {} this.setState({ dragId: p.id }); },
+      dragOver: (e) => { if (s.dragId) e.preventDefault(); },
+      drop: (e) => { e.preventDefault(); e.stopPropagation(); if (s.dragId && s.dragId !== p.id) this.movePhoto(s.dragId, i); this.setState({ dragId: null }); },
+    }));
+    const slug = this.slug();
+    return {
+      groups, photoItems,
+      photoSummary: n ? n + ' photo' + (n === 1 ? '' : 's') + ' added' : 'no photos yet',
+      zoneBorder: s.zoneHot ? '#000000' : '#cccccc',
+      zoneOver: (e) => { e.preventDefault(); if (!s.zoneHot) this.setState({ zoneHot: true }); },
+      zoneLeave: () => this.setState({ zoneHot: false }),
+      zoneDrop: (e) => { e.preventDefault(); this.setState({ zoneHot: false }); if (e.dataTransfer.files && e.dataTransfer.files.length) this.addPhotoFiles(e.dataTransfer.files); },
+      pickPhotos: () => this._pi && this._pi.click(), photoInputRef: (el) => { this._pi = el; },
+      onPhotoFiles: (e) => { this.addPhotoFiles(e.target.files); e.target.value = ''; },
+      rowLists: [
+        { title: 'Interior features', rows: this.rowsHandlers('interior'), add: () => this.setState((st) => ({ interior: st.interior.concat([{ id: this.uid(), label: '', value: '' }]) })) },
+        { title: 'Exterior features', rows: this.rowsHandlers('exterior'), add: () => this.setState((st) => ({ exterior: st.exterior.concat([{ id: this.uid(), label: '', value: '' }]) })) },
+      ],
+      ohItems: s.oh.map((o, i) => {
+        const up = (k) => (e) => { const v = e.target.value; this.setState((st) => ({ oh: st.oh.map((x, j) => j === i ? Object.assign({}, x, { [k]: v }) : x) }), this.saveDraft); };
+        return { date: o.date, start: o.start, end: o.end, onDate: up('date'), onStart: up('start'), onEnd: up('end'), remove: () => this.setState((st) => ({ oh: st.oh.filter((_, j) => j !== i) }), this.saveDraft) };
+      }),
+      addOh: () => this.setState((st) => ({ oh: st.oh.concat([{ id: this.uid(), date: '', start: '13:00', end: '16:00' }]) })),
+      dlItems: s.dls.map((d, i) => ({ label: d.label, name: d.name, onLabel: (e) => { const v = e.target.value; this.setState((st) => ({ dls: st.dls.map((x, j) => j === i ? Object.assign({}, x, { label: v }) : x) })); }, remove: () => this.setState((st) => ({ dls: st.dls.filter((_, j) => j !== i) })) })),
+      dlInputRef: (el) => { this._di = el; }, pickDl: () => this._di && this._di.click(),
+      onDlFiles: (e) => { const add = Array.from(e.target.files || []).map((file) => ({ id: this.uid(), kind: 'new', file, url: URL.createObjectURL(file), name: file.name, label: file.name.replace(/\.pdf$/i, '').replace(/[_-]+/g, ' ') })); e.target.value = ''; this.setState((st) => ({ dls: st.dls.concat(add) })); },
+      hasCommImg: !!s.comm, commImgUrl: s.comm ? s.comm.url : '', commBtnLabel: s.comm ? 'Replace photo' : 'Choose photo',
+      commInputRef: (el) => { this._ci = el; }, pickComm: () => this._ci && this._ci.click(),
+      onCommFile: (e) => { const file = e.target.files && e.target.files[0]; e.target.value = ''; if (file) this.setState({ comm: { kind: 'new', file, url: URL.createObjectURL(file) } }); },
+      clearComm: () => this.setState({ comm: null }),
+      slugValue: f.slug, onSlug: (e) => this.setF('slug', e.target.value), autoSlug: this.autoSlug() || 'street-city',
+      pageUrl: 'https://jacksonkesecker.com/properties/' + (slug || '…') + '/',
+      publish: this.publish, downloadZip: this.downloadZip, busy: s.busy, busyOpacity: s.busy ? 0.5 : 1,
+      showSettings: s.showSettings, settingsLabel: s.showSettings ? 'Hide GitHub settings' : (s.token ? 'GitHub settings' : 'Set up GitHub publishing'),
+      toggleSettings: () => this.setState((st) => ({ showSettings: !st.showSettings })),
+      tokenValue: s.token, onToken: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-token', v); this.setState({ token: v }); },
+      repoValue: s.repo, onRepo: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-repo', v); this.setState({ repo: v }); },
+      branchValue: s.branch, onBranch: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-branch', v); this.setState({ branch: v }); },
+      hasLog: s.log.length > 0, logLines: s.log, hasLiveLink: s.live,
+      loadSlug: s.loadSlug, onLoadSlug: (e) => this.setState({ loadSlug: e.target.value }), loadExisting: this.loadExisting,
+      preview: this.preview, resetAll: this.resetAll,
+    };
+  }
+}
+</script>
+</body>
+</html>

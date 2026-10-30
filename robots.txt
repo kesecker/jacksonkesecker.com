@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /properties/template/
 
 Sitemap: https://jacksonkesecker.com/sitemap.xml
