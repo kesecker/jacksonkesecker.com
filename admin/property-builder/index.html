@@ -486,12 +486,19 @@ class Component extends DCLogic {
     const PHOTO = /(mlslmedia|idxhome|ihomefinder|mlslistings|cloudfront|photos?\.)/i;
     const photosOf = (roots) => {
       const seen = new Set(), out = [];
-      const add = (u) => { if (!u) return; u = u.trim(); if (!/^https?:/i.test(u) || !PHOTO.test(u) || /logo|agent|broker|icon|avatar|sprite|placeholder|mapbox|maps\.google|staticmap/i.test(u)) return; const k = u.split('?')[0].replace(/_(\d{2,4})x(\d{2,4})(?=\.\w+$)/, ''); if (seen.has(k)) return; seen.add(k); out.push(u); };
+      let firstWasClone = false, firstKey = null, n = 0;
+      const add = (u) => { if (!u) return; u = u.trim(); if (!/^https?:/i.test(u) || !PHOTO.test(u) || /logo|agent|broker|icon|avatar|sprite|placeholder|mapbox|maps\.google|staticmap/i.test(u)) return; const k = u.split('?')[0].replace(/_(\d{2,4})x(\d{2,4})(?=\.\w+$)/, ''); n++; if (n === 1) firstKey = k; else if (k === firstKey) firstWasClone = true; if (seen.has(k)) return; seen.add(k); out.push(u); };
       qa(roots, '.listing-photo-carousel img, [class*="gallery" i] img, [class*="photo" i] img, .listing-detail img').forEach((im) => {
-        if (im.closest('.similar-listings, [class*="similar" i], [class*="agent" i]')) return;
+        if (im.closest('.similar-listings, [class*="similar" i], [class*="agent" i], [class*="clone" i], [data-index^="-"]')) return;
         add(im.getAttribute('data-src') || ''); add((im.getAttribute('srcset') || '').split(',').pop().trim().split(' ')[0]); add(im.currentSrc || im.getAttribute('src') || '');
       });
       qa(roots, '.listing-photo-carousel [style*="background-image"], [class*="gallery" i] [style*="background-image"]').forEach((el) => { const m = (el.getAttribute('style') || '').match(/url\(["']?([^"')]+)/); if (m) add(m[1]); });
+      // Looping carousels put a copy of the LAST photo first. MLS photo URLs end in a sequence number: sort by it when every URL has one; otherwise drop a leading clone.
+      const seq = out.map((s) => { const m = s.split('?')[0].match(/(\d+)\.(jpe?g|png|webp)$/i); return m ? +m[1] : null; });
+      if (out.length > 1 && seq.every((n) => n !== null) && new Set(seq).size === out.length) {
+        return out.map((u, i) => [u, seq[i]]).sort((x, y) => x[1] - y[1]).map((x) => x[0]);
+      }
+      if (out.length > 2 && firstWasClone) out.push(out.shift());
       return out;
     };
     return (async () => {
