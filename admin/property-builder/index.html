@@ -37,6 +37,7 @@
     input, select, textarea { font-size: 15px; }
     input:focus, select:focus, textarea:focus { outline: none; border-color: #000000 !important; }
   </style>
+<style>[data-ks-ul]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:var(--ks-ul,currentColor);transform:scaleX(var(--ks-on,0));transform-origin:var(--ks-ul-o,left) center;transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none;will-change:transform;}</style>
 </helmet>
 
 <div style="min-height: 100vh; color: #1a1a1a; display: flex; flex-direction: column; animation: ksPageIn .9s cubic-bezier(.16,1,.3,1) both;">
@@ -47,7 +48,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: 10px;">
       <button onClick="{{ preview }}" style="height: 44px; padding: 0 22px; border-radius: 8px; border: none; background: rgba(255,255,255,0.14); color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .3s ease;" style-hover="background: rgba(255,255,255,0.28);">Preview</button>
-      <button onClick="{{ resetAll }}" style="height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; background-image: linear-gradient(to top, #ffffff 1.5px, transparent 1.5px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #ffffff; font-size: 14px; margin: 8px 0 0; font-weight: 600; cursor: pointer;" style-hover="background-size: 100% 100%;">Start fresh</button>
+      <button onClick="{{ resetAll }}" data-ks-ul="1" style="height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #ffffff; font-size: 14px; margin: 8px 0 0; font-weight: 600; cursor: pointer; position: relative;" style-hover="--ks-on: 1;">Start fresh</button>
     </div>
   </div>
 
@@ -107,7 +108,7 @@
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
           <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2;">Photos</h2>
           <sc-if value="{{ hasPhotos }}" hint-placeholder-val="{{ false }}">
-            <button type="button" onClick="{{ deleteAllPhotos }}" style="height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; background-image: linear-gradient(to top, #1a1a1a 1.5px, transparent 1.5px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background-size: 100% 100%;">Delete all photos</button>
+            <button type="button" onClick="{{ deleteAllPhotos }}" data-ks-ul="1" style="height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; --ks-ul: #1a1a1a; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; position: relative;" style-hover="--ks-on: 1;">Delete all photos</button>
           </sc-if>
         </div>
         <span style="font-size: 14px; color: #666666; line-height: 1.6; max-width: 620px; text-wrap: pretty;">Drag to reorder. The first photo is the cover and share image; the first few rotate in the hero. Photos are resized and compressed automatically.</span>
@@ -147,7 +148,7 @@
             <button data-ks-x="1" onClick="{{ r.remove }}" aria-label="Remove row" style="width: 40px; height: 46px; border: none; background: transparent; color: #888888; font-size: 15px; cursor: pointer;">✕</button>
           </div>
         </sc-for>
-        <button onClick="{{ rl.add }}" style="align-self: flex-start; height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; background-image: linear-gradient(to top, #1a1a1a 1.5px, transparent 1.5px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background-size: 100% 100%;">+ Add row</button>
+        <button onClick="{{ rl.add }}" data-ks-ul="1" style="align-self: flex-start; height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; --ks-ul: #1a1a1a; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; position: relative;" style-hover="--ks-on: 1;">+ Add row</button>
       </div>
     </sc-for>
 
@@ -164,7 +165,7 @@
           <button data-ks-x="1" onClick="{{ o.remove }}" aria-label="Remove" style="width: 40px; height: 46px; border: none; background: transparent; color: #888888; cursor: pointer;">✕</button>
         </div>
       </sc-for>
-      <button onClick="{{ addOh }}" style="align-self: flex-start; height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; background-image: linear-gradient(to top, #1a1a1a 1.5px, transparent 1.5px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background-size: 100% 100%;">+ Add open house</button>
+      <button onClick="{{ addOh }}" data-ks-ul="1" style="align-self: flex-start; height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; --ks-ul: #1a1a1a; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; position: relative;" style-hover="--ks-on: 1;">+ Add open house</button>
     </div>
 
     <div data-ks-reveal="1" style="padding: 44px 0; border-top: 1px solid #e6e6e6; display: flex; flex-direction: column; gap: 20px;">
@@ -180,7 +181,7 @@
         </div>
       </sc-for>
       <input ref="{{ dlInputRef }}" type="file" accept="application/pdf" multiple="true" onChange="{{ onDlFiles }}" style="display: none;">
-      <button onClick="{{ pickDl }}" style="align-self: flex-start; height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; background-image: linear-gradient(to top, #1a1a1a 1.5px, transparent 1.5px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background-size: 100% 100%;">+ Add PDF</button>
+      <button onClick="{{ pickDl }}" data-ks-ul="1" style="align-self: flex-start; height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; --ks-ul: #1a1a1a; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; position: relative;" style-hover="--ks-on: 1;">+ Add PDF</button>
     </div>
 
     <div data-ks-reveal="1" style="padding: 44px 0; border-top: 1px solid #e6e6e6; display: flex; flex-direction: column; gap: 20px;">
@@ -193,9 +194,9 @@
           <img src="{{ commImgUrl }}" alt="" style="width: 160px; height: 106px; object-fit: cover; border-radius: 0; background: #eeeeee;">
         </sc-if>
         <input ref="{{ commInputRef }}" type="file" accept="image/jpeg,image/png,image/webp" onChange="{{ onCommFile }}" style="display: none;">
-        <button onClick="{{ pickComm }}" style="height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; background-image: linear-gradient(to top, #1a1a1a 1.5px, transparent 1.5px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background-size: 100% 100%;">{{ commBtnLabel }}</button>
+        <button onClick="{{ pickComm }}" data-ks-ul="1" style="height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; --ks-ul: #1a1a1a; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; position: relative;" style-hover="--ks-on: 1;">{{ commBtnLabel }}</button>
         <sc-if value="{{ hasCommImg }}" hint-placeholder-val="{{ false }}">
-          <button onClick="{{ clearComm }}" style="height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; background-image: linear-gradient(to top, #666666 1.5px, transparent 1.5px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #666666; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background-size: 100% 100%;">Remove</button>
+          <button onClick="{{ clearComm }}" data-ks-ul="1" style="height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; --ks-ul: #666666; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #666666; font-size: 14px; font-weight: 600; cursor: pointer; position: relative;" style-hover="--ks-on: 1;">Remove</button>
         </sc-if>
       </div>
     </div>
@@ -212,7 +213,7 @@
       <div style="display: flex; flex-wrap: wrap; gap: 12px;">
         <button onClick="{{ publish }}" disabled="{{ busy }}" style="height: 50px; padding: 0 28px; border-radius: 8px; border: 1px solid #ffffff; background: #ffffff; color: #000000; font-size: 14px; font-weight: 600; cursor: pointer; opacity: {{ busyOpacity }}; transition: background .3s ease, color .3s ease;" style-hover="background: transparent; color: #ffffff;">Publish to website</button>
         <button onClick="{{ downloadZip }}" disabled="{{ busy }}" style="height: 50px; padding: 0 28px; border-radius: 8px; border: 1px solid #ffffff; background: transparent; color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; opacity: {{ busyOpacity }}; transition: background .3s ease, color .3s ease;" style-hover="background: #ffffff; color: #000000;">Download package (.zip)</button>
-        <button onClick="{{ toggleSettings }}" style="align-self: center; height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; background-image: linear-gradient(to top, #ffffff 1.5px, transparent 1.5px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background-size: 100% 100%;">{{ settingsLabel }}</button>
+        <button onClick="{{ toggleSettings }}" data-ks-ul="1" style="align-self: center; height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; position: relative;" style-hover="--ks-on: 1;">{{ settingsLabel }}</button>
       </div>
       <sc-if value="{{ showSettings }}" hint-placeholder-val="{{ false }}">
         <div style="border-top: 1px solid rgba(255,255,255,0.18); padding-top: 18px; display: flex; flex-direction: column; gap: 14px;">
