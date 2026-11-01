@@ -284,6 +284,16 @@ class Component extends DCLogic {
   uid() { return Math.random().toString(36).slice(2, 8); }
   log = (text, kind) => this.setState((s) => ({ log: s.log.concat([{ text, color: kind === 'err' ? '#ff8a80' : kind === 'ok' ? '#9be7a8' : 'rgba(255,255,255,0.8)' }]) }));
 
+  cfClean(t) {
+    const dec = (hex) => { try { const k = parseInt(hex.slice(0, 2), 16); let o = ''; for (let i = 2; i < hex.length; i += 2) o += String.fromCharCode(parseInt(hex.slice(i, i + 2), 16) ^ k); return o.replace('@', '&#64;'); } catch (e) { return ''; } };
+    t = t.replace(/<a\b[^>]*class="__cf_email__"[^>]*data-cfemail="([0-9a-f]+)"[^>]*>[\s\S]*?<\/a>/gi, (m, h) => dec(h));
+    t = t.replace(/<span\b[^>]*class="__cf_email__"[^>]*data-cfemail="([0-9a-f]+)"[^>]*>[\s\S]*?<\/span>/gi, (m, h) => dec(h));
+    t = t.replace(/\/cdn-cgi\/l\/email-protection#([0-9a-f]+)/gi, (m, h) => 'mailto:' + dec(h));
+    t = t.replace(/<script[^>]*cdn-cgi\/scripts\/[^>]*email-decode[^>]*><\/script>/gi, '');
+    t = t.replace(/\[email(?:&#160;|&nbsp;|\u00a0| )protected\]/gi, 'kesecker&#64;kw.com');
+    return t;
+  }
+
   addPhotoFiles = (files) => {
     const list = Array.from(files || []).filter((f) => /^image\/(jpeg|png|webp)$/i.test(f.type))
       .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
@@ -362,7 +372,7 @@ class Component extends DCLogic {
     const data = this.dataFor({ photos: photoPaths, downloads, comm });
     const tplRes = await fetch(this.base() + 'properties/template/index.html', { cache: 'no-store' });
     if (!tplRes.ok) throw new Error('Could not load the page template (' + tplRes.status + '). Is /properties/template/ published?');
-    let html = await tplRes.text();
+    let html = this.cfClean(await tplRes.text());
     const url = 'https://jacksonkesecker.com/' + dir;
     const name = data.title || data.street;
     const title = name + (data.title ? '' : ', ' + data.city) + ' | Jackson Kesecker, REALTOR®';
@@ -376,7 +386,7 @@ class Component extends DCLogic {
     files.push({ path: dir + 'index.html', text: html });
     for (const n of ['support.js', 'AccessibilityWidget.dc.html', 'ContactModal.dc.html', 'ContactModalV2.dc.html']) {
       const r = await fetch(this.base() + 'properties/template/' + n, { cache: 'no-store' });
-      if (r.ok) files.push({ path: dir + n, text: await r.text() });
+      if (r.ok) files.push({ path: dir + n, text: n.endsWith('.js') ? await r.text() : this.cfClean(await r.text()) });
     }
     return { files, url, slug };
   }
