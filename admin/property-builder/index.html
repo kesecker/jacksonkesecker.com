@@ -23,7 +23,14 @@
   <title>Property Builder | Jackson Kesecker</title>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <style>
-    html, body { margin: 0; background: #f4f4f2; }
+    html, body { margin: 0; background: #ffffff; }
+    @keyframes ksPageIn { from { opacity: 0; } to { opacity: 1; } }
+    [data-ks-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 1.2s cubic-bezier(.16,1,.3,1), transform 1.2s cubic-bezier(.16,1,.3,1); }
+    [data-ks-reveal].ks-in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) { [data-ks-reveal] { opacity: 1; transform: none; transition: none; } }
+    input::placeholder, textarea::placeholder { color: #aaaaaa; }
+    [data-ks-dark]::placeholder { color: rgba(255,255,255,0.4); }
+    [data-ks-dark]:focus { border-color: #ffffff !important; }
     html body *:not(svg):not(path) { font-family: 'Montserrat', system-ui, sans-serif !important; letter-spacing: -0.01em; }
     a { color: #1a1a1a; }
     a:hover { color: #000000; }
@@ -32,62 +39,62 @@
   </style>
 </helmet>
 
-<div style="min-height: 100vh; color: #1a1a1a; display: flex; flex-direction: column;">
-  <div style="position: sticky; top: 0; z-index: 50; height: 72px; background: #000000; color: #ffffff; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 clamp(16px, 4vw, 40px);">
+<div style="min-height: 100vh; color: #1a1a1a; display: flex; flex-direction: column; animation: ksPageIn .9s cubic-bezier(.16,1,.3,1) both;">
+  <div style="position: sticky; top: 0; z-index: 50; height: 92px; background: #000000; color: #ffffff; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 clamp(16px, 4vw, 40px);">
     <div style="display: flex; align-items: center; gap: 18px; min-width: 0;">
-      <a href="https://jacksonkesecker.com/" target="_self" aria-label="Home" style="display: flex; align-items: center;"><img src="/uploads/JKR-key-white.png" alt="Jackson Kesecker Realtor" style="height: 28px; width: auto;"></a>
-      <span style="font-size: 16px; font-weight: 700;">Property Builder</span>
+      <a href="https://jacksonkesecker.com/" target="_self" aria-label="Home" style="display: flex; align-items: center;"><img src="uploads/JKR-key-white.png" alt="Jackson Kesecker Realtor" style="height: 34px; width: auto;"></a>
+      <span style="font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.7); padding-left: 18px; border-left: 1px solid rgba(255,255,255,0.25); white-space: nowrap; flex-shrink: 0;">Property Builder</span>
     </div>
     <div style="display: flex; align-items: center; gap: 10px;">
-      <button onClick="{{ preview }}" style="height: 42px; padding: 0 18px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.7); background: transparent; color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background: #ffffff; color: #000000;">Preview</button>
-      <button onClick="{{ resetAll }}" style="height: 42px; padding: 0 14px; border-radius: 8px; border: none; background: transparent; color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 600; cursor: pointer;" style-hover="color: #ffffff;">Start new</button>
+      <button onClick="{{ preview }}" style="height: 44px; padding: 0 22px; border-radius: 8px; border: none; background: rgba(255,255,255,0.14); color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .3s ease;" style-hover="background: rgba(255,255,255,0.28);">Preview</button>
+      <button onClick="{{ resetAll }}" style="height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; background-image: linear-gradient(to top, #ffffff 1.5px, transparent 1.5px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #ffffff; font-size: 14px; margin: 8px 0 0; font-weight: 600; cursor: pointer;" style-hover="background-size: 100% 100%;">Start fresh</button>
     </div>
   </div>
 
-  <div style="width: 100%; max-width: 920px; margin: 0 auto; padding: 32px clamp(16px, 4vw, 32px) 120px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px;">
+  <div style="width: 100%; max-width: 960px; margin: 0 auto; padding: 56px clamp(20px, 5vw, 48px) 120px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0;">
 
-    <div style="background: #000000; color: #ffffff; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+    <div data-ks-reveal="1" style="background: #000000; color: #ffffff; border-radius: 0; padding: clamp(28px, 5vw, 48px); margin-bottom: 24px; display: flex; flex-direction: column; gap: 22px;">
       <div style="display: flex; flex-direction: column; gap: 4px;">
-        <h2 style="margin: 0; font-size: 19px; font-weight: 700; color: #ffffff;">Import from MLS</h2>
-        <span style="font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5;">Type the MLS # (or paste the listing’s link from jacksonkesecker.com). Address, price, facts, description, features and photos fill in automatically. Review everything before publishing.</span>
+        <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2; color: #ffffff;">Import from MLS</h2>
+        <span style="font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.6; max-width: 620px; text-wrap: pretty;">Type the MLS # (or paste the listing’s link from jacksonkesecker.com). Address, price, facts, description, features and photos fill in automatically. Review everything before publishing.</span>
       </div>
       <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
-        <input type="text" value="{{ importQ }}" onChange="{{ onImportQ }}" onKeyDown="{{ onImportKey }}" placeholder="ML82028688" style="flex: 1 1 260px; height: 46px; padding: 0 14px; border: 1px solid rgba(255,255,255,0.35); border-radius: 8px; background: #111111; color: #ffffff; box-sizing: border-box;">
-        <button onClick="{{ importMls }}" disabled="{{ importing }}" style="height: 46px; padding: 0 22px; border-radius: 8px; border: none; background: #ffffff; color: #000000; font-size: 14px; font-weight: 700; cursor: pointer; opacity: {{ importOpacity }};">{{ importBtn }}</button>
+        <input data-ks-dark="1" type="text" value="{{ importQ }}" onChange="{{ onImportQ }}" onKeyDown="{{ onImportKey }}" placeholder="ML82028688" style="flex: 1 1 260px; height: 46px; padding: 0 2px; border: none; border-bottom: 1px solid rgba(255,255,255,0.3); border-radius: 0; background: transparent; color: #ffffff; box-sizing: border-box; transition: border-color .3s ease;">
+        <button onClick="{{ importMls }}" disabled="{{ importing }}" style="height: 46px; padding: 0 28px; border-radius: 8px; border: 1px solid #ffffff; background: #ffffff; color: #000000; font-size: 14px; font-weight: 600; cursor: pointer; opacity: {{ importOpacity }}; transition: background .3s ease, color .3s ease;" style-hover="background: transparent; color: #ffffff;">{{ importBtn }}</button>
       </div>
       <sc-if value="{{ hasImportMsg }}" hint-placeholder-val="{{ false }}">
         <span style="font-size: 13px; line-height: 1.6; color: {{ importMsgColor }};">{{ importMsg }}</span>
       </sc-if>
     </div>
 
-    <div style="background: #ffffff; border-radius: 8px; padding: 22px 24px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px;">
+    <div data-ks-reveal="1" style="padding: 20px 0 44px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px;">
       <div style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 6px;">
-        <span style="font-size: 13px; font-weight: 600; color: #555555;">Edit a property you already published</span>
-        <input type="text" value="{{ loadSlug }}" onChange="{{ onLoadSlug }}" placeholder="e.g. 33900-fabry-road-soledad" style="height: 46px; padding: 0 14px; border: 1px solid #d4d4d4; border-radius: 8px; background: #ffffff; box-sizing: border-box; width: 100%;">
+        <span style="font-size: 12px; font-weight: 600; color: #777777;">Edit a property you already published</span>
+        <input type="text" value="{{ loadSlug }}" onChange="{{ onLoadSlug }}" placeholder="e.g. 33900-fabry-road-soledad" style="height: 44px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; background: transparent; box-sizing: border-box; width: 100%; transition: border-color .3s ease;">
       </div>
-      <button onClick="{{ loadExisting }}" style="height: 46px; padding: 0 20px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background: #000000; color: #ffffff;">Load</button>
+      <button onClick="{{ loadExisting }}" style="height: 46px; padding: 0 26px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">Load</button>
     </div>
 
     <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
-      <div style="background: #ffffff; border-radius: 8px; padding: 26px 24px 28px; display: flex; flex-direction: column; gap: 18px;">
+      <div data-ks-reveal="1" style="padding: 44px 0; border-top: 1px solid #e6e6e6; display: flex; flex-direction: column; gap: 24px;">
         <div style="display: flex; flex-direction: column; gap: 4px;">
-          <h2 style="margin: 0; font-size: 19px; font-weight: 700;">{{ g.title }}</h2>
-          <sc-if value="{{ g.hasNote }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: #666666; line-height: 1.5;">{{ g.note }}</span></sc-if>
+          <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2;">{{ g.title }}</h2>
+          <sc-if value="{{ g.hasNote }}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; color: #666666; line-height: 1.6; max-width: 620px; text-wrap: pretty;">{{ g.note }}</span></sc-if>
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 16px;">
           <sc-for list="{{ g.fields }}" as="f" hint-placeholder-count="4">
             <label style="display: flex; flex-direction: column; gap: 6px; grid-column: {{ f.span }};">
-              <span style="font-size: 13px; font-weight: 600; color: #555555;">{{ f.label }}</span>
+              <span style="font-size: 12px; font-weight: 600; color: #777777;">{{ f.label }}</span>
               <sc-if value="{{ f.isInput }}" hint-placeholder-val="{{ true }}">
-                <input type="{{ f.type }}" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.placeholder }}" inputmode="{{ f.inputmode }}" style="height: 46px; padding: 0 14px; border: 1px solid #d4d4d4; border-radius: 8px; background: #ffffff; box-sizing: border-box; width: 100%; color: #1a1a1a;">
+                <input type="{{ f.type }}" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.placeholder }}" inputmode="{{ f.inputmode }}" style="height: 44px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; background: transparent; box-sizing: border-box; width: 100%; color: #1a1a1a; transition: border-color .3s ease;">
               </sc-if>
               <sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}">
-                <select value="{{ f.value }}" onChange="{{ f.onChange }}" style="height: 46px; padding: 0 12px; border: 1px solid #d4d4d4; border-radius: 8px; background: #ffffff; box-sizing: border-box; width: 100%; color: #1a1a1a;">
+                <select value="{{ f.value }}" onChange="{{ f.onChange }}" style="height: 44px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; background: transparent; box-sizing: border-box; width: 100%; color: #1a1a1a; transition: border-color .3s ease;">
                   <sc-for list="{{ f.options }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for>
                 </select>
               </sc-if>
               <sc-if value="{{ f.isTextarea }}" hint-placeholder-val="{{ false }}">
-                <textarea value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.placeholder }}" rows="{{ f.rows }}" style="padding: 12px 14px; border: 1px solid #d4d4d4; border-radius: 8px; background: #ffffff; box-sizing: border-box; width: 100%; line-height: 1.6; resize: vertical; color: #1a1a1a;"></textarea>
+                <textarea value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.placeholder }}" rows="{{ f.rows }}" style="padding: 12px 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; background: transparent; box-sizing: border-box; width: 100%; line-height: 1.6; resize: vertical; color: #1a1a1a; transition: border-color .3s ease;"></textarea>
               </sc-if>
             </label>
           </sc-for>
@@ -95,27 +102,32 @@
       </div>
     </sc-for>
 
-    <div style="background: #ffffff; border-radius: 8px; padding: 26px 24px 28px; display: flex; flex-direction: column; gap: 18px;">
+    <div data-ks-reveal="1" style="padding: 44px 0; border-top: 1px solid #e6e6e6; display: flex; flex-direction: column; gap: 24px;">
       <div style="display: flex; flex-direction: column; gap: 4px;">
-        <h2 style="margin: 0; font-size: 19px; font-weight: 700;">Photos</h2>
-        <span style="font-size: 13px; color: #666666; line-height: 1.5;">Drag to reorder. The first photo is the cover and share image; the first few rotate in the hero. Photos are resized and compressed automatically.</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+          <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2;">Photos</h2>
+          <sc-if value="{{ hasPhotos }}" hint-placeholder-val="{{ false }}">
+            <button type="button" onClick="{{ deleteAllPhotos }}" style="height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; background-image: linear-gradient(to top, #1a1a1a 1.5px, transparent 1.5px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background-size: 100% 100%;">Delete all photos</button>
+          </sc-if>
+        </div>
+        <span style="font-size: 14px; color: #666666; line-height: 1.6; max-width: 620px; text-wrap: pretty;">Drag to reorder. The first photo is the cover and share image; the first few rotate in the hero. Photos are resized and compressed automatically.</span>
       </div>
-      <div onDragOver="{{ zoneOver }}" onDragLeave="{{ zoneLeave }}" onDrop="{{ zoneDrop }}" onClick="{{ pickPhotos }}" style="border: 2px dashed {{ zoneBorder }}; border-radius: 8px; padding: 34px 20px; text-align: center; cursor: pointer; background: #fafafa; transition: border-color 0.2s ease; display: flex; flex-direction: column; gap: 6px; align-items: center;">
-        <span style="font-size: 15px; font-weight: 600;">Drop photos here or click to choose</span>
-        <span style="font-size: 13px; color: #666666;">JPG, PNG or WebP · {{ photoSummary }}</span>
+      <div onDragOver="{{ zoneOver }}" onDragLeave="{{ zoneLeave }}" onDrop="{{ zoneDrop }}" onClick="{{ pickPhotos }}" style="border: 1px dashed {{ zoneBorder }}; border-radius: 0; padding: 56px 20px; text-align: center; cursor: pointer; background: #fafafa; transition: border-color .3s ease, background .3s ease; display: flex; flex-direction: column; gap: 6px; align-items: center;">
+        <span style="font-size: 16px; font-weight: 600;">Drop photos here or click to choose</span>
+        <span style="font-size: 14px; color: #666666; line-height: 1.6;">JPG, PNG or WebP · {{ photoSummary }}</span>
       </div>
       <input ref="{{ photoInputRef }}" type="file" accept="image/jpeg,image/png,image/webp" multiple="true" onChange="{{ onPhotoFiles }}" style="display: none;">
       <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px;">
         <sc-for list="{{ photoItems }}" as="p" hint-placeholder-count="0">
           <div draggable="true" onDragStart="{{ p.dragStart }}" onDragOver="{{ p.dragOver }}" onDrop="{{ p.drop }}" style="position: relative; display: flex; flex-direction: column; gap: 6px; opacity: {{ p.opacity }}; cursor: grab;">
-            <div style="position: relative; aspect-ratio: 4 / 3; background: #eeeeee; border-radius: 6px; overflow: hidden; outline: {{ p.outline }};">
+            <div style="position: relative; aspect-ratio: 4 / 3; background: #eeeeee; border-radius: 0; overflow: hidden; outline: {{ p.outline }};">
               <img src="{{ p.url }}" alt="" draggable="false" style="width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none;">
               <span style="position: absolute; left: 6px; top: 6px; height: 22px; min-width: 22px; padding: 0 7px; border-radius: 999px; background: #ffffff; color: #1a1a1a; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">{{ p.badge }}</span>
-              <button data-ks-x="1" onClick="{{ p.remove }}" aria-label="Remove photo" style="position: absolute; right: 6px; top: 6px; width: 26px; height: 26px; border-radius: 50%; border: none; background: rgba(0,0,0,0.7); color: #ffffff; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
+              <button data-ks-x="1" onClick="{{ p.remove }}" aria-label="Remove photo" style="position: absolute; right: 6px; top: 6px; width: 26px; height: 26px; border-radius: 50%; border: none; background: rgba(0,0,0,0.7); color: #ffffff; font-size: 12px; cursor: pointer; transition: color .3s ease; display: flex; align-items: center; justify-content: center;">✕</button>
             </div>
             <div style="display: flex; justify-content: space-between; gap: 6px;">
-              <button onClick="{{ p.left }}" aria-label="Move earlier" style="flex: 1; height: 30px; border-radius: 6px; border: 1px solid #d4d4d4; background: #ffffff; font-size: 13px; cursor: pointer;">←</button>
-              <button onClick="{{ p.right }}" aria-label="Move later" style="flex: 1; height: 30px; border-radius: 6px; border: 1px solid #d4d4d4; background: #ffffff; font-size: 13px; cursor: pointer;">→</button>
+              <button onClick="{{ p.left }}" aria-label="Move earlier" style="flex: 1; height: 32px; border-radius: 8px; border: none; background: #f2f2f2; color: #1a1a1a; font-size: 13px; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">←</button>
+              <button onClick="{{ p.right }}" aria-label="Move later" style="flex: 1; height: 32px; border-radius: 8px; border: none; background: #f2f2f2; color: #1a1a1a; font-size: 13px; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">→</button>
             </div>
           </div>
         </sc-for>
@@ -123,106 +135,106 @@
     </div>
 
     <sc-for list="{{ rowLists }}" as="rl" hint-placeholder-count="2">
-      <div style="background: #ffffff; border-radius: 8px; padding: 26px 24px 28px; display: flex; flex-direction: column; gap: 14px;">
+      <div data-ks-reveal="1" style="padding: 44px 0; border-top: 1px solid #e6e6e6; display: flex; flex-direction: column; gap: 20px;">
         <div style="display: flex; flex-direction: column; gap: 4px;">
-          <h2 style="margin: 0; font-size: 19px; font-weight: 700;">{{ rl.title }}</h2>
-          <span style="font-size: 13px; color: #666666;">Leave a row empty to hide it. Rename any label.</span>
+          <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2;">{{ rl.title }}</h2>
+          <span style="font-size: 14px; color: #666666; line-height: 1.6;">Leave a row empty to hide it. Rename any label.</span>
         </div>
         <sc-for list="{{ rl.rows }}" as="r" hint-placeholder-count="3">
           <div style="display: grid; grid-template-columns: minmax(120px, 1fr) minmax(0, 2.2fr) 40px; gap: 10px; align-items: start;">
-            <input type="text" value="{{ r.label }}" onChange="{{ r.onLabel }}" placeholder="Label" style="height: 46px; padding: 0 12px; border: 1px solid #d4d4d4; border-radius: 8px; box-sizing: border-box; width: 100%; font-weight: 600; color: #1a1a1a;">
-            <textarea value="{{ r.value }}" onChange="{{ r.onValue }}" placeholder="Details" rows="1" style="min-height: 46px; padding: 12px; border: 1px solid #d4d4d4; border-radius: 8px; box-sizing: border-box; width: 100%; line-height: 1.5; resize: vertical; color: #1a1a1a;"></textarea>
+            <input type="text" value="{{ r.label }}" onChange="{{ r.onLabel }}" placeholder="Label" style="height: 44px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; box-sizing: border-box; width: 100%; font-weight: 600; color: #1a1a1a; background: transparent; transition: border-color .3s ease;">
+            <textarea value="{{ r.value }}" onChange="{{ r.onValue }}" placeholder="Details" rows="1" style="min-height: 44px; padding: 12px 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; box-sizing: border-box; width: 100%; line-height: 1.5; resize: vertical; color: #1a1a1a; background: transparent; transition: border-color .3s ease;"></textarea>
             <button data-ks-x="1" onClick="{{ r.remove }}" aria-label="Remove row" style="width: 40px; height: 46px; border: none; background: transparent; color: #888888; font-size: 15px; cursor: pointer;">✕</button>
           </div>
         </sc-for>
-        <button onClick="{{ rl.add }}" style="align-self: flex-start; height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; font-size: 13px; font-weight: 600; cursor: pointer;" style-hover="background: #000000; color: #ffffff;">+ Add row</button>
+        <button onClick="{{ rl.add }}" style="align-self: flex-start; height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; background-image: linear-gradient(to top, #1a1a1a 1.5px, transparent 1.5px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background-size: 100% 100%;">+ Add row</button>
       </div>
     </sc-for>
 
-    <div style="background: #ffffff; border-radius: 8px; padding: 26px 24px 28px; display: flex; flex-direction: column; gap: 14px;">
+    <div data-ks-reveal="1" style="padding: 44px 0; border-top: 1px solid #e6e6e6; display: flex; flex-direction: column; gap: 20px;">
       <div style="display: flex; flex-direction: column; gap: 4px;">
-        <h2 style="margin: 0; font-size: 19px; font-weight: 700;">Open houses</h2>
-        <span style="font-size: 13px; color: #666666;">Shown only while the property isn’t sold.</span>
+        <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2;">Open houses</h2>
+        <span style="font-size: 14px; color: #666666; line-height: 1.6;">Shown only while the property isn’t sold.</span>
       </div>
       <sc-for list="{{ ohItems }}" as="o" hint-placeholder-count="0">
         <div style="display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) 40px; gap: 10px;">
-          <input type="date" value="{{ o.date }}" onChange="{{ o.onDate }}" style="height: 46px; padding: 0 10px; border: 1px solid #d4d4d4; border-radius: 8px; box-sizing: border-box; width: 100%;">
-          <input type="time" value="{{ o.start }}" onChange="{{ o.onStart }}" style="height: 46px; padding: 0 10px; border: 1px solid #d4d4d4; border-radius: 8px; box-sizing: border-box; width: 100%;">
-          <input type="time" value="{{ o.end }}" onChange="{{ o.onEnd }}" style="height: 46px; padding: 0 10px; border: 1px solid #d4d4d4; border-radius: 8px; box-sizing: border-box; width: 100%;">
+          <input type="date" value="{{ o.date }}" onChange="{{ o.onDate }}" style="height: 44px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; box-sizing: border-box; width: 100%; background: transparent; transition: border-color .3s ease;">
+          <input type="time" value="{{ o.start }}" onChange="{{ o.onStart }}" style="height: 44px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; box-sizing: border-box; width: 100%; background: transparent; transition: border-color .3s ease;">
+          <input type="time" value="{{ o.end }}" onChange="{{ o.onEnd }}" style="height: 44px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; box-sizing: border-box; width: 100%; background: transparent; transition: border-color .3s ease;">
           <button data-ks-x="1" onClick="{{ o.remove }}" aria-label="Remove" style="width: 40px; height: 46px; border: none; background: transparent; color: #888888; cursor: pointer;">✕</button>
         </div>
       </sc-for>
-      <button onClick="{{ addOh }}" style="align-self: flex-start; height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; font-size: 13px; font-weight: 600; cursor: pointer;" style-hover="background: #000000; color: #ffffff;">+ Add open house</button>
+      <button onClick="{{ addOh }}" style="align-self: flex-start; height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; background-image: linear-gradient(to top, #1a1a1a 1.5px, transparent 1.5px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background-size: 100% 100%;">+ Add open house</button>
     </div>
 
-    <div style="background: #ffffff; border-radius: 8px; padding: 26px 24px 28px; display: flex; flex-direction: column; gap: 14px;">
+    <div data-ks-reveal="1" style="padding: 44px 0; border-top: 1px solid #e6e6e6; display: flex; flex-direction: column; gap: 20px;">
       <div style="display: flex; flex-direction: column; gap: 4px;">
-        <h2 style="margin: 0; font-size: 19px; font-weight: 700;">Downloads</h2>
-        <span style="font-size: 13px; color: #666666;">Floor plans, fact sheets, disclosures (PDF).</span>
+        <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2;">Downloads</h2>
+        <span style="font-size: 14px; color: #666666; line-height: 1.6;">Floor plans, fact sheets, disclosures (PDF).</span>
       </div>
       <sc-for list="{{ dlItems }}" as="d" hint-placeholder-count="0">
         <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 40px; gap: 10px; align-items: center;">
-          <input type="text" value="{{ d.label }}" onChange="{{ d.onLabel }}" placeholder="Label, e.g. Floor plan" style="height: 46px; padding: 0 12px; border: 1px solid #d4d4d4; border-radius: 8px; box-sizing: border-box; width: 100%;">
+          <input type="text" value="{{ d.label }}" onChange="{{ d.onLabel }}" placeholder="Label, e.g. Floor plan" style="height: 44px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; box-sizing: border-box; width: 100%; background: transparent; transition: border-color .3s ease;">
           <span style="font-size: 13px; color: #555555; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ d.name }}</span>
           <button data-ks-x="1" onClick="{{ d.remove }}" aria-label="Remove" style="width: 40px; height: 46px; border: none; background: transparent; color: #888888; cursor: pointer;">✕</button>
         </div>
       </sc-for>
       <input ref="{{ dlInputRef }}" type="file" accept="application/pdf" multiple="true" onChange="{{ onDlFiles }}" style="display: none;">
-      <button onClick="{{ pickDl }}" style="align-self: flex-start; height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; font-size: 13px; font-weight: 600; cursor: pointer;" style-hover="background: #000000; color: #ffffff;">+ Add PDF</button>
+      <button onClick="{{ pickDl }}" style="align-self: flex-start; height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; background-image: linear-gradient(to top, #1a1a1a 1.5px, transparent 1.5px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background-size: 100% 100%;">+ Add PDF</button>
     </div>
 
-    <div style="background: #ffffff; border-radius: 8px; padding: 26px 24px 28px; display: flex; flex-direction: column; gap: 14px;">
+    <div data-ks-reveal="1" style="padding: 44px 0; border-top: 1px solid #e6e6e6; display: flex; flex-direction: column; gap: 20px;">
       <div style="display: flex; flex-direction: column; gap: 4px;">
-        <h2 style="margin: 0; font-size: 19px; font-weight: 700;">Community photo</h2>
-        <span style="font-size: 13px; color: #666666;">Optional image beside the community paragraph.</span>
+        <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2;">Community photo</h2>
+        <span style="font-size: 14px; color: #666666; line-height: 1.6;">Optional image beside the community paragraph.</span>
       </div>
       <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
         <sc-if value="{{ hasCommImg }}" hint-placeholder-val="{{ false }}">
-          <img src="{{ commImgUrl }}" alt="" style="width: 160px; height: 106px; object-fit: cover; border-radius: 6px; background: #eeeeee;">
+          <img src="{{ commImgUrl }}" alt="" style="width: 160px; height: 106px; object-fit: cover; border-radius: 0; background: #eeeeee;">
         </sc-if>
         <input ref="{{ commInputRef }}" type="file" accept="image/jpeg,image/png,image/webp" onChange="{{ onCommFile }}" style="display: none;">
-        <button onClick="{{ pickComm }}" style="height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; font-size: 13px; font-weight: 600; cursor: pointer;" style-hover="background: #000000; color: #ffffff;">{{ commBtnLabel }}</button>
+        <button onClick="{{ pickComm }}" style="height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; background-image: linear-gradient(to top, #1a1a1a 1.5px, transparent 1.5px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background-size: 100% 100%;">{{ commBtnLabel }}</button>
         <sc-if value="{{ hasCommImg }}" hint-placeholder-val="{{ false }}">
-          <button onClick="{{ clearComm }}" style="height: 40px; padding: 0 12px; border: none; background: transparent; color: #666666; font-size: 13px; font-weight: 600; cursor: pointer;">Remove</button>
+          <button onClick="{{ clearComm }}" style="height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; background-image: linear-gradient(to top, #666666 1.5px, transparent 1.5px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #666666; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background-size: 100% 100%;">Remove</button>
         </sc-if>
       </div>
     </div>
 
-    <div style="background: #000000; color: #ffffff; border-radius: 8px; padding: 28px 24px 30px; display: flex; flex-direction: column; gap: 18px;">
+    <div data-ks-reveal="1" style="background: #000000; color: #ffffff; border-radius: 0; padding: clamp(28px, 5vw, 48px); margin-top: 40px; display: flex; flex-direction: column; gap: 24px;">
       <div style="display: flex; flex-direction: column; gap: 6px;">
-        <h2 style="margin: 0; font-size: 19px; font-weight: 700; color: #ffffff;">Publish</h2>
+        <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2; color: #ffffff;">Publish</h2>
         <span style="font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.6;">Page address: <span style="color: #ffffff; font-weight: 600; word-break: break-all;">{{ pageUrl }}</span></span>
       </div>
       <label style="display: flex; flex-direction: column; gap: 6px; max-width: 520px;">
-        <span style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.75);">Page address ending (auto from the address)</span>
-        <input type="text" value="{{ slugValue }}" onChange="{{ onSlug }}" placeholder="{{ autoSlug }}" style="height: 46px; padding: 0 14px; border: 1px solid rgba(255,255,255,0.35); border-radius: 8px; background: #111111; color: #ffffff; box-sizing: border-box; width: 100%;">
+        <span style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.55);">Page URL (auto-filled from the address, edit if you like)</span>
+        <input data-ks-dark="1" type="text" value="{{ slugValue }}" onChange="{{ onSlug }}" placeholder="{{ autoSlug }}" style="height: 46px; padding: 0 2px; border: none; border-bottom: 1px solid rgba(255,255,255,0.3); border-radius: 0; background: transparent; color: #ffffff; box-sizing: border-box; width: 100%; transition: border-color .3s ease;">
       </label>
       <div style="display: flex; flex-wrap: wrap; gap: 12px;">
-        <button onClick="{{ publish }}" disabled="{{ busy }}" style="height: 50px; padding: 0 24px; border-radius: 8px; border: none; background: #ffffff; color: #000000; font-size: 14px; font-weight: 700; cursor: pointer; opacity: {{ busyOpacity }};">Publish to website</button>
-        <button onClick="{{ downloadZip }}" disabled="{{ busy }}" style="height: 50px; padding: 0 24px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.7); background: transparent; color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; opacity: {{ busyOpacity }};" style-hover="background: #ffffff; color: #000000;">Download package (.zip)</button>
-        <button onClick="{{ toggleSettings }}" style="height: 50px; padding: 0 16px; border: none; background: transparent; color: rgba(255,255,255,0.75); font-size: 13px; font-weight: 600; cursor: pointer;" style-hover="color: #ffffff;">{{ settingsLabel }}</button>
+        <button onClick="{{ publish }}" disabled="{{ busy }}" style="height: 50px; padding: 0 28px; border-radius: 8px; border: 1px solid #ffffff; background: #ffffff; color: #000000; font-size: 14px; font-weight: 600; cursor: pointer; opacity: {{ busyOpacity }}; transition: background .3s ease, color .3s ease;" style-hover="background: transparent; color: #ffffff;">Publish to website</button>
+        <button onClick="{{ downloadZip }}" disabled="{{ busy }}" style="height: 50px; padding: 0 28px; border-radius: 8px; border: 1px solid #ffffff; background: transparent; color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; opacity: {{ busyOpacity }}; transition: background .3s ease, color .3s ease;" style-hover="background: #ffffff; color: #000000;">Download package (.zip)</button>
+        <button onClick="{{ toggleSettings }}" style="align-self: center; height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; background-image: linear-gradient(to top, #ffffff 1.5px, transparent 1.5px); background-repeat: no-repeat; background-position: left bottom; background-size: 0 100%; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background-size: 100% 100%;">{{ settingsLabel }}</button>
       </div>
       <sc-if value="{{ showSettings }}" hint-placeholder-val="{{ false }}">
         <div style="border-top: 1px solid rgba(255,255,255,0.18); padding-top: 18px; display: flex; flex-direction: column; gap: 14px;">
           <span style="font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.75);">One-time setup: on GitHub go to Settings → Developer settings → Fine-grained tokens → Generate. Repository access: only <span style="color: #ffffff; font-weight: 600;">{{ repoValue }}</span>. Permissions: Contents → Read and write. Paste the token below. It’s saved only in this browser.</span>
           <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 12px;">
             <label style="display: flex; flex-direction: column; gap: 6px; grid-column: 1 / -1;">
-              <span style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.75);">GitHub token</span>
-              <input type="password" value="{{ tokenValue }}" onChange="{{ onToken }}" placeholder="github_pat_…" style="height: 46px; padding: 0 14px; border: 1px solid rgba(255,255,255,0.35); border-radius: 8px; background: #111111; color: #ffffff; box-sizing: border-box; width: 100%;">
+              <span style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.55);">GitHub token</span>
+              <input data-ks-dark="1" type="password" value="{{ tokenValue }}" onChange="{{ onToken }}" placeholder="github_pat_…" style="height: 46px; padding: 0 2px; border: none; border-bottom: 1px solid rgba(255,255,255,0.3); border-radius: 0; background: transparent; color: #ffffff; box-sizing: border-box; width: 100%; transition: border-color .3s ease;">
             </label>
             <label style="display: flex; flex-direction: column; gap: 6px;">
-              <span style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.75);">Repository</span>
-              <input type="text" value="{{ repoValue }}" onChange="{{ onRepo }}" style="height: 46px; padding: 0 14px; border: 1px solid rgba(255,255,255,0.35); border-radius: 8px; background: #111111; color: #ffffff; box-sizing: border-box; width: 100%;">
+              <span style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.55);">Repository</span>
+              <input data-ks-dark="1" type="text" value="{{ repoValue }}" onChange="{{ onRepo }}" style="height: 46px; padding: 0 2px; border: none; border-bottom: 1px solid rgba(255,255,255,0.3); border-radius: 0; background: transparent; color: #ffffff; box-sizing: border-box; width: 100%; transition: border-color .3s ease;">
             </label>
             <label style="display: flex; flex-direction: column; gap: 6px;">
-              <span style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.75);">Branch</span>
-              <input type="text" value="{{ branchValue }}" onChange="{{ onBranch }}" style="height: 46px; padding: 0 14px; border: 1px solid rgba(255,255,255,0.35); border-radius: 8px; background: #111111; color: #ffffff; box-sizing: border-box; width: 100%;">
+              <span style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.55);">Branch</span>
+              <input data-ks-dark="1" type="text" value="{{ branchValue }}" onChange="{{ onBranch }}" style="height: 46px; padding: 0 2px; border: none; border-bottom: 1px solid rgba(255,255,255,0.3); border-radius: 0; background: transparent; color: #ffffff; box-sizing: border-box; width: 100%; transition: border-color .3s ease;">
             </label>
           </div>
         </div>
       </sc-if>
       <sc-if value="{{ hasLog }}" hint-placeholder-val="{{ false }}">
-        <div style="background: #111111; border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; max-height: 240px; overflow: auto;">
+        <div style="background: transparent; border-top: 1px solid rgba(255,255,255,0.18); border-radius: 0; padding: 18px 0 0; display: flex; flex-direction: column; gap: 6px; max-height: 240px; overflow: auto;">
           <sc-for list="{{ logLines }}" as="l" hint-placeholder-count="0">
             <span style="font-size: 13px; line-height: 1.5; color: {{ l.color }}; word-break: break-word;">{{ l.text }}</span>
           </sc-for>
@@ -266,13 +278,14 @@ class Component extends DCLogic {
   saveDraft = () => { clearTimeout(this._dt); this._dt = setTimeout(() => { try { localStorage.setItem('ks-builder-draft', JSON.stringify({ f: this.state.f, interior: this.state.interior, exterior: this.state.exterior, oh: this.state.oh })); } catch (e) {} }, 400); };
   setF = (k, v) => { this.setState((s) => ({ f: Object.assign({}, s.f, { [k]: v }) }), this.saveDraft); };
   slugify(s) { return String(s || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80); }
-  autoSlug() { const f = this.state.f; return this.slugify([f.street, f.city].filter(Boolean).join(' ')); }
+  autoSlug() { const f = this.state.f; if (!f.street) return ''; const st = String(f.street).replace(/\s*(#|unit|apt|suite|ste)\s*/i, ' unit '); return this.slugify([st, f.city, f.state || 'CA', f.zip].filter(Boolean).join(' ')); }
   slug() { return this.slugify(this.state.f.slug) || this.autoSlug(); }
   uid() { return Math.random().toString(36).slice(2, 8); }
   log = (text, kind) => this.setState((s) => ({ log: s.log.concat([{ text, color: kind === 'err' ? '#ff8a80' : kind === 'ok' ? '#9be7a8' : 'rgba(255,255,255,0.8)' }]) }));
 
   addPhotoFiles = (files) => {
-    const list = Array.from(files || []).filter((f) => /^image\/(jpeg|png|webp)$/i.test(f.type));
+    const list = Array.from(files || []).filter((f) => /^image\/(jpeg|png|webp)$/i.test(f.type))
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
     const bad = Array.from(files || []).length - list.length;
     if (bad) alert(bad + ' file(s) skipped. Use JPG, PNG or WebP (iPhone HEIC photos: export as JPG first).');
     const items = list.map((file) => ({ id: this.uid(), kind: 'new', file, url: URL.createObjectURL(file) }));
@@ -613,8 +626,13 @@ class Component extends DCLogic {
     try { w.postMessage({ type: 'ks-property', data: d }, location.origin); } catch (e) {}
   };
   onMsg = (e) => { if (e.origin === location.origin && e.data && e.data.type === 'ks-preview-ready') { this._readyFired = true; this.sendPreview(e.source); } };
-  componentDidMount() { window.addEventListener('message', this.onMsg); }
-  componentWillUnmount() { window.removeEventListener('message', this.onMsg); }
+  componentDidMount() {
+    window.addEventListener('message', this.onMsg);
+    this._io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('ks-in'); this._io.unobserve(e.target); } }), { threshold: 0.05, rootMargin: '0px 0px -8% 0px' });
+    const scan = () => document.querySelectorAll('[data-ks-reveal]:not(.ks-in)').forEach((el) => this._io.observe(el));
+    scan(); this._mo = new MutationObserver(() => { cancelAnimationFrame(this._raf); this._raf = requestAnimationFrame(scan); }); this._mo.observe(document.body, { childList: true, subtree: true });
+  }
+  componentWillUnmount() { window.removeEventListener('message', this.onMsg); this._io && this._io.disconnect(); this._mo && this._mo.disconnect(); }
 
   resetAll = () => {
     if (!confirm('Clear the form and start a new property?')) return;
@@ -672,11 +690,13 @@ class Component extends DCLogic {
     return {
       groups, photoItems,
       photoSummary: n ? n + ' photo' + (n === 1 ? '' : 's') + ' added' : 'no photos yet',
-      zoneBorder: s.zoneHot ? '#000000' : '#cccccc',
+      zoneBorder: s.zoneHot ? '#000000' : '#bbbbbb',
       zoneOver: (e) => { e.preventDefault(); if (!s.zoneHot) this.setState({ zoneHot: true }); },
       zoneLeave: () => this.setState({ zoneHot: false }),
       zoneDrop: (e) => { e.preventDefault(); this.setState({ zoneHot: false }); if (e.dataTransfer.files && e.dataTransfer.files.length) this.addPhotoFiles(e.dataTransfer.files); },
       pickPhotos: () => this._pi && this._pi.click(), photoInputRef: (el) => { this._pi = el; },
+      hasPhotos: s.photos.length > 0,
+      deleteAllPhotos: () => { if (!confirm('Delete all ' + s.photos.length + ' photos?')) return; s.photos.forEach((p) => { if (p.kind === 'new' && p.url) URL.revokeObjectURL(p.url); }); this.setState({ photos: [] }); },
       onPhotoFiles: (e) => { this.addPhotoFiles(e.target.files); e.target.value = ''; },
       rowLists: [
         { title: 'Interior features', rows: this.rowsHandlers('interior'), add: () => this.setState((st) => ({ interior: st.interior.concat([{ id: this.uid(), label: '', value: '' }]) })) },
@@ -694,7 +714,7 @@ class Component extends DCLogic {
       commInputRef: (el) => { this._ci = el; }, pickComm: () => this._ci && this._ci.click(),
       onCommFile: (e) => { const file = e.target.files && e.target.files[0]; e.target.value = ''; if (file) this.setState({ comm: { kind: 'new', file, url: URL.createObjectURL(file) } }); },
       clearComm: () => this.setState({ comm: null }),
-      slugValue: f.slug, onSlug: (e) => this.setF('slug', e.target.value), autoSlug: this.autoSlug() || 'street-city',
+      slugValue: f.slug || this.autoSlug(), onSlug: (e) => this.setF('slug', e.target.value), autoSlug: this.autoSlug() || 'street-city',
       pageUrl: 'https://jacksonkesecker.com/properties/' + (slug || '…') + '/',
       publish: this.publish, downloadZip: this.downloadZip, busy: s.busy, busyOpacity: s.busy ? 0.5 : 1,
       showSettings: s.showSettings, settingsLabel: s.showSettings ? 'Hide GitHub settings' : (s.token ? 'GitHub settings' : 'Set up GitHub publishing'),
