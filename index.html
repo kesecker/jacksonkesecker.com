@@ -167,7 +167,7 @@
     image-slot::part(ring) { display: none !important; }
   </style>
   <style>@media (max-width: 760px) { [data-ks-cleft] { border-right: none !important; padding-right: 0 !important; text-align: center !important; } [data-ks-cleft] * { text-align: center !important; } [data-ks-ctitle] { text-align: center !important; } }</style>
-<style>[data-ks-ul]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:var(--ks-ul,currentColor);transform:scaleX(var(--ks-on,0));transform-origin:var(--ks-ul-o,left) center;transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none;will-change:transform;}</style>
+<style>[data-ks-ul]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ks-ul,currentColor);transform:scaleX(var(--ks-on,0));transform-origin:var(--ks-ul-o,left) center;transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none;will-change:transform;}</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;600&display=swap"><style data-ks-type>html:root:not([data-ks-none]) body h1, html:root:not([data-ks-none]) body h1 *, html:root:not([data-ks-none]) body h2, html:root:not([data-ks-none]) body h2 *, html:root:not([data-ks-none]) body h3, html:root:not([data-ks-none]) body h3 * { font-weight: 100 !important; } html:root:not([data-ks-none]) body [data-ks-regions-list] h2, html:root:not([data-ks-none]) body [data-ks-regions-list] h2 * { font-weight: 200 !important; } html:root:not([data-ks-none]) body button, html:root:not([data-ks-none]) body button *, html:root:not([data-ks-none]) body a[style*="border-radius: 8px"], html:root:not([data-ks-none]) body a[style*="border-radius: 8px"] *, html:root:not([data-ks-none]) body span[style*="border-radius: 8px"] *, html:root:not([data-ks-none]) body [data-ks-cta] a span, html:root:not([data-ks-none]) body [data-ks-cta] a span *, html:root:not([data-ks-none]) body input[type="submit"] { font-weight: 300 !important; } html:root:not([data-ks-none]) body #hero-heading, html:root:not([data-ks-none]) body #hero-heading * { font-weight: 600 !important; } @media (max-width: 760px) { [data-ks-foot-grid] > * { padding-left: 0 !important; } }</style>
 </helmet>
 
@@ -371,7 +371,7 @@
   <div id="neighborhoods" style="padding: 96px 64px; background: #ffffff;">
     <div data-ks-regions="1" style="display: grid; grid-template-columns: max-content minmax(0, 640px); justify-content: center; align-items: center; gap: clamp(32px, 6vw, 96px); max-width: 1120px; margin: 0 auto;">
       <div data-ks-regions-list="1" style="display: flex; flex-direction: column; align-items: flex-start; gap: clamp(22px, 3vw, 40px);">
-        <h2 data-ks-scaled="1" ref="{{ revealRefNeighborhoods }}" style="font-size: clamp(28px, 4.83vw, 41px); font-weight: 600; margin: 0 0 clamp(8px, 1.5vw, 20px); letter-spacing: -0.01em; text-transform: none; {{ revealNeighborhoods }}">{{ t.neighborhoodsHeading }}</h2>
+        <h2 data-ks-scaled="1" ref="{{ revealRefNeighborhoods }}" style="font-size: clamp(24px, 3.9vw, 34px); font-weight: 600; margin: 0 0 clamp(8px, 1.5vw, 20px); padding-bottom: 10px; border-bottom: 1.5px solid #000000; letter-spacing: -0.01em; text-transform: none; {{ revealNeighborhoods }}">{{ t.neighborhoodsHeading }}</h2>
         <sc-for list="{{ regions }}" as="r" hint-placeholder-count="3">
           <span data-ks-ul="1" onMouseEnter="{{ r.enter }}" onMouseLeave="{{ regionLeave }}" style="--ks-ul: #000000; --ks-on: {{ r.on }}; position: relative; display: inline-block; padding-bottom: 8px; font-family: Montserrat, sans-serif; font-weight: 100; font-size: clamp(24px, 2.8vw, 38px); line-height: 1.1; letter-spacing: -0.01em; color: #000000; white-space: nowrap; cursor: default;">{{ r.name }}</span>
         </sc-for>
@@ -399,7 +399,7 @@
           <span style="display: inline-block; padding: 14px 36px; border: 1px solid rgba(255,255,255,0.85); border-radius: 8px;">
             <span style="position: relative; display: inline-block; font-size: 18px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: #ffffff; text-shadow: 0 1px 8px rgba(0,0,0,0.6); padding-bottom: 4px;">
               {{ t.getInTouch }}
-              <span style="position: absolute; left: 0; bottom: 0; height: 1.5px; background: #ffffff; width: {{ getInTouchUnderlineWidth }}; transition: width 0.3s ease;"></span>
+              <span style="position: absolute; left: 0; bottom: 0; height: 1px; background: #ffffff; width: {{ getInTouchUnderlineWidth }}; transition: width 0.3s ease;"></span>
             </span>
           </span>
         </a>
@@ -419,7 +419,7 @@
           <span style="display: inline-block; padding: 14px 36px; border: 1px solid rgba(255,255,255,0.85); border-radius: 8px;">
             <span style="position: relative; display: inline-block; font-size: 18px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: #ffffff; text-shadow: 0 1px 8px rgba(0,0,0,0.6); padding-bottom: 4px;">
               {{ t.getInTouch }}
-              <span style="position: absolute; left: 0; bottom: 0; height: 1.5px; background: #ffffff; width: {{ getInTouchUnderlineWidth }}; transition: width 0.3s ease;"></span>
+              <span style="position: absolute; left: 0; bottom: 0; height: 1px; background: #ffffff; width: {{ getInTouchUnderlineWidth }}; transition: width 0.3s ease;"></span>
             </span>
           </span>
         </a>
@@ -1564,7 +1564,7 @@ class Component extends DCLogic {
     if (!box) return;
     const roots = [box];
     box.querySelectorAll('*').forEach((el) => { if (el.shadowRoot) roots.push(el.shadowRoot); });
-    const CSS = '[data-ks-viewall]{display:inline-block !important;text-decoration:none !important;padding-bottom:8px !important;background-image:none !important;background-repeat:no-repeat !important;background-position:left bottom !important;background-size:0 100% !important;--ks-on:0 !important;transition:background-size .3s ease !important;cursor:pointer !important;position:relative !important;}[data-ks-viewall]::after{content:attr(data-ks-none) !important;position:absolute !important;left:0 !important;right:0 !important;bottom:0 !important;top:auto !important;height:1.5px !important;width:auto !important;transform:scaleX(var(--ks-on,0)) !important;transform-origin:var(--ks-ul-o,left) center !important;transition:transform .35s cubic-bezier(.4,0,.2,1) !important;pointer-events:none !important;will-change:transform !important;clip-path:none !important;background:currentColor !important;--ks-ul-o:left}[data-ks-viewall]:hover{background-size:100% 100% !important;--ks-on:1 !important;}';
+    const CSS = '[data-ks-viewall]{display:inline-block !important;text-decoration:none !important;padding-bottom:8px !important;background-image:none !important;background-repeat:no-repeat !important;background-position:left bottom !important;background-size:0 100% !important;--ks-on:0 !important;transition:background-size .3s ease !important;cursor:pointer !important;position:relative !important;}[data-ks-viewall]::after{content:attr(data-ks-none) !important;position:absolute !important;left:0 !important;right:0 !important;bottom:0 !important;top:auto !important;height:1px !important;width:auto !important;transform:scaleX(var(--ks-on,0)) !important;transform-origin:var(--ks-ul-o,left) center !important;transition:transform .35s cubic-bezier(.4,0,.2,1) !important;pointer-events:none !important;will-change:transform !important;clip-path:none !important;background:currentColor !important;--ks-ul-o:left}[data-ks-viewall]:hover{background-size:100% 100% !important;--ks-on:1 !important;}';
     roots.forEach((root) => {
       const host = root === box ? document.head : root;
       if (!host.querySelector('style[data-ks-viewall-css]')) { const st = document.createElement('style'); st.setAttribute('data-ks-viewall-css', '1'); st.textContent = CSS; host.appendChild(st); }
