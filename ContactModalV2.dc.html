@@ -39,7 +39,7 @@
           </div>
           <div>
             <div style="font-size: 12px; font-weight: 600; letter-spacing: -0.01em; color: rgba(255,255,255,0.55); margin-bottom: 10px;">Email</div>
-            <a href="mailto:kesecker&#64;kw.com" style="color: #ffffff; text-decoration: none; font-size: 17px;">kesecker&#64;kw.com</a>
+            <a href="{{ ksMailto }}" style="color: #ffffff; text-decoration: none; font-size: 17px;">{{ ksEmail }}</a>
           </div>
           <div style="display: flex; flex-direction: column; gap: 36px;">
             <div>
@@ -204,6 +204,7 @@ class Component extends DCLogic {
   });
   renderVals() {
     return {
+      ksEmail: ['kesecker', 'kw.com'].join(String.fromCharCode(64)), ksMailto: 'mai' + 'lto:' + ['kesecker', 'kw.com'].join(String.fromCharCode(64)),
       isContactModalVisible: this.state.isContactModalVisible,
       closeContactModal: this.closeContactModal,
       contactModalOverlayAnimation: this.state.isContactModalClosing ? 'modal-fade-out 0.3s ease forwards' : 'modal-fade-in 0.35s ease',
