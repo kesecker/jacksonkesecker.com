@@ -34,6 +34,7 @@
 <helmet>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..800;1,300..800&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap">
   <title>Jackson Kesecker, REALTOR® | Monterey County Real Estate</title>
   <link rel="icon" type="image/png" href="assets/favicon-dark.png" media="(prefers-color-scheme: dark)">
   <link rel="icon" type="image/png" href="assets/favicon-light.png" media="(prefers-color-scheme: light)">
@@ -104,14 +105,8 @@
       #about-text-block { order: 2; }
     }
     @media (max-width: 1000px) {
-      #neighborhoods-map-wrap { display: none !important; }
-      #neighborhoods-map-title { display: none !important; }
       #neighborhoods { padding-bottom: 56px !important; }
-      #neighborhoods > div:nth-child(2) { justify-content: center !important; }
-      #neighborhoods > div:nth-child(2) > div:last-child { display: none !important; }
-      #neighborhoods-list { flex-direction: row !important; flex-wrap: nowrap !important; justify-content: center !important; align-items: flex-start !important; gap: 56px !important; max-width: 760px !important; width: 100% !important; padding: 0 !important; margin: 0 auto !important; }
-      #neighborhoods-list > div:first-child { flex-wrap: nowrap !important; gap: 56px !important; align-items: flex-start !important; flex: 0 0 auto; width: auto !important; justify-content: center !important; }
-      #neighborhoods-list > div:last-child { flex: 0 0 auto; width: auto !important; white-space: nowrap; }
+      [data-ks-regions] { grid-template-columns: minmax(0, 1fr) !important; justify-items: center !important; } [data-ks-regions-list] { align-items: center !important; }
     }
     @media (max-width: 1300px) {
       #agent-portrait-wrapper { display: none !important; }
@@ -127,8 +122,6 @@
       [data-ks-cta-inner] { position: relative !important; left: auto !important; top: auto !important; transform: none !important; margin: 0 auto !important; padding: 110px 24px 72px !important; }
     }
     @media (max-width: 640px) {
-      #neighborhoods-list, #neighborhoods-list > div:first-child { flex-direction: column !important; flex-wrap: nowrap !important; align-items: center !important; gap: 36px !important; }
-      #neighborhoods-list > div { white-space: normal !important; width: 100% !important; text-align: center !important; }
     }
     @media (max-width: 767px) {
       [data-reveal-key] { opacity: 1 !important; transform: none !important; transition: none !important; }
@@ -175,6 +168,7 @@
   </style>
   <style>@media (max-width: 760px) { [data-ks-cleft] { border-right: none !important; padding-right: 0 !important; text-align: center !important; } [data-ks-cleft] * { text-align: center !important; } [data-ks-ctitle] { text-align: center !important; } }</style>
 <style>[data-ks-ul]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:var(--ks-ul,currentColor);transform:scaleX(var(--ks-on,0));transform-origin:var(--ks-ul-o,left) center;transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none;will-change:transform;}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;600&display=swap"><style data-ks-type>html:root:not([data-ks-none]) body h1, html:root:not([data-ks-none]) body h1 *, html:root:not([data-ks-none]) body h2, html:root:not([data-ks-none]) body h2 *, html:root:not([data-ks-none]) body h3, html:root:not([data-ks-none]) body h3 * { font-weight: 100 !important; } html:root:not([data-ks-none]) body [data-ks-regions-list] h2, html:root:not([data-ks-none]) body [data-ks-regions-list] h2 * { font-weight: 200 !important; } html:root:not([data-ks-none]) body button, html:root:not([data-ks-none]) body button *, html:root:not([data-ks-none]) body a[style*="border-radius: 8px"], html:root:not([data-ks-none]) body a[style*="border-radius: 8px"] *, html:root:not([data-ks-none]) body span[style*="border-radius: 8px"] *, html:root:not([data-ks-none]) body [data-ks-cta] a span, html:root:not([data-ks-none]) body [data-ks-cta] a span *, html:root:not([data-ks-none]) body input[type="submit"] { font-weight: 300 !important; } html:root:not([data-ks-none]) body #hero-heading, html:root:not([data-ks-none]) body #hero-heading * { font-weight: 600 !important; } @media (max-width: 760px) { [data-ks-foot-grid] > * { padding-left: 0 !important; } }</style>
 </helmet>
 
 <div style="font-family: var(--rh-font); color: var(--rh-text-primary); background: var(--rh-bg); width: 100%; overflow-x: hidden; position: relative;">
@@ -232,11 +226,11 @@
       <sc-if value="{{ isMobileMenuVisible }}" hint-placeholder-val="{{ false }}">
         <div onClick="{{ closeMobileMenu }}" style="position: fixed; inset: 0; z-index: 2147483000; background: rgba(0,0,0,0.88); animation: {{ mobileMenuOverlayAnimation }};">
           <div onClick="{{ stopPropagation }}" style="position: absolute; top: 128px; right: clamp(20px, 5vw, 64px); background: transparent; min-width: 280px; padding: 0; display: flex; flex-direction: column; align-items: flex-end; gap: clamp(26px, 4.2vh, 46px); animation: {{ mobileMenuCardAnimation }};">
-            <a href="https://jacksonkesecker.com/listings" target="_self" onClick="{{ closeMobileMenu }}" data-ks-ul="1" style="font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size 0.3s ease; position: relative;" style-hover="--ks-on: 1;">{{ t.navListings }}</a>
-            <a href="https://jacksonkesecker.com/portfolio" target="_self" onClick="{{ closeMobileMenu }}" data-ks-ul="1" style="font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size 0.3s ease; position: relative;" style-hover="--ks-on: 1;">{{ t.navPortfolio }}</a>
-            <a href="https://jacksonkesecker.com/communities" target="_self" onClick="{{ closeMobileMenu }}" data-ks-ul="1" style="font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size 0.3s ease; position: relative;" style-hover="--ks-on: 1;">{{ t.navNeighborhoods }}</a>
-            <a href="https://jacksonkesecker.com/about" target="_self" onClick="{{ closeMobileMenu }}" data-ks-ul="1" style="font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size 0.3s ease; position: relative;" style-hover="--ks-on: 1;">{{ t.navAbout }}</a>
-            <a href="#" onClick="{{ openContactModalFromMenu }}" data-ks-ul="1" style="font-size: clamp(16px, 2vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size 0.3s ease; position: relative;" style-hover="--ks-on: 1;">{{ t.navContact }}</a>
+            <a href="https://jacksonkesecker.com/listings" target="_self" onClick="{{ closeMobileMenu }}" data-ks-ul="1" style="font-size: clamp(16px, 2vw, 24px); font-weight: 400; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size 0.3s ease; position: relative;" style-hover="--ks-on: 1;">{{ t.navListings }}</a>
+            <a href="https://jacksonkesecker.com/portfolio" target="_self" onClick="{{ closeMobileMenu }}" data-ks-ul="1" style="font-size: clamp(16px, 2vw, 24px); font-weight: 400; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size 0.3s ease; position: relative;" style-hover="--ks-on: 1;">{{ t.navPortfolio }}</a>
+            <a href="https://jacksonkesecker.com/communities" target="_self" onClick="{{ closeMobileMenu }}" data-ks-ul="1" style="font-size: clamp(16px, 2vw, 24px); font-weight: 400; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size 0.3s ease; position: relative;" style-hover="--ks-on: 1;">{{ t.navNeighborhoods }}</a>
+            <a href="https://jacksonkesecker.com/about" target="_self" onClick="{{ closeMobileMenu }}" data-ks-ul="1" style="font-size: clamp(16px, 2vw, 24px); font-weight: 400; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size 0.3s ease; position: relative;" style-hover="--ks-on: 1;">{{ t.navAbout }}</a>
+            <a href="#" onClick="{{ openContactModalFromMenu }}" data-ks-ul="1" style="font-size: clamp(16px, 2vw, 24px); font-weight: 400; letter-spacing: -0.02em; line-height: 1; color: #ffffff; text-decoration: none; padding-bottom: 4px; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size 0.3s ease; position: relative;" style-hover="--ks-on: 1;">{{ t.navContact }}</a>
             <a href="#" onClick="{{ toggleLang }}" style="margin-top: 12px; font-size: clamp(13px, 1.1vw, 16px); font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(255,255,255,0.65); text-decoration: none; transition: color 0.25s ease;" style-hover="color: #ffffff;">{{ langToggleLabel }}</a>
           </div>
         </div>
@@ -375,37 +369,18 @@
 
   <!-- NEIGHBORHOODS -->
   <div id="neighborhoods" style="padding: 96px 64px; background: #ffffff;">
-    <div style="margin-bottom: 64px; text-align: center;">
-      <span class="vc-eyebrow">{{ t.neighborhoodsEyebrow }}</span>
-      <h2 data-ks-scaled="1" ref="{{ revealRefNeighborhoods }}" style="font-size: clamp(28px, 4.83vw, 41px); font-weight: 600; margin: 10px 0 0; letter-spacing: -0.01em; text-transform: none; {{ revealNeighborhoods }}">{{ t.neighborhoodsHeading }}</h2>
-    </div>
-    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; align-items: flex-start;">
-      <div id="neighborhoods-list" style="flex: 1 1 220px; min-width: 200px; max-width: 260px; display: flex; flex-direction: column; gap: 44px; justify-content: flex-start; align-items: center; padding: 0 24px; box-sizing: border-box;">
-        <div style="display: flex; gap: 40px; justify-content: center; width: 100%; flex-wrap: nowrap;">
-          <sc-for list="{{ topGroups }}" as="group" hint-placeholder-count="2">
-            <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
-              <span style="font-size: 11px; white-space: nowrap; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rh-text-secondary);">{{ group.title }}</span>
-              <sc-for list="{{ group.cities }}" as="city" hint-placeholder-count="5">
-                <div style="cursor: pointer;" onClick="{{ city.focusHandler }}" onMouseEnter="{{ city.hoverEnter }}" onMouseLeave="{{ hoverAreaLeave }}">
-                  <span style="position: relative; display: inline-block; font-size: 16px; font-weight: 500; color: var(--rh-text-primary); line-height: 24px; transition: color 0.2s ease; padding-bottom: 4px;" style-hover="color: var(--rh-accent);">{{ city.name }}<svg width="100%" height="2" style="position: absolute; left: 0; bottom: 0; overflow: visible; display: block;" preserveAspectRatio="none"><rect x="0" y="0" width="{{ city.underlineWidth }}" height="2" fill="var(--rh-accent)" shape-rendering="crispEdges" style="transition: width 0.35s ease;"></rect></svg></span>
-                </div>
-              </sc-for>
-            </div>
-          </sc-for>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 10px; align-items: center; width: 100%;">
-          <span style="font-size: 11px; white-space: nowrap; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rh-text-secondary);">{{ bottomGroup.title }}</span>
-          <sc-for list="{{ bottomGroup.cities }}" as="city" hint-placeholder-count="3">
-            <div style="cursor: pointer;" onClick="{{ city.focusHandler }}" onMouseEnter="{{ city.hoverEnter }}" onMouseLeave="{{ hoverAreaLeave }}">
-              <span style="position: relative; display: inline-block; font-size: 16px; font-weight: 500; color: var(--rh-text-primary); line-height: 24px; transition: color 0.2s ease; padding-bottom: 4px;" style-hover="color: var(--rh-accent);">{{ city.name }}<svg width="100%" height="2" style="position: absolute; left: 0; bottom: 0; overflow: visible; display: block;" preserveAspectRatio="none"><rect x="0" y="0" width="{{ city.underlineWidth }}" height="2" fill="var(--rh-accent)" shape-rendering="crispEdges" style="transition: width 0.35s ease;"></rect></svg></span>
-            </div>
-          </sc-for>
-        </div>
+    <div data-ks-regions="1" style="display: grid; grid-template-columns: max-content minmax(0, 640px); justify-content: center; align-items: center; gap: clamp(32px, 6vw, 96px); max-width: 1120px; margin: 0 auto;">
+      <div data-ks-regions-list="1" style="display: flex; flex-direction: column; align-items: flex-start; gap: clamp(22px, 3vw, 40px);">
+        <h2 data-ks-scaled="1" ref="{{ revealRefNeighborhoods }}" style="font-size: clamp(28px, 4.83vw, 41px); font-weight: 600; margin: 0 0 clamp(8px, 1.5vw, 20px); letter-spacing: -0.01em; text-transform: none; {{ revealNeighborhoods }}">{{ t.neighborhoodsHeading }}</h2>
+        <sc-for list="{{ regions }}" as="r" hint-placeholder-count="3">
+          <span data-ks-ul="1" onMouseEnter="{{ r.enter }}" onMouseLeave="{{ regionLeave }}" style="--ks-ul: #000000; --ks-on: {{ r.on }}; position: relative; display: inline-block; padding-bottom: 8px; font-family: Montserrat, sans-serif; font-weight: 100; font-size: clamp(24px, 2.8vw, 38px); line-height: 1.1; letter-spacing: -0.01em; color: #000000; white-space: nowrap; cursor: default;">{{ r.name }}</span>
+        </sc-for>
       </div>
-      <div style="position: relative; margin-left: 60px;">
-        <div id="neighborhoods-map-wrap" style="flex: none; width: 500px; height: 396px;">
-          <iframe ref="{{ mapIframeRef }}" src="Neighborhoods Map.html" title="Monterey County service area map" style="width: 100%; height: 100%; border: none; display: block;"></iframe>
-        </div>
+      <div ref="{{ regionMapRef }}" onMouseMove="{{ regionMapMove }}" onMouseLeave="{{ regionLeave }}" style="position: relative; width: 100%; aspect-ratio: 1982 / 1374;">
+        <img src="uploads/map-county.png" alt="Monterey County map" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block;">
+        <img src="uploads/map-salinas-valley.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; opacity: {{ regionOnValley }}; transition: opacity 0.45s ease;">
+        <img src="uploads/map-monterey-peninsula.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; opacity: {{ regionOnPeninsula }}; transition: opacity 0.45s ease;">
+        <img src="uploads/map-coastal-inland.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; opacity: {{ regionOnCoastal }}; transition: opacity 0.45s ease;">
       </div>
     </div>
   </div>
@@ -477,11 +452,12 @@
       <div data-ks-foot-links="1" style="display: flex; align-items: center; gap: 22px; flex-wrap: nowrap; white-space: nowrap; justify-self: center;">
         <a data-ks-foot-home="1" href="https://jacksonkesecker.com/" target="_self" style="font-size: 13px; color: rgba(255,255,255,0.7); transition: color 0.2s ease;" style-hover="color: #ffffff;">{{ t.navHome }}</a>
         <a href="https://jacksonkesecker.com/listings" target="_self" style="font-size: 13px; color: rgba(255,255,255,0.7); transition: color 0.2s ease;" style-hover="color: #ffffff;">{{ t.navListings }}</a>
+        <a href="https://jacksonkesecker.com/portfolio" target="_self" style="font-size: 13px; color: rgba(255,255,255,0.7); transition: color 0.2s ease;" style-hover="color: #ffffff;">{{ t.navPortfolio }}</a>
         <a href="https://jacksonkesecker.com/communities" target="_self" style="font-size: 13px; color: rgba(255,255,255,0.7); transition: color 0.2s ease;" style-hover="color: #ffffff;">{{ t.navNeighborhoods }}</a>
         <a href="https://jacksonkesecker.com/about" target="_self" style="font-size: 13px; color: rgba(255,255,255,0.7); transition: color 0.2s ease;" style-hover="color: #ffffff;">{{ t.navAbout }}</a>
         <a href="#" onClick="{{ openContactModal }}" style="font-size: 13px; color: rgba(255,255,255,0.7); transition: color 0.2s ease;" style-hover="color: #ffffff;">{{ t.navContact }}</a>
       </div>
-      <div style="display: flex; align-items: center; gap: 20px; justify-self: stretch; justify-content: flex-end; padding-right: calc(clamp(48px, 16vw, 168px) * 0.104); box-sizing: border-box;">
+      <div style="display: flex; align-items: center; gap: 20px; justify-self: stretch; justify-content: flex-start; padding-left: 8px; box-sizing: border-box;">
         <img src="uploads/(White) EHO.png" alt="Equal Housing Opportunity" style="height: 32px; width: auto;">
         <img src="uploads/(White) REALTOR.png" alt="Realtor" style="height: 32px; width: auto;">
         <img src="uploads/MLS-transparent.png" alt="MLS Listings" style="height: 32px; width: auto;">
@@ -1112,7 +1088,7 @@ class Component extends DCLogic {
       aboutParagraphRest: 'Born in Monterey and raised in Soledad, Jackson is an 11th-generation Monterey County resident. He grew up between the Peninsula\'s beaches and the Salinas Valley\'s farmland and mountains, and he knows this market from the coast to the valley floor.\n\nBuying or selling a home is one of the biggest decisions you\'ll ever make. It deserves an agent who understands the local neighborhoods and economy, and who measures success by whether his clients reach their goals, not by the size of the commission.\n\nJackson has made it his mission to help his Central Coast community achieve the dream of homeownership. Whether you\'re a first-time buyer, a growing family, or a homeowner ready to sell, he\'ll give you honest advice and clear communication from the first conversation to closing day.',
       learnMore: 'Learn More', closeModal: 'Close', aboutButton: 'Read Full Bio', notableHeading: 'Notable Sales', testimonialsHeading: 'Testimonials',
       seeAllReviews: 'See All Reviews', writeAReview: 'Write a Review',
-      neighborhoodsEyebrow: '', neighborhoodsHeading: 'Areas Served',
+      neighborhoodsEyebrow: '', neighborhoodsHeading: 'Communities Served',
       groupSalinasValley: 'Salinas Valley', groupMontereyPeninsula: 'Monterey Peninsula', groupCoastalInland: 'Coastal & Inland',
       mapTitleLine1: 'Monterey', mapTitleLine2: 'County',
       ctaHeading: 'Curious what your home is worth?',
@@ -1137,7 +1113,7 @@ class Component extends DCLogic {
       aboutParagraphRest: 'Nacido en Monterey y criado en Soledad, Jackson es residente de undécima generación del Condado de Monterey. Creció entre las playas de la Península y los campos agrícolas y montañas del Valle de Salinas, y conoce este mercado desde la costa hasta el fondo del valle.\n\nComprar o vender una casa es una de las decisiones más importantes de su vida. Merece un agente que entienda los vecindarios y la economía local, y que mida el éxito por si sus clientes alcanzan sus metas, no por el tamaño de la comisión.\n\nJackson ha hecho su misión ayudar a su comunidad de la Costa Central a lograr el sueño de ser propietarios. Ya sea que usted compre por primera vez, tenga una familia en crecimiento o esté listo para vender, le dará consejos honestos y una comunicación clara desde la primera conversación hasta el día del cierre.',
       learnMore: 'Leer Más', closeModal: 'Cerrar', aboutButton: 'Leer Biografía Completa', notableHeading: 'Ventas Notables', testimonialsHeading: 'Testimonios',
       seeAllReviews: 'Ver Todas las Reseñas', writeAReview: 'Escribir una Reseña',
-      neighborhoodsEyebrow: '', neighborhoodsHeading: 'Áreas Que Atendemos',
+      neighborhoodsEyebrow: '', neighborhoodsHeading: 'Comunidades Que Atendemos',
       groupSalinasValley: 'Valle de Salinas', groupMontereyPeninsula: 'Península de Monterey', groupCoastalInland: 'Costa e Interior',
       mapTitleLine1: 'Condado', mapTitleLine2: 'de Monterey',
       ctaHeading: '¿Tienes curiosidad de cuánto vale tu casa?',
@@ -1259,6 +1235,34 @@ class Component extends DCLogic {
   marqueeTrackRef = (el) => { this.marqueeTrackEl = el; };
   marqueeViewportEl = null;
   marqueeViewportRef = (el) => { this.marqueeViewportEl = el; };
+  regionState = null;
+  regionMasks = null;
+  regionMapEl = null;
+  regionMapRef = (el) => { this.regionMapEl = el; if (el && !this.regionMasks) this.buildRegionMasks(); };
+  setRegion = (k) => { if (this.state.ksRegion !== k) this.setState({ ksRegion: k }); };
+  regionLeave = () => this.setRegion(null);
+  buildRegionMasks() {
+    this.regionMasks = 'loading';
+    const W = 400, H = Math.round(400 * 1374 / 1982);
+    const srcs = ['uploads/map-county.png', 'uploads/map-salinas-valley.png', 'uploads/map-monterey-peninsula.png'];
+    Promise.all(srcs.map((src) => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = src; }))).then((ims) => {
+      const data = ims.map((im) => { const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(im, 0, 0, W, H); return x.getImageData(0, 0, W, H).data; });
+      const out = new Uint8Array(W * H);
+      for (let i = 0; i < W * H; i++) {
+        const dark = (d) => d[i * 4] < 110;
+        if (!dark(data[0])) continue;
+        out[i] = !dark(data[2]) ? 2 : !dark(data[1]) ? 1 : 3;
+      }
+      this.regionMasks = { W, H, out };
+    }).catch(() => { this.regionMasks = null; });
+  }
+  regionMapMove = (e) => {
+    const m = this.regionMasks; if (!m || m === 'loading' || !this.regionMapEl) return;
+    const r = this.regionMapEl.getBoundingClientRect();
+    const x = Math.floor((e.clientX - r.left) / r.width * m.W), y = Math.floor((e.clientY - r.top) / r.height * m.H);
+    const v = (x >= 0 && y >= 0 && x < m.W && y < m.H) ? m.out[y * m.W + x] : 0;
+    this.setRegion(v === 1 ? 'valley' : v === 2 ? 'peninsula' : v === 3 ? 'coastal' : null);
+  };
   mapIframeEl = null;
   mapIframeRef = (el) => { this.mapIframeEl = el; };
   handleHeroSearchChange = (e) => this.setState({ heroSearchValue: e.target.value });
@@ -1855,6 +1859,9 @@ class Component extends DCLogic {
       activeReview,
       marqueeTrackRef: this.marqueeTrackRef,
       marqueeViewportRef: this.marqueeViewportRef,
+      regions: [['valley', t.groupSalinasValley, 'uploads/map-salinas-valley.png'], ['peninsula', t.groupMontereyPeninsula, 'uploads/map-monterey-peninsula.png'], ['coastal', t.groupCoastalInland, 'uploads/map-coastal-inland.png']].map(([k, name, img]) => ({ name, img, on: this.state.ksRegion === k ? 1 : 0, enter: () => this.setRegion(k) })),
+      regionOnValley: this.state.ksRegion === 'valley' ? 1 : 0, regionOnPeninsula: this.state.ksRegion === 'peninsula' ? 1 : 0, regionOnCoastal: this.state.ksRegion === 'coastal' ? 1 : 0,
+      regionLeave: this.regionLeave, regionMapRef: this.regionMapRef, regionMapMove: this.regionMapMove,
       mapIframeRef: this.mapIframeRef,
       heroSearchValue: this.state.heroSearchValue,
       handleHeroSearchChange: this.handleHeroSearchChange,
