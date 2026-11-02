@@ -37,7 +37,8 @@
     input, select, textarea { font-size: 15px; }
     input:focus, select:focus, textarea:focus { outline: none; border-color: #000000 !important; }
   </style>
-<style>[data-ks-ul]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ks-ul,currentColor);transform:scaleX(var(--ks-on,0));transform-origin:var(--ks-ul-o,left) center;transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none;will-change:transform;}</style>
+<style>[data-ks-ul]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--ks-line,1px);background:var(--ks-ul,currentColor);transform:scaleX(var(--ks-on,0));transform-origin:var(--ks-ul-o,left) center;transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none;will-change:transform;}</style>
+<style>:root{--ks-line:1px}@media (min-resolution:1.1dppx) and (max-resolution:1.35dppx){:root{--ks-line:0.8px}}@media (min-resolution:1.4dppx) and (max-resolution:1.6dppx){:root{--ks-line:0.6667px}}@media (min-resolution:1.7dppx) and (max-resolution:1.8dppx){:root{--ks-line:0.5715px}}</style>
 </helmet>
 
 <div style="min-height: 100vh; color: #1a1a1a; display: flex; flex-direction: column; animation: ksPageIn .9s cubic-bezier(.16,1,.3,1) both;">
