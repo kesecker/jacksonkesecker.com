@@ -191,10 +191,9 @@
   
   <sc-if value="{{ isFullBleedHero }}" hint-placeholder-val="{{ true }}">
     <div id="hero-fullbleed" style="position: relative; width: 100%; height: 100vh; min-height: 720px; overflow: hidden; background: #000;">
-      <video ref="{{ heroVideoRef }}" autoPlay="{{ true }}" muted="{{ true }}" defaultMuted="{{ true }}" loop="{{ true }}" playsInline="{{ true }}" preload="auto" fetchpriority="high" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+      <video ref="{{ heroVideoRef }}" autoPlay="{{ heroAutoPlay }}" muted="{{ true }}" defaultMuted="{{ true }}" loop="{{ true }}" playsInline="{{ true }}" preload="auto" fetchpriority="high" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
         <source src="uploads/hero-video.mp4" type="video/mp4">
       </video>
-      <div data-ks-hero-tint="1" style="position: absolute; inset: 0; background: rgba(16, 32, 72, 0.28); mix-blend-mode: multiply; pointer-events: none;"></div>
       <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.2) 55%, rgba(0,0,0,0.45) 100%); pointer-events: none;"></div>
 
       <!-- NAV -->
@@ -872,7 +871,7 @@ class Component extends DCLogic {
     if (this.state.isIntroFading || !this.state.isIntroVisible) return;
     if (this.introFailsafeTimer) clearTimeout(this.introFailsafeTimer);
     if (this.introVideoEl) { try { this.introVideoEl.pause(); } catch (e) {} }
-    if (this.heroVideoRef.current) { try { this.heroVideoRef.current.play().catch(() => {}); } catch (e) {} }
+    if (this.heroVideoRef.current) { try { const hv = this.heroVideoRef.current; hv.currentTime = 0; hv.play().catch(() => {}); } catch (e) {} }
     this.setState({ isIntroFading: true });
     setTimeout(() => {
       this.setState({ isIntroVisible: false, isIntroFading: false });
@@ -1928,7 +1927,7 @@ class Component extends DCLogic {
       rotatingHeroText: this.renderHeroPhrase(t.heroPhrases[this.state.heroPhraseIndex]),
       heroTextOpacity: this.state.heroFadeVisible ? 1 : 0,
       heroTextTransform: this.state.heroFadeVisible ? 'translateY(0)' : 'translateY(10px)',
-      heroVideoRef: this.heroVideoRef,
+      heroVideoRef: this.heroVideoRef, heroAutoPlay: !this.state.isIntroVisible,
       ctaBandRef: this.ctaBandRef,
       useJsPin: this.state.isIosDevice,
       useCssPin: !this.state.isIosDevice,
