@@ -93,6 +93,8 @@
     @keyframes modal-fade-out { from { opacity: 1; } to { opacity: 0; } }
     @keyframes modal-scale-out { from { opacity: 1; transform: scale(1) translateY(0); } to { opacity: 0; transform: scale(0.96) translateY(8px); } }
     @keyframes ksIntroKey { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.94); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+    @keyframes ksSegX { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    @keyframes ksSegY { from { transform: scaleY(0); } to { transform: scaleY(1); } }
     @keyframes ksIntroDraw { 0% { stroke-dashoffset: 1; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 1; } }
     @keyframes ksIntroRect { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.78); } 20% { opacity: 1; } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
     @keyframes ksIntroRect2 { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.84); } 30% { opacity: 0.35; } 100% { opacity: 0.35; transform: translate(-50%, -50%) scale(1); } }
@@ -180,8 +182,8 @@
 <div style="font-family: var(--rh-font); color: var(--rh-text-primary); background: var(--rh-bg); width: 100%; overflow-x: hidden; position: relative;">
   <sc-if value="{{ isIntroVisible }}" hint-placeholder-val="{{ true }}">
     <div style="position: fixed; inset: 0; z-index: 2147483600; background: #000000; display: flex; align-items: center; justify-content: center; overflow: hidden; transform: translateY({{ introTranslateY }}); transition: transform 0.35s cubic-bezier(0.65,0,0.35,1);">
-      <video ref="{{ introVideoRef }}" autoPlay="{{ true }}" muted="{{ true }}" defaultMuted="{{ true }}" playsInline="{{ true }}" preload="auto" onEnded="{{ dismissIntro }}" onError="{{ dismissIntro }}" onTimeUpdate="{{ handleIntroTimeUpdate }}" style="width: 100%; height: 100%; object-fit: contain; filter: contrast(1.35); image-rendering: high-quality; transform: translateZ(0);">
-        <source src="uploads/Intro-fc69fc54.mp4" type="video/mp4">
+      <video ref="{{ introVideoRef }}" autoPlay="{{ true }}" muted="{{ true }}" defaultMuted="{{ true }}" playsInline="{{ true }}" preload="auto" onEnded="{{ dismissIntro }}" onError="{{ dismissIntro }}" onTimeUpdate="{{ handleIntroTimeUpdate }}" style="width: 100%; height: 100%; object-fit: contain; filter: contrast(1.35); image-rendering: high-quality; transform: translate3d(0, calc(min(100vh, 56.25vw) * 0.023), 0);">
+        <source src="uploads/Intro-c206100c.mp4" type="video/mp4">
       </video>
       {{ introRects }}
     </div>
@@ -908,6 +910,7 @@ class Component extends DCLogic {
     return phrase;
   }
   hasSeenIntro = () => {
+    try { if (/[?&]intro\b/.test(location.search) || /(^|\/)Real%20Estate%20Website\.dc\.html/.test(location.pathname)) return false; } catch (e) {}
     let internal = false;
     try { const r = document.referrer ? new URL(document.referrer) : null; internal = !!(r && /(^|\.)(jacksonkesecker|keseckerproperties)\.com$/i.test(r.hostname)); } catch (e) {}
     try { if (sessionStorage.getItem('jkr_on_site')) internal = true; sessionStorage.setItem('jkr_on_site', '1'); } catch (e) {}
@@ -1831,9 +1834,21 @@ class Component extends DCLogic {
   });
   renderIntroRects() {
     const e = React.createElement;
-    return e('svg', { key: 'draw', viewBox: '0 0 100 56', preserveAspectRatio: 'none', 'aria-hidden': 'true', style: { position: 'absolute', left: '50%', top: '50%', width: 'min(64vw, 620px)', height: 'calc(min(64vw, 620px) * 0.56)', transform: 'translate(-50%, -50%)', overflow: 'visible', pointerEvents: 'none' } },
-      e('rect', { x: 0, y: 0, width: 100, height: 56, fill: 'none', stroke: '#ffffff', strokeWidth: 1, vectorEffect: 'non-scaling-stroke', pathLength: 1, strokeDasharray: 1, strokeDashoffset: 1, style: { opacity: 0, animation: 'ksIntroDraw 2.4s cubic-bezier(0.65,0,0.35,1) 0.3s forwards' } })
-    );
+    const T = '1.5px', C = '#ffffff', start = 0.35;
+    const segs = [
+      { k: 'tr', st: { top: 0, left: '50%', width: '50%', height: T, transformOrigin: 'left center' }, ax: 'X', d: 0.192, ez: 'cubic-bezier(.4,0,1,1)' },
+      { k: 'r', st: { top: 0, right: 0, width: T, height: '100%', transformOrigin: 'center top' }, ax: 'Y', d: 0.216, ez: 'linear' },
+      { k: 'b', st: { bottom: 0, left: 0, width: '100%', height: T, transformOrigin: 'right center' }, ax: 'X', d: 0.384, ez: 'linear' },
+      { k: 'l', st: { top: 0, left: 0, width: T, height: '100%', transformOrigin: 'center bottom' }, ax: 'Y', d: 0.216, ez: 'linear' },
+      { k: 'tl', st: { top: 0, left: 0, width: '50%', height: T, transformOrigin: 'left center' }, ax: 'X', d: 0.192, ez: 'cubic-bezier(0,0,.2,1)' }
+    ];
+    let t = start;
+    const kids = segs.map((s) => {
+      const el = e('div', { key: s.k, style: { position: 'absolute', background: C, transform: 'scale' + s.ax + '(0)', willChange: 'transform', backfaceVisibility: 'hidden', animation: 'ksSeg' + s.ax + ' ' + s.d + 's ' + s.ez + ' ' + t.toFixed(3) + 's forwards', ...s.st } });
+      t += s.d;
+      return el;
+    });
+    return e('div', { key: 'draw', 'aria-hidden': 'true', style: { position: 'absolute', left: '50%', top: '50%', width: 'calc(min(100vw, 177.78vh) * 0.556)', height: 'calc(min(56.25vw, 100vh) * 0.553)', transform: 'translate(-50%, -50%)', pointerEvents: 'none' } }, kids);
   }
   renderVals() {
     const heroLayout = this.props.heroLayout ?? 'full-bleed';
