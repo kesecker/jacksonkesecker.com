@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="preload" href="/assets/listing-loader.mp4" as="video" type="video/mp4">
 <style data-ks-boot>x-dc{display:none!important}body:not(:has(#dc-root *)){visibility:hidden}</style>
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-light.png" media="(prefers-color-scheme: light)">
@@ -101,7 +102,7 @@
     @keyframes navm-scale-out { from { opacity: 1; transform: scale(1) translateY(0); } to { opacity: 0; transform: scale(0.96) translateY(8px); } }
   </style>
 <style>[data-ks-ul]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--ks-line,1px);background:var(--ks-ul,currentColor);transform:scaleX(var(--ks-on,0));transform-origin:var(--ks-ul-o,left) center;transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none;will-change:transform;}</style>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;600&display=swap"><style data-ks-type>:root{--ks-line:1px}@media (min-resolution:1.1dppx) and (max-resolution:1.35dppx){:root{--ks-line:0.8px}}@media (min-resolution:1.4dppx) and (max-resolution:1.6dppx){:root{--ks-line:0.6667px}}@media (min-resolution:1.7dppx) and (max-resolution:1.8dppx){:root{--ks-line:0.5715px}} html:root:not([data-ks-none]) body h1, html:root:not([data-ks-none]) body h1 *, html:root:not([data-ks-none]) body h2, html:root:not([data-ks-none]) body h2 *, html:root:not([data-ks-none]) body h3, html:root:not([data-ks-none]) body h3 * { font-weight: 100 !important; } html:root:not([data-ks-none]) body [data-ks-regions-list] h2, html:root:not([data-ks-none]) body [data-ks-regions-list] h2 * { font-weight: 200 !important; } html:root:not([data-ks-none]) body button, html:root:not([data-ks-none]) body button *, html:root:not([data-ks-none]) body a[style*="border-radius: 8px"], html:root:not([data-ks-none]) body a[style*="border-radius: 8px"] *, html:root:not([data-ks-none]) body span[style*="border-radius: 8px"] *, html:root:not([data-ks-none]) body [data-ks-cta] a span, html:root:not([data-ks-none]) body [data-ks-cta] a span *, html:root:not([data-ks-none]) body input[type="submit"] { font-weight: 300 !important; } html:root:not([data-ks-none]) body #hero-heading, html:root:not([data-ks-none]) body #hero-heading * { font-weight: 600 !important; } @media (max-width: 760px) { [data-ks-foot-grid] > * { padding-left: 0 !important; } }</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;600&display=swap"><style data-ks-type>:root{--ks-line:1px}@media (min-resolution:1.1dppx) and (max-resolution:1.35dppx){:root{--ks-line:0.8px}}@media (min-resolution:1.4dppx) and (max-resolution:1.6dppx){:root{--ks-line:0.6667px}}@media (min-resolution:1.7dppx) and (max-resolution:1.8dppx){:root{--ks-line:0.5715px}} html:root:not([data-ks-none]) body h1, html:root:not([data-ks-none]) body h1 *, html:root:not([data-ks-none]) body h2, html:root:not([data-ks-none]) body h2 *, html:root:not([data-ks-none]) body h3, html:root:not([data-ks-none]) body h3 * { font-weight: 300 !important; } html:root:not([data-ks-none]) body [data-ks-regions-list] h2, html:root:not([data-ks-none]) body [data-ks-regions-list] h2 * { font-weight: 200 !important; } html:root:not([data-ks-none]) body button, html:root:not([data-ks-none]) body button *, html:root:not([data-ks-none]) body a[style*="border-radius: 8px"], html:root:not([data-ks-none]) body a[style*="border-radius: 8px"] *, html:root:not([data-ks-none]) body span[style*="border-radius: 8px"] *, html:root:not([data-ks-none]) body [data-ks-cta] a span, html:root:not([data-ks-none]) body [data-ks-cta] a span *, html:root:not([data-ks-none]) body input[type="submit"] { font-weight: 300 !important; } html:root:not([data-ks-none]) body #hero-heading, html:root:not([data-ks-none]) body #hero-heading * { font-weight: 600 !important; } @media (max-width: 760px) { [data-ks-foot-grid] > * { padding-left: 0 !important; } }</style>
 </helmet>
 
 <div style="font-family: var(--rh-font); color: var(--rh-text-primary); background: var(--rh-bg); width: 100%; min-height: 100vh; display: flex; flex-direction: column;">
@@ -1286,12 +1287,12 @@ findAllMatches('Share').filter((s) => !s.closest('[data-ihf-own], [data-ihf-acti
       ld = document.createElement('div');
       ld.id = 'ks-listing-loader';
       ld.setAttribute('aria-hidden', 'true');
-      ld.style.cssText = 'position:fixed;left:0;right:0;bottom:0;top:92px;z-index:900;background:#ffffff;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .35s ease;pointer-events:none;';
+      ld.style.cssText = 'position:fixed;left:0;right:0;bottom:0;top:92px;z-index:900;background:#ffffff;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .35s ease;pointer-events:none;will-change:opacity;transform:translateZ(0);contain:strict;';
       const v = document.createElement('video');
       v.src = '/assets/listing-loader.mp4';
       v.muted = true; v.defaultMuted = true; v.autoplay = true; v.loop = true; v.playsInline = true;
       v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('preload', 'auto');
-      v.style.cssText = 'width:min(780px,90vw);height:auto;display:block;filter:invert(1);background:#000000;';
+      v.style.cssText = 'width:min(780px,90vw);height:auto;display:block;filter:invert(1);background:#000000;transform:translateZ(0);will-change:transform;backface-visibility:hidden;';
       ld.appendChild(v);
       document.body.appendChild(ld);
       requestAnimationFrame(() => { ld.style.opacity = '1'; });
@@ -1309,7 +1310,7 @@ findAllMatches('Share').filter((s) => !s.closest('[data-ihf-own], [data-ihf-acti
       const ready = sr && !spinning && (sr.querySelector('.ihf-info-col') || (sr.querySelector('.listing-photo-carousel') && Date.now() - start > 1500));
       if (ready) { setTimeout(reveal, 120); return; }
       if (Date.now() - start > 3500) { reveal(); return; }
-      setTimeout(check, 50);
+      setTimeout(check, 200);
     };
     check();
   };
