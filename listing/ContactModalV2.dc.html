@@ -26,8 +26,8 @@
 <style>html:root:not([data-ks-none]) body [data-ks-cthin] h1, html:root:not([data-ks-none]) body [data-ks-cthin] h2, html:root:not([data-ks-none]) body [data-ks-cthin] h3, [data-ks-cthin] h1 *, [data-ks-cthin] h2 * { font-weight: 300 !important; } html:root:not([data-ks-none]) body [data-ks-cthin] label, html:root:not([data-ks-none]) body [data-ks-cthin] [data-ks-clabel] { font-weight: 500 !important; }</style>
 </helmet>
 
-<sc data-ks-cthin="1"-if value="{{ isContactModalVisible }}" hint-placeholder-val="{{ false }}">
-  <div style="position: fixed; inset: 0; z-index: 2147483005; background: #000000; overflow-y: auto; animation: {{ contactModalOverlayAnimation }};">
+<sc-if value="{{ isContactModalVisible }}" hint-placeholder-val="{{ false }}">
+  <div data-ks-cthin="1" style="position: fixed; inset: 0; z-index: 2147483005; background: #000000; overflow-y: auto; animation: {{ contactModalOverlayAnimation }};">
     <div style="position: fixed; pointer-events: none; inset: 0; background-image: url('/uploads/Pinnacles.png'); background-size: cover; background-position: center;"></div>
     <div style="position: fixed; pointer-events: none; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.82) 100%);"></div>
     <button data-ks-x="1" onClick="{{ closeContactModal }}" aria-label="Close" style="position: fixed; top: 24px; right: clamp(20px, 4vw, 40px); background: none; border: none; font-size: 32px; line-height: 1; cursor: pointer; color: #ffffff; z-index: 2; transition: opacity 0.2s ease;">×</button>
