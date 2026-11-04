@@ -77,6 +77,49 @@
       <button onClick="{{ loadExisting }}" style="height: 46px; padding: 0 26px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">Load</button>
     </div>
 
+    <div data-ks-reveal="1" style="padding: 0 0 44px; display: flex; flex-direction: column; gap: 18px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2;">My properties</h2>
+          <span style="font-size: 14px; color: #666666; line-height: 1.6;">Change status or Notable Sales here, then Save. The page and the homepage update in about 1–2 minutes.</span>
+        </div>
+        <button onClick="{{ loadProps }}" disabled="{{ propsBusy }}" style="height: 46px; padding: 0 26px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">{{ propsBtn }}</button>
+      </div>
+      <sc-if value="{{ hasPropsMsg }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: {{ propsMsgColor }};">{{ propsMsg }}</span></sc-if>
+      <sc-for list="{{ propRows }}" as="p" hint-placeholder-count="0">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 20px; padding: 14px 0; border-top: 1px solid #e6e6e6;">
+          <img src="{{ p.thumb }}" alt="" style="width: 84px; height: 63px; object-fit: cover; display: block; background: #eeeeee; flex: none;">
+          <div style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 15px; font-weight: 600; line-height: 1.3;">{{ p.name }}</span>
+            <span style="font-size: 13px; color: #666666;">{{ p.sub }}</span>
+          </div>
+          <label style="display: flex; flex-direction: column; gap: 4px; width: 140px;">
+            <span style="font-size: 12px; font-weight: 600; color: #777777;">Status</span>
+            <select value="{{ p.status }}" onChange="{{ p.onStatus }}" style="height: 38px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; background: transparent; width: 100%; color: #1a1a1a;">
+              <sc-for list="{{ statusOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o }}">{{ o }}</option></sc-for>
+            </select>
+          </label>
+          <sc-if value="{{ p.sold }}" hint-placeholder-val="{{ false }}">
+            <label style="display: flex; flex-direction: column; gap: 4px; width: 130px;">
+              <span style="font-size: 12px; font-weight: 600; color: #777777;">Sold price</span>
+              <input type="text" inputmode="decimal" value="{{ p.soldPrice }}" onChange="{{ p.onSoldPrice }}" placeholder="1800000" style="height: 38px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; background: transparent; width: 100%; box-sizing: border-box; color: #1a1a1a;">
+            </label>
+          </sc-if>
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-size: 12px; font-weight: 600; color: #777777;">Notable sale?</span>
+            <div style="display: flex; gap: 6px;">
+              <button onClick="{{ p.setYes }}" style="height: 38px; padding: 0 16px; border-radius: 8px; border: 1px solid #1a1a1a; background: {{ p.yesBg }}; color: {{ p.yesFg }}; font-size: 13px; font-weight: 600; cursor: pointer;">Yes</button>
+              <button onClick="{{ p.setNo }}" style="height: 38px; padding: 0 16px; border-radius: 8px; border: 1px solid #1a1a1a; background: {{ p.noBg }}; color: {{ p.noFg }}; font-size: 13px; font-weight: 600; cursor: pointer;">No</button>
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px; margin-left: auto;">
+            <button onClick="{{ p.edit }}" style="height: 38px; padding: 0 16px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">Edit</button>
+            <button onClick="{{ p.save }}" disabled="{{ propsBusy }}" style="height: 38px; padding: 0 18px; border-radius: 8px; border: 1px solid #000000; background: #000000; color: #ffffff; font-size: 13px; font-weight: 600; cursor: pointer; opacity: {{ p.saveOpacity }}; transition: opacity .3s ease;">{{ p.saveLabel }}</button>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
     <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
       <div data-ks-reveal="1" style="padding: 44px 0; border-top: 1px solid #e6e6e6; display: flex; flex-direction: column; gap: 24px;">
         <div style="display: flex; flex-direction: column; gap: 4px;">
@@ -252,7 +295,7 @@
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
   static FIELDS = {
-    street: '', city: '', state: 'CA', zip: '', title: '', headline: '', status: 'For Sale', price: '', soldPrice: '', soldDate: '', mls: '',
+    street: '', city: '', state: 'CA', zip: '', title: '', headline: '', status: 'For Sale', price: '', soldPrice: '', represented: 'None', notable: 'No', mls: '',
     beds: '', baths: '', fullBaths: '', halfBaths: '', sqft: '', lot: '', lotUnit: 'Acres', yearBuilt: '', type: 'Single family residence', stories: '',
     description: '', neighborhood: '', view: '', schoolDistrict: '', hoa: '', taxes: '',
     video: '', matterport: '', heroCount: '5', communityName: '', communityText: '', slug: '',
@@ -341,7 +384,6 @@ class Component extends DCLogic {
     if (!f.street.trim()) errs.push('Street address');
     if (!f.city.trim()) errs.push('City');
     if (!this.state.photos.length) errs.push('At least one photo');
-    if (/sold/i.test(f.status) && !f.soldDate) errs.push('Sold date');
     if (errs.length) { alert('Please add: ' + errs.join(', ')); return false; }
     return true;
   }
@@ -389,7 +431,7 @@ class Component extends DCLogic {
       const r = await fetch(this.base() + 'properties/template/' + n, { cache: 'no-store' });
       if (r.ok) files.push({ path: dir + n, text: n.endsWith('.js') ? await r.text() : this.cfClean(await r.text()) });
     }
-    return { files, url, slug };
+    return { files, url, slug, data };
   }
 
   sitemapWith(xml, url) {
@@ -427,7 +469,7 @@ class Component extends DCLogic {
     this.setState({ busy: true, log: [], live: false });
     try {
       const repo = this.state.repo.trim(), br = this.state.branch.trim() || 'main';
-      const { files, url, slug } = await this.buildFiles();
+      const { files, url, slug, data } = await this.buildFiles();
       this.log('Uploading ' + files.length + ' files to GitHub…');
       const tree = [];
       for (let i = 0; i < files.length; i++) {
@@ -443,6 +485,11 @@ class Component extends DCLogic {
         const next = this.sitemapWith(xml, url);
         if (next) { const b = await this.gh('/repos/' + repo + '/git/blobs', { method: 'POST', body: JSON.stringify({ content: next, encoding: 'utf-8' }) }); tree.push({ path: 'sitemap.xml', mode: '100644', type: 'blob', sha: b.sha }); this.log('Added to sitemap.'); }
       } catch (e) { this.log('Sitemap not updated: ' + e.message); }
+      try {
+        const idx = (await this.readIndex()).filter((x) => x && x.slug !== slug);
+        idx.push(this.entryFor(slug, data));
+        tree.push({ path: 'properties/index.json', mode: '100644', type: 'blob', sha: await this.textBlob(JSON.stringify(idx, null, 1)) });
+      } catch (e) { this.log('Notable Sales list not updated: ' + e.message); }
       const ref = await this.gh('/repos/' + repo + '/git/ref/heads/' + br);
       const head = await this.gh('/repos/' + repo + '/git/commits/' + ref.object.sha);
       const t = await this.gh('/repos/' + repo + '/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: head.tree.sha, tree }) });
@@ -452,6 +499,76 @@ class Component extends DCLogic {
       this.setState({ live: true, loadSlug: slug });
     } catch (e) { this.log(String(e.message || e), 'err'); }
     this.setState({ busy: false });
+  };
+
+  // ---- My properties: read every published page from GitHub, quick-edit status / notable, keep properties/index.json in sync ----
+  ghText = async (path) => {
+    const repo = this.state.repo.trim(), br = this.state.branch.trim() || 'main';
+    const j = await this.gh('/repos/' + repo + '/contents/' + path + '?ref=' + encodeURIComponent(br));
+    if (j.content) return new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g, '')), (c) => c.charCodeAt(0)));
+    const r = await fetch(this.base() + path, { cache: 'no-store' }); if (!r.ok) throw new Error(path + ' ' + r.status); return r.text();
+  };
+  entryFor(slug, d) {
+    const p0 = (d.photos || [])[0] || '';
+    const cover = !p0 ? '' : /^(https?:)?\//.test(p0) ? p0 : '/properties/' + slug + '/' + p0;
+    return { slug, title: d.title || '', street: d.street || '', city: d.city || '', state: d.state || '', status: d.status || '', price: d.price || '', soldPrice: d.soldPrice || '', represented: d.represented || 'None', notable: d.notable === 'Yes' ? 'Yes' : 'No', beds: d.beds || '', baths: d.baths || '', sqft: d.sqft || '', lot: d.lot || '', lotUnit: d.lotUnit || '', cover };
+  }
+  async commitTree(tree, message) {
+    const repo = this.state.repo.trim(), br = this.state.branch.trim() || 'main';
+    const ref = await this.gh('/repos/' + repo + '/git/ref/heads/' + br);
+    const head = await this.gh('/repos/' + repo + '/git/commits/' + ref.object.sha);
+    const t = await this.gh('/repos/' + repo + '/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: head.tree.sha, tree }) });
+    const c = await this.gh('/repos/' + repo + '/git/commits', { method: 'POST', body: JSON.stringify({ message, tree: t.sha, parents: [ref.object.sha] }) });
+    await this.gh('/repos/' + repo + '/git/refs/heads/' + br, { method: 'PATCH', body: JSON.stringify({ sha: c.sha }) });
+  }
+  async textBlob(content) {
+    const repo = this.state.repo.trim();
+    const b = await this.gh('/repos/' + repo + '/git/blobs', { method: 'POST', body: JSON.stringify({ content, encoding: 'utf-8' }) });
+    return b.sha;
+  }
+  async readIndex() { try { const t = await this.ghText('properties/index.json'); const a = JSON.parse(t); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+  loadProps = async () => {
+    if (this.state.propsBusy) return;
+    if (!this.state.token.trim()) { this.setState({ showSettings: true, propsMsg: 'Add your GitHub token first (GitHub settings, below).', propsErr: true }); return; }
+    this.setState({ propsBusy: true, propsMsg: 'Loading your properties…', propsErr: false });
+    try {
+      const repo = this.state.repo.trim(), br = this.state.branch.trim() || 'main';
+      const list = await this.gh('/repos/' + repo + '/contents/properties?ref=' + encodeURIComponent(br));
+      const dirs = list.filter((x) => x.type === 'dir' && x.name !== 'template').map((x) => x.name);
+      const props = [];
+      for (const slug of dirs) {
+        try {
+          const html = await this.ghText('properties/' + slug + '/index.html');
+          const m = html.match(/window\.KS_PROPERTY = (\{[\s\S]*?\});\/\*KS_DATA\*\//);
+          if (!m) continue;
+          const d = JSON.parse(m[1]);
+          props.push({ slug, d, html, status: d.status || 'For Sale', soldPrice: d.soldPrice || '', notable: d.notable === 'Yes' ? 'Yes' : 'No', dirty: false });
+        } catch (e) {}
+      }
+      this.setState({ props, propsMsg: props.length ? '' : 'No published properties found yet.', propsErr: false });
+    } catch (e) { this.setState({ propsMsg: String(e.message || e), propsErr: true }); }
+    this.setState({ propsBusy: false });
+  };
+  setProp = (slug, patch) => this.setState((s) => ({ props: s.props.map((p) => p.slug === slug ? Object.assign({}, p, patch, { dirty: true }) : p) }));
+  saveProp = async (slug) => {
+    if (this.state.propsBusy) return;
+    const row = this.state.props.find((p) => p.slug === slug); if (!row) return;
+    const sold = /sold/i.test(row.status);
+    if (sold && !String(row.soldPrice || '').trim() && !row.d.price) { alert('Add the sold price first.'); return; }
+    this.setState({ propsBusy: true, propsMsg: 'Saving ' + (row.d.title || row.d.street) + '…', propsErr: false });
+    try {
+      const d = Object.assign({}, row.d, { status: row.status, soldPrice: sold ? String(row.soldPrice || row.d.price || '').replace(/[^\d.]/g, '') : '', notable: row.notable });
+      const json = JSON.stringify(d).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+      const html = row.html.replace(/window\.KS_PROPERTY = \{[\s\S]*?\};\/\*KS_DATA\*\//, () => 'window.KS_PROPERTY = ' + json + ';/*KS_DATA*/');
+      const idx = this.state.props.map((p) => this.entryFor(p.slug, p.slug === slug ? d : p.d));
+      const tree = [
+        { path: 'properties/' + slug + '/index.html', mode: '100644', type: 'blob', sha: await this.textBlob(html) },
+        { path: 'properties/index.json', mode: '100644', type: 'blob', sha: await this.textBlob(JSON.stringify(idx, null, 1)) },
+      ];
+      await this.commitTree(tree, 'Property update: ' + slug);
+      this.setState((s) => ({ props: s.props.map((p) => p.slug === slug ? Object.assign({}, p, { d, html, dirty: false }) : p), propsMsg: 'Saved. Live in about 1–2 minutes.', propsErr: false }));
+    } catch (e) { this.setState({ propsMsg: String(e.message || e), propsErr: true }); }
+    this.setState({ propsBusy: false });
   };
 
   loadExisting = async () => {
@@ -583,7 +700,7 @@ class Component extends DCLogic {
       if (btn) { try { btn.click(); await sleep(1800); roots = getRoots(fr.contentDocument); const more = photosOf(roots); if (more.length > photos.length) photos = more; } catch (e) {} }
       const f = {
         street, city: am ? am[1].trim() : '', state: am ? am[2].toUpperCase() : 'CA', zip: am && am[3] ? am[3] : (l2.match(/\b\d{5}\b/) || [''])[0],
-        status, price: listP || soldP, soldPrice: sold ? soldP : '', soldDate,
+        status, price: listP || soldP, soldPrice: sold ? soldP : '',
         mls: val(/^(mls|listing|mls listing)\s*(#|number|id|no\.?)$/i).replace(/\s/g, '') || mlsGuess,
         beds: num(val(/^(beds?|bedrooms?|total bedrooms|bedrooms total)$/i)) || hm(/(\d+(?:\.\d+)?)\s*(?:bd|beds?|bedrooms?)\b/i),
         baths: num(val(/^(baths?|bathrooms?|total baths|total bathrooms|bathrooms total)$/i)) || hm(/(\d+(?:\.\d+)?)\s*(?:ba|baths?|bathrooms?)\b/i),
@@ -664,7 +781,9 @@ class Component extends DCLogic {
         fld('city', 'City', { placeholder: 'Soledad' }), fld('state', 'State'), fld('zip', 'ZIP', { inputmode: 'numeric' }),
         fld('status', 'Status', { isInput: false, isSelect: true, options: ['For Sale', 'Coming Soon', 'Pending', 'Sold'] }),
         fld('price', sold ? 'List price' : 'Price', Object.assign({ placeholder: '1800000' }, num)),
-        ...(sold ? [fld('soldPrice', 'Sold price', Object.assign({ placeholder: '1800000' }, num)), fld('soldDate', 'Sold date', { type: 'date' })] : []),
+        ...(sold ? [fld('soldPrice', 'Sold price', Object.assign({ placeholder: '1800000' }, num))] : []),
+        fld('represented', 'Representation', { isInput: false, isSelect: true, options: ['None', 'Seller represented', 'Buyer represented'] }),
+        fld('notable', 'Notable sale?', { isInput: false, isSelect: true, options: ['No', 'Yes'] }),
         fld('mls', 'MLS #', { placeholder: 'ML82028688' }),
         fld('title', 'Property name (optional)', { placeholder: 'e.g. The Summit at Tehama', span: '1 / -1' }),
       ] },
@@ -735,6 +854,22 @@ class Component extends DCLogic {
       repoValue: s.repo, onRepo: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-repo', v); this.setState({ repo: v }); },
       branchValue: s.branch, onBranch: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-branch', v); this.setState({ branch: v }); },
       hasLog: s.log.length > 0, logLines: s.log, hasLiveLink: s.live,
+      loadProps: this.loadProps, propsBusy: !!s.propsBusy, propsBtn: s.propsBusy ? 'Working…' : ((s.props || []).length ? 'Refresh' : 'Load my properties'),
+      hasPropsMsg: !!s.propsMsg, propsMsg: s.propsMsg || '', propsMsgColor: s.propsErr ? '#c62828' : '#555555',
+      statusOptions: ['For Sale', 'Coming Soon', 'Pending', 'Sold'],
+      propRows: (s.props || []).map((p) => {
+        const d = p.d, p0 = (d.photos || [])[0] || '', yes = p.notable === 'Yes';
+        return {
+          thumb: !p0 ? '' : /^(https?:)?\//.test(p0) ? p0 : this.base() + 'properties/' + p.slug + '/' + p0,
+          name: d.title || d.street || p.slug, sub: [d.title ? d.street : '', d.city].filter(Boolean).join(', '),
+          status: p.status, sold: /sold/i.test(p.status), soldPrice: p.soldPrice,
+          onStatus: (e) => this.setProp(p.slug, { status: e.target.value }), onSoldPrice: (e) => this.setProp(p.slug, { soldPrice: e.target.value }),
+          setYes: () => this.setProp(p.slug, { notable: 'Yes' }), setNo: () => this.setProp(p.slug, { notable: 'No' }),
+          yesBg: yes ? '#000000' : '#ffffff', yesFg: yes ? '#ffffff' : '#1a1a1a', noBg: yes ? '#ffffff' : '#000000', noFg: yes ? '#1a1a1a' : '#ffffff',
+          save: () => this.saveProp(p.slug), saveLabel: p.dirty ? 'Save' : 'Saved', saveOpacity: p.dirty ? 1 : 0.45,
+          edit: () => this.setState({ loadSlug: p.slug }, () => { this.loadExisting(); window.scrollTo({ top: 0, behavior: 'smooth' }); }),
+        };
+      }),
       loadSlug: s.loadSlug, onLoadSlug: (e) => this.setState({ loadSlug: e.target.value }), loadExisting: this.loadExisting,
       preview: this.preview, resetAll: this.resetAll,
       importQ: s.importQ || '', onImportQ: (e) => this.setState({ importQ: e.target.value }),
