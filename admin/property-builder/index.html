@@ -509,11 +509,7 @@ class Component extends DCLogic {
         idx.push(this.entryFor(slug, data));
         tree.push({ path: 'properties/index.json', mode: '100644', type: 'blob', sha: await this.textBlob(JSON.stringify(idx, null, 1)) });
       } catch (e) { this.log('Notable Sales list not updated: ' + e.message); }
-      const ref = await this.gh('/repos/' + repo + '/git/ref/heads/' + br);
-      const head = await this.gh('/repos/' + repo + '/git/commits/' + ref.object.sha);
-      const t = await this.gh('/repos/' + repo + '/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: head.tree.sha, tree }) });
-      const c = await this.gh('/repos/' + repo + '/git/commits', { method: 'POST', body: JSON.stringify({ message: 'Property page: ' + slug, tree: t.sha, parents: [ref.object.sha] }) });
-      await this.gh('/repos/' + repo + '/git/refs/heads/' + br, { method: 'PATCH', body: JSON.stringify({ sha: c.sha }) });
+      await this.commitTree(tree, 'Property page: ' + slug);
       this.log('Published. The page goes live in about 1–2 minutes.', 'ok');
       this.setState({ live: true, loadSlug: slug });
     } catch (e) { this.log(String(e.message || e), 'err'); }
@@ -534,11 +530,20 @@ class Component extends DCLogic {
   }
   async commitTree(tree, message) {
     const repo = this.state.repo.trim(), br = this.state.branch.trim() || 'main';
-    const ref = await this.gh('/repos/' + repo + '/git/ref/heads/' + br);
-    const head = await this.gh('/repos/' + repo + '/git/commits/' + ref.object.sha);
-    const t = await this.gh('/repos/' + repo + '/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: head.tree.sha, tree }) });
-    const c = await this.gh('/repos/' + repo + '/git/commits', { method: 'POST', body: JSON.stringify({ message, tree: t.sha, parents: [ref.object.sha] }) });
-    await this.gh('/repos/' + repo + '/git/refs/heads/' + br, { method: 'PATCH', body: JSON.stringify({ sha: c.sha }) });
+    for (let attempt = 1; ; attempt++) {
+      try {
+        const ref = await this.gh('/repos/' + repo + '/git/ref/heads/' + br + '?t=' + Date.now());
+        const head = await this.gh('/repos/' + repo + '/git/commits/' + ref.object.sha);
+        const t = await this.gh('/repos/' + repo + '/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: head.tree.sha, tree }) });
+        const c = await this.gh('/repos/' + repo + '/git/commits', { method: 'POST', body: JSON.stringify({ message, tree: t.sha, parents: [ref.object.sha] }) });
+        await this.gh('/repos/' + repo + '/git/refs/heads/' + br, { method: 'PATCH', body: JSON.stringify({ sha: c.sha }) });
+        return;
+      } catch (e) {
+        if (attempt >= 4 || !/422|fast forward|409/i.test(String(e.message || e))) throw e;
+        this.log('GitHub changed meanwhile, retrying (' + attempt + ')…');
+        await new Promise((r) => setTimeout(r, 1500 * attempt));
+      }
+    }
   }
   async textBlob(content) {
     const repo = this.state.repo.trim();
