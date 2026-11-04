@@ -1600,7 +1600,10 @@ class Component extends DCLogic {
     const fmt = (n) => { const v = Number(String(n || '').replace(/[^\d.]/g, '')); return v ? v.toLocaleString('en-US') : ''; };
     return (this.state.notableList || []).map((x) => {
       const on = this.state.notableHover === x.slug, sold = /sold/i.test(x.status || '');
-      const rep = /seller/i.test(x.represented || '') ? (es ? 'Representando al Vendedor' : 'Seller Represented') : /buyer/i.test(x.represented || '') ? (es ? 'Representando al Comprador' : 'Buyer Represented') : '';
+      const repS = /seller/i.test(x.represented || '') ? (es ? 'Representando al Vendedor' : 'Seller Represented') : /buyer/i.test(x.represented || '') ? (es ? 'Representando al Comprador' : 'Buyer Represented') : '';
+      const st = x.status || '', stEs = { Active: 'Activa', 'Coming Soon': 'Próximamente', Contingent: 'Contingente', Pending: 'Pendiente', Sold: 'Vendida' };
+      const stLabel = (!st || /^for sale$/i.test(st)) ? 'Active' : st;
+      const rep = sold ? (repS || (es ? 'Vendida' : 'Sold')) : (es ? (stEs[stLabel] || stLabel) : stLabel);
       const lot = x.lot ? fmt(x.lot) + ' ' + (/acre/i.test(x.lotUnit || '') ? (es ? 'Acres' : 'Acres') : (es ? 'Pies² de Terreno' : 'Sq Ft Lot')) : '';
       const facts = [x.beds && fmt(x.beds) + (es ? ' Habs' : ' Beds'), x.baths && x.baths + (es ? ' Baños' : ' Baths'), x.sqft && fmt(x.sqft) + (es ? ' Pies²' : ' Sq Ft'), lot].filter(Boolean).join(' · ');
       return {

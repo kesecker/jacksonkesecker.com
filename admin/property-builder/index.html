@@ -312,7 +312,7 @@
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
   static FIELDS = {
-    street: '', city: '', state: 'CA', zip: '', title: '', headline: '', status: 'For Sale', price: '', soldPrice: '', represented: 'None', notable: 'No', mls: '',
+    street: '', city: '', state: 'CA', zip: '', title: '', headline: '', status: 'Active', price: '', soldPrice: '', represented: 'None', notable: 'No', mls: '',
     beds: '', baths: '', fullBaths: '', halfBaths: '', sqft: '', lot: '', lotUnit: 'Acres', yearBuilt: '', type: 'Single family residence', stories: '',
     description: '', neighborhood: '', view: '', schoolDistrict: '', hoa: '', taxes: '',
     video: '', matterport: '', heroCount: '5', communityName: '', communityText: '', slug: '',
@@ -561,7 +561,7 @@ class Component extends DCLogic {
           const m = html.match(/window\.KS_PROPERTY = (\{[\s\S]*?\});\/\*KS_DATA\*\//);
           if (!m) continue;
           const d = JSON.parse(m[1]);
-          props.push({ slug, d, html, status: d.status || 'For Sale', soldPrice: d.soldPrice || '', notable: d.notable === 'Yes' ? 'Yes' : 'No', dirty: false });
+          props.push({ slug, d, html, status: (!d.status || /^for sale$/i.test(d.status)) ? 'Active' : d.status, soldPrice: d.soldPrice || '', notable: d.notable === 'Yes' ? 'Yes' : 'No', dirty: false });
         } catch (e) {}
       }
       this.setState({ props, propsMsg: props.length ? '' : 'No published properties found yet.', propsErr: false });
@@ -601,6 +601,7 @@ class Component extends DCLogic {
       if (!m) throw new Error('No property data in that page');
       const d = JSON.parse(m[1]);
       const f = {}; Object.keys(Component.FIELDS).forEach((k) => { f[k] = d[k] != null ? String(d[k]) : Component.FIELDS[k]; });
+      if (/^for sale$/i.test(f.status)) f.status = 'Active';
       f.slug = slug;
       const toRows = (arr, presets) => { const rows = (arr || []).map((x) => ({ id: this.uid(), label: x.label, value: x.value })); presets.forEach((l) => { if (!rows.some((x) => x.label === l)) rows.push({ id: this.uid(), label: l, value: '' }); }); return rows; };
       this.setState({
@@ -696,7 +697,7 @@ class Component extends DCLogic {
       const soldP = num(txt(q1(roots, '.sold-price')));
       const stRaw = val(/^(status|listing status)$/i) + ' ' + head;
       const sold = !!soldP || /\bsold\b|\bclosed\b/i.test(val(/^(status|listing status)$/i)) || /\bsold\b/i.test(txt(q1(roots, '.listing-header [class*="status" i], .ihf-info-col [class*="status" i]')));
-      const status = sold ? 'Sold' : /pending|contingent|under contract/i.test(stRaw) ? 'Pending' : /coming soon/i.test(stRaw) ? 'Coming Soon' : 'For Sale';
+      const status = sold ? 'Sold' : /contingent/i.test(stRaw) ? 'Contingent' : /pending|under contract/i.test(stRaw) ? 'Pending' : /coming soon/i.test(stRaw) ? 'Coming Soon' : 'Active';
       const isoDate = (s) => { const m = String(s || '').match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/); if (!m) return ''; const y = m[3].length === 2 ? '20' + m[3] : m[3]; return y + '-' + m[1].padStart(2, '0') + '-' + m[2].padStart(2, '0'); };
       const soldDate = sold ? (isoDate(val(/^(sold|close|closed|closing|sale|settled) date$/i)) || isoDate(txt(q1(roots, '[data-ks-sold-date]')))) : '';
       const lotRaw = val(/^lot (size|area)( \(?(acres|sq\.? ?ft\.?)\)?)?$/i) || val(/^(acres|lot acres|lot sq\.? ?ft\.?)$/i);
@@ -800,7 +801,7 @@ class Component extends DCLogic {
       { title: 'Address & status', fields: [
         fld('street', 'Street address', { placeholder: '33900 Fabry Road', span: '1 / -1' }),
         fld('city', 'City', { placeholder: 'Soledad' }), fld('state', 'State'), fld('zip', 'ZIP', { inputmode: 'numeric' }),
-        fld('status', 'Status', { isInput: false, isSelect: true, options: ['For Sale', 'Coming Soon', 'Pending', 'Sold'] }),
+        fld('status', 'Status', { isInput: false, isSelect: true, options: ['Active', 'Coming Soon', 'Contingent', 'Pending', 'Sold'] }),
         fld('price', sold ? 'List price' : 'Price', Object.assign({ placeholder: '1800000' }, num)),
         ...(sold ? [fld('soldPrice', 'Sold price', Object.assign({ placeholder: '1800000' }, num))] : []),
         fld('represented', 'Representation', { isInput: false, isSelect: true, options: ['None', 'Seller represented', 'Buyer represented'] }),
@@ -878,7 +879,7 @@ class Component extends DCLogic {
       needTokenHere: this.adminView === 'properties' && !String(s.token || '').trim() || (this.adminView === 'properties' && !!s.tokenEditing), showChrome: !this.adminEmbed, showForm: this.adminView !== 'properties', showPropsPanel: this.adminView !== 'builder',
       loadProps: this.loadProps, propsBusy: !!s.propsBusy, propsBtn: s.propsBusy ? 'Working…' : ((s.props || []).length ? 'Refresh' : 'Load my properties'),
       hasPropsMsg: !!s.propsMsg, propsMsg: s.propsMsg || '', propsMsgColor: s.propsErr ? '#c62828' : '#555555',
-      statusOptions: ['For Sale', 'Coming Soon', 'Pending', 'Sold'],
+      statusOptions: ['Active', 'Coming Soon', 'Contingent', 'Pending', 'Sold'],
       propRows: (s.props || []).map((p) => {
         const d = p.d, p0 = (d.photos || [])[0] || '', yes = p.notable === 'Yes';
         return {
