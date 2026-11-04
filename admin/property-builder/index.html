@@ -578,12 +578,34 @@ class Component extends DCLogic {
     try {
       const d = Object.assign({}, row.d, { status: row.status, soldPrice: sold ? String(row.soldPrice || row.d.price || '').replace(/[^\d.]/g, '') : '', notable: row.notable });
       const json = JSON.stringify(d).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
-      const html = row.html.replace(/window\.KS_PROPERTY = \{[\s\S]*?\};\/\*KS_DATA\*\//, () => 'window.KS_PROPERTY = ' + json + ';/*KS_DATA*/');
+      let html = row.html.replace(/window\.KS_PROPERTY = \{[\s\S]*?\};\/\*KS_DATA\*\//, () => 'window.KS_PROPERTY = ' + json + ';/*KS_DATA*/');
+      const extra = [];
+      try {
+        const tr = await fetch(this.base() + 'properties/template/index.html', { cache: 'no-store' });
+        if (tr.ok) {
+          let tpl = this.cfClean(await tr.text());
+          const dir = 'properties/' + slug + '/', url = 'https://jacksonkesecker.com/' + dir, p0 = (d.photos || [])[0] || '';
+          const name = d.title || d.street;
+          const title = name + (d.title ? '' : ', ' + d.city) + ' | Jackson Kesecker, REALTOR®';
+          const facts = [d.beds && d.beds + ' bed', d.baths && d.baths + ' bath', d.sqft && Number(d.sqft).toLocaleString('en-US') + ' sq ft'].filter(Boolean).join(' · ');
+          const desc = (/sold/i.test(d.status) ? 'Sold' : d.status) + ' · ' + [d.street, d.city].filter(Boolean).join(', ') + (facts ? ' · ' + facts : '') + '. ' + String(d.description || '').replace(/\s+/g, ' ').slice(0, 120);
+          tpl = tpl.split('__KS_TITLE__').join(this.esc(title)).split('__KS_DESC__').join(this.esc(desc.trim())).split('__KS_URL__').join(url).split('__KS_IMAGE__').join(/^(https?:)?\//.test(p0) ? p0 : url + p0);
+          tpl = tpl.replace(/\s*<meta name="robots" content="noindex" data-ks-tpl>/, '');
+          if (tpl.indexOf('window.KS_PROPERTY = null;/*KS_DATA*/') >= 0) {
+            html = tpl.replace('window.KS_PROPERTY = null;/*KS_DATA*/', () => 'window.KS_PROPERTY = ' + json + ';/*KS_DATA*/');
+            for (const n of ['support.js', 'AccessibilityWidget.dc.html', 'ContactModal.dc.html', 'ContactModalV2.dc.html']) {
+              const r = await fetch(this.base() + 'properties/template/' + n, { cache: 'no-store' });
+              if (r.ok) extra.push({ path: dir + n, text: n.endsWith('.js') ? await r.text() : this.cfClean(await r.text()) });
+            }
+          }
+        }
+      } catch (e) {}
       const idx = this.state.props.map((p) => this.entryFor(p.slug, p.slug === slug ? d : p.d));
       const tree = [
         { path: 'properties/' + slug + '/index.html', mode: '100644', type: 'blob', sha: await this.textBlob(html) },
         { path: 'properties/index.json', mode: '100644', type: 'blob', sha: await this.textBlob(JSON.stringify(idx, null, 1)) },
       ];
+      for (const x of extra) tree.push({ path: x.path, mode: '100644', type: 'blob', sha: await this.textBlob(x.text) });
       await this.commitTree(tree, 'Property update: ' + slug);
       this.setState((s) => ({ props: s.props.map((p) => p.slug === slug ? Object.assign({}, p, { d, html, dirty: false }) : p), propsMsg: 'Saved. Live in about 1–2 minutes.', propsErr: false }));
     } catch (e) { this.setState({ propsMsg: String(e.message || e), propsErr: true }); }
