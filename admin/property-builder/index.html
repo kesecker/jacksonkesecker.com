@@ -91,6 +91,15 @@
         <button onClick="{{ loadProps }}" disabled="{{ propsBusy }}" style="height: 46px; padding: 0 26px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">{{ propsBtn }}</button>
       </div>
       <sc-if value="{{ hasPropsMsg }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: {{ propsMsgColor }};">{{ propsMsg }}</span></sc-if>
+      <sc-if value="{{ needTokenHere }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 10px; padding: 18px 0 4px; border-top: 1px solid #e6e6e6; max-width: 560px;">
+          <span style="font-size: 13px; line-height: 1.7; color: #555555;">One-time setup: on GitHub go to Settings → Developer settings → Fine-grained tokens → Generate. Repository access: only <span style="color: #1a1a1a; font-weight: 600;">{{ repoValue }}</span>. Permissions: Contents → Read and write. Paste it below; it's saved only in this browser.</span>
+          <label style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 12px; font-weight: 600; color: #777777;">GitHub token</span>
+            <input type="password" value="{{ tokenValue }}" onChange="{{ onToken }}" placeholder="github_pat_…" style="height: 44px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; background: transparent; box-sizing: border-box; width: 100%; color: #1a1a1a; transition: border-color .3s ease;">
+          </label>
+        </div>
+      </sc-if>
       <sc-for list="{{ propRows }}" as="p" hint-placeholder-count="0">
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 20px; padding: 14px 0; border-top: 1px solid #e6e6e6;">
           <img src="{{ p.thumb }}" alt="" style="width: 84px; height: 63px; object-fit: cover; display: block; background: #eeeeee; flex: none;">
@@ -539,7 +548,7 @@ class Component extends DCLogic {
   async readIndex() { try { const t = await this.ghText('properties/index.json'); const a = JSON.parse(t); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
   loadProps = async () => {
     if (this.state.propsBusy) return;
-    if (!this.state.token.trim()) { this.setState({ showSettings: true, propsMsg: 'Add your GitHub token first (GitHub settings, below).', propsErr: true }); return; }
+    if (!this.state.token.trim()) { this.setState({ showSettings: true, propsMsg: this.adminView === 'properties' ? 'Add your GitHub token below, then click Load my properties.' : 'Add your GitHub token first (Publish → GitHub settings, below).', propsErr: true }); return; }
     this.setState({ propsBusy: true, propsMsg: 'Loading your properties…', propsErr: false });
     try {
       const repo = this.state.repo.trim(), br = this.state.branch.trim() || 'main';
@@ -862,11 +871,11 @@ class Component extends DCLogic {
       publish: this.publish, downloadZip: this.downloadZip, busy: s.busy, busyOpacity: s.busy ? 0.5 : 1,
       showSettings: s.showSettings, settingsLabel: s.showSettings ? 'Hide GitHub settings' : (s.token ? 'GitHub settings' : 'Set up GitHub publishing'),
       toggleSettings: () => this.setState((st) => ({ showSettings: !st.showSettings })),
-      tokenValue: s.token, onToken: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-token', v); this.setState({ token: v }); },
+      tokenValue: s.token, onToken: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-token', v); this.setState({ token: v, tokenEditing: true }); },
       repoValue: s.repo, onRepo: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-repo', v); this.setState({ repo: v }); },
       branchValue: s.branch, onBranch: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-branch', v); this.setState({ branch: v }); },
       hasLog: s.log.length > 0, logLines: s.log, hasLiveLink: s.live,
-      showChrome: !this.adminEmbed, showForm: this.adminView !== 'properties', showPropsPanel: this.adminView !== 'builder',
+      needTokenHere: this.adminView === 'properties' && !String(s.token || '').trim() || (this.adminView === 'properties' && !!s.tokenEditing), showChrome: !this.adminEmbed, showForm: this.adminView !== 'properties', showPropsPanel: this.adminView !== 'builder',
       loadProps: this.loadProps, propsBusy: !!s.propsBusy, propsBtn: s.propsBusy ? 'Working…' : ((s.props || []).length ? 'Refresh' : 'Load my properties'),
       hasPropsMsg: !!s.propsMsg, propsMsg: s.propsMsg || '', propsMsgColor: s.propsErr ? '#c62828' : '#555555',
       statusOptions: ['For Sale', 'Coming Soon', 'Pending', 'Sold'],
