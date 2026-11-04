@@ -75,10 +75,11 @@ class Component extends DCLogic {
   state = { page: this.fromHash(), narrow: typeof window !== 'undefined' && window.innerWidth < 760, hover: '' };
   fromHash() { const h = (typeof location !== 'undefined' ? location.hash : '').replace('#', ''); return Component.TOOLS.some((t) => t.id === h) ? h : 'dashboard'; }
   onHash = () => this.setState({ page: this.fromHash() });
+  onMsg = (e) => { if (e.origin !== location.origin || !e.data || e.data.type !== 'ks-admin-open') return; const id = e.data.tool; if (!Component.TOOLS.some((t) => t.id === id)) return; history.replaceState(null, '', '#' + id); this.setState({ page: id, loadSlug: String(e.data.slug || ''), loadKey: Date.now() }); };
   onResize = () => { const n = window.innerWidth < 760; if (n !== this.state.narrow) this.setState({ narrow: n }); };
-  componentDidMount() { window.addEventListener('hashchange', this.onHash); window.addEventListener('resize', this.onResize); }
-  componentWillUnmount() { window.removeEventListener('hashchange', this.onHash); window.removeEventListener('resize', this.onResize); }
-  go = (id) => (e) => { if (e && (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) return; if (e) e.preventDefault(); history.replaceState(null, '', id === 'dashboard' ? location.pathname : '#' + id); this.setState({ page: id }); };
+  componentDidMount() { window.addEventListener('hashchange', this.onHash); window.addEventListener('resize', this.onResize); window.addEventListener('message', this.onMsg); }
+  componentWillUnmount() { window.removeEventListener('hashchange', this.onHash); window.removeEventListener('resize', this.onResize); window.removeEventListener('message', this.onMsg); }
+  go = (id) => (e) => { if (e && (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) return; if (e) e.preventDefault(); history.replaceState(null, '', id === 'dashboard' ? location.pathname : '#' + id); this.setState({ page: id, loadSlug: '' }); };
   src(t) { return this.live ? t.path : 'Property Builder.dc.html' + t.path.slice(t.path.indexOf('?')); }
   live = typeof location !== 'undefined' && /jacksonkesecker\.com$/.test(location.hostname);
   renderVals() {
@@ -91,7 +92,7 @@ class Component extends DCLogic {
       goDash: this.go('dashboard'),
       navItems: nav.map((t) => ({ label: t.label, href: t.path ? (this.live ? t.path.slice(0, t.path.indexOf('?')) + '?view=' + t.id : '#' + t.id) : '/admin/', go: this.go(t.id), on: s.page === t.id ? 1 : 0, opacity: s.page === t.id ? 1 : 0.7 })),
       isDash: !tool, isTool: !!tool, toolTitle: tool ? tool.label : '',
-      toolSrc: tool ? this.src(tool) : '',
+      toolSrc: tool ? this.src(tool) + (tool.id === 'builder' && s.loadSlug ? '&load=' + encodeURIComponent(s.loadSlug) + '&k=' + s.loadKey : '') : '',
       greeting: h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening',
       tools: Component.TOOLS.map((t) => ({ label: t.label, desc: t.desc, href: this.live ? t.path.slice(0, t.path.indexOf('?')) + '?view=' + t.id : '#' + t.id, go: this.go(t.id), on: s.hover === t.id ? 1 : 0, enter: () => this.setState({ hover: t.id }), leave: () => this.setState({ hover: '' }) })),
     };

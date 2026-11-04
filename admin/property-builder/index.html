@@ -42,6 +42,7 @@
 </helmet>
 
 <div style="min-height: 100vh; color: #1a1a1a; display: flex; flex-direction: column; animation: ksPageIn .9s cubic-bezier(.16,1,.3,1) both;">
+  <sc-if value="{{ showChrome }}" hint-placeholder-val="{{ true }}">
   <div style="position: sticky; top: 0; z-index: 50; height: 92px; background: #000000; color: #ffffff; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 clamp(16px, 4vw, 40px);">
     <div style="display: flex; align-items: center; gap: 18px; min-width: 0;">
       <a href="https://jacksonkesecker.com/" target="_self" aria-label="Home" style="display: flex; align-items: center;"><img src="/assets/key-landing-logo.png" alt="Jackson Kesecker Realtor" style="height: 34px; width: auto;"></a>
@@ -52,9 +53,11 @@
       <button onClick="{{ resetAll }}" data-ks-ul="1" style="height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #ffffff; font-size: 14px; margin: 8px 0 0; font-weight: 600; cursor: pointer; position: relative;" style-hover="--ks-on: 1;">Start fresh</button>
     </div>
   </div>
+  </sc-if>
 
   <div style="width: 100%; max-width: 960px; margin: 0 auto; padding: 56px clamp(20px, 5vw, 48px) 120px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0;">
 
+    <sc-if value="{{ showForm }}" hint-placeholder-val="{{ true }}">
     <div data-ks-reveal="1" style="background: #000000; color: #ffffff; border-radius: 0; padding: clamp(28px, 5vw, 48px); margin-bottom: 24px; display: flex; flex-direction: column; gap: 22px;">
       <div style="display: flex; flex-direction: column; gap: 4px;">
         <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2; color: #ffffff;">Import from MLS</h2>
@@ -77,6 +80,8 @@
       <button onClick="{{ loadExisting }}" style="height: 46px; padding: 0 26px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">Load</button>
     </div>
 
+    </sc-if>
+    <sc-if value="{{ showPropsPanel }}" hint-placeholder-val="{{ true }}">
     <div data-ks-reveal="1" style="padding: 0 0 44px; display: flex; flex-direction: column; gap: 18px;">
       <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
         <div style="display: flex; flex-direction: column; gap: 4px;">
@@ -120,6 +125,8 @@
       </sc-for>
     </div>
 
+    </sc-if>
+    <sc-if value="{{ showForm }}" hint-placeholder-val="{{ true }}">
     <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
       <div data-ks-reveal="1" style="padding: 44px 0; border-top: 1px solid #e6e6e6; display: flex; flex-direction: column; gap: 24px;">
         <div style="display: flex; flex-direction: column; gap: 4px;">
@@ -289,6 +296,7 @@
         </div>
       </sc-if>
     </div>
+    </sc-if>
   </div>
 </div>
 </x-dc>
@@ -300,6 +308,8 @@ class Component extends DCLogic {
     description: '', neighborhood: '', view: '', schoolDistrict: '', hoa: '', taxes: '',
     video: '', matterport: '', heroCount: '5', communityName: '', communityText: '', slug: '',
   };
+  adminView = (() => { try { return new URLSearchParams(location.search).get('view') || ''; } catch (e) { return ''; } })();
+  adminEmbed = (() => { try { return new URLSearchParams(location.search).get('embed') === '1'; } catch (e) { return false; } })();
   static INTERIOR = ['Kitchen', 'Primary suite', 'Flooring', 'Fireplace', 'Appliances', 'Other interior features'];
   static EXTERIOR = ['Pool', 'Roof', 'Heating', 'Cooling', 'Parking', 'Other exterior features'];
 
@@ -756,6 +766,8 @@ class Component extends DCLogic {
   };
   onMsg = (e) => { if (e.origin === location.origin && e.data && e.data.type === 'ks-preview-ready') { this._readyFired = true; this.sendPreview(e.source); } };
   componentDidMount() {
+    if (this.adminView === 'properties' && this.state.token) setTimeout(this.loadProps, 300);
+    try { const ls = new URLSearchParams(location.search).get('load'); if (ls && this.adminView !== 'properties') this.setState({ loadSlug: ls }, () => setTimeout(this.loadExisting, 200)); } catch (e) {}
     window.addEventListener('message', this.onMsg);
     this._io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('ks-in'); this._io.unobserve(e.target); } }), { threshold: 0.05, rootMargin: '0px 0px -8% 0px' });
     const scan = () => document.querySelectorAll('[data-ks-reveal]:not(.ks-in)').forEach((el) => this._io.observe(el));
@@ -854,6 +866,7 @@ class Component extends DCLogic {
       repoValue: s.repo, onRepo: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-repo', v); this.setState({ repo: v }); },
       branchValue: s.branch, onBranch: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-branch', v); this.setState({ branch: v }); },
       hasLog: s.log.length > 0, logLines: s.log, hasLiveLink: s.live,
+      showChrome: !this.adminEmbed, showForm: this.adminView !== 'properties', showPropsPanel: this.adminView !== 'builder',
       loadProps: this.loadProps, propsBusy: !!s.propsBusy, propsBtn: s.propsBusy ? 'Working…' : ((s.props || []).length ? 'Refresh' : 'Load my properties'),
       hasPropsMsg: !!s.propsMsg, propsMsg: s.propsMsg || '', propsMsgColor: s.propsErr ? '#c62828' : '#555555',
       statusOptions: ['For Sale', 'Coming Soon', 'Pending', 'Sold'],
@@ -867,7 +880,7 @@ class Component extends DCLogic {
           setYes: () => this.setProp(p.slug, { notable: 'Yes' }), setNo: () => this.setProp(p.slug, { notable: 'No' }),
           yesBg: yes ? '#000000' : '#ffffff', yesFg: yes ? '#ffffff' : '#1a1a1a', noBg: yes ? '#ffffff' : '#000000', noFg: yes ? '#1a1a1a' : '#ffffff',
           save: () => this.saveProp(p.slug), saveLabel: p.dirty ? 'Save' : 'Saved', saveOpacity: p.dirty ? 1 : 0.45,
-          edit: () => this.setState({ loadSlug: p.slug }, () => { this.loadExisting(); window.scrollTo({ top: 0, behavior: 'smooth' }); }),
+          edit: () => { if (this.adminView === 'properties' && window.parent !== window) { try { window.parent.postMessage({ type: 'ks-admin-open', tool: 'builder', slug: p.slug }, location.origin); return; } catch (e) {} } this.setState({ loadSlug: p.slug }, () => { this.loadExisting(); window.scrollTo({ top: 0, behavior: 'smooth' }); }); },
         };
       }),
       loadSlug: s.loadSlug, onLoadSlug: (e) => this.setState({ loadSlug: e.target.value }), loadExisting: this.loadExisting,
