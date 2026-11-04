@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-light.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-dark.png" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="/assets/favicon-light.png">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin | Jackson Kesecker</title>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="/support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin | Jackson Kesecker</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #ffffff; font-family: Montserrat, system-ui, sans-serif; letter-spacing: -0.01em; color: #000000; }
+    a { color: #000000; text-decoration: none; } a:hover { color: #000000; }
+    @keyframes ksPageIn { from { opacity: 0; } to { opacity: 1; } }
+    [data-ks-ul]::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--ks-ul, currentColor); transform: scaleX(var(--ks-on, 0)); transform-origin: left center; transition: transform .35s cubic-bezier(.4,0,.2,1); pointer-events: none; }
+  </style>
+</helmet>
+<div style="height: 100vh; display: flex; flex-direction: {{ layoutDir }}; animation: ksPageIn .9s cubic-bezier(.16,1,.3,1) both;">
+  <nav style="flex: none; width: {{ navWidth }}; background: #000000; color: #ffffff; display: flex; flex-direction: {{ navDir }}; align-items: {{ navAlign }}; gap: {{ navGap }}; padding: {{ navPad }}; min-height: 72px; box-sizing: border-box; overflow-x: auto;">
+    <a href="/admin/" onClick="{{ goDash }}" aria-label="Admin home" style="display: flex; align-items: center; gap: 14px; flex: none;">
+      <img src="/assets/key-landing-logo.png" alt="Jackson Kesecker" style="height: 30px; width: auto; display: block;">
+      <span style="font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7); padding-left: 14px; border-left: 1px solid rgba(255,255,255,0.25); white-space: nowrap;">Admin</span>
+    </a>
+    <div style="display: flex; flex-direction: {{ navDir }}; gap: {{ itemGap }}; flex: {{ navListFlex }};">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="3">
+        <a href="{{ n.href }}" onClick="{{ n.go }}" data-ks-ul="1" style="--ks-ul: #ffffff; --ks-on: {{ n.on }}; position: relative; align-self: flex-start; padding-bottom: 8px; font-size: 14px; font-weight: 400; color: #ffffff; white-space: nowrap; opacity: {{ n.opacity }}; transition: opacity .3s ease;" style-hover="--ks-on: 1; opacity: 1;">{{ n.label }}</a>
+      </sc-for>
+    </div>
+    <div style="display: flex; flex-direction: {{ navDir }}; gap: {{ itemGap }}; flex: none;">
+      <a href="https://jacksonkesecker.com/" target="_blank" rel="noopener" data-ks-ul="1" style="--ks-ul: #ffffff; --ks-on: 0; position: relative; align-self: flex-start; padding-bottom: 8px; font-size: 13px; color: rgba(255,255,255,0.7); white-space: nowrap;" style-hover="--ks-on: 1; color: #ffffff;">View website</a>
+      <a href="/logout" data-ks-ul="1" style="--ks-ul: #ffffff; --ks-on: 0; position: relative; align-self: flex-start; padding-bottom: 8px; font-size: 13px; color: rgba(255,255,255,0.7); white-space: nowrap;" style-hover="--ks-on: 1; color: #ffffff;">Sign out</a>
+    </div>
+  </nav>
+
+  <main style="flex: 1 1 auto; min-width: 0; min-height: 0; position: relative; overflow: auto;">
+    <sc-if value="{{ isDash }}" hint-placeholder-val="{{ true }}">
+      <div style="max-width: 960px; margin: 0 auto; padding: clamp(40px, 7vw, 88px) clamp(20px, 5vw, 56px); box-sizing: border-box; display: flex; flex-direction: column; gap: 40px;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <h1 style="margin: 0; font-size: clamp(30px, 4vw, 42px); font-weight: 300; line-height: 1.15;">{{ greeting }}, Jackson</h1>
+          <span style="font-size: 15px; color: #555555; line-height: 1.6;">Everything for running jacksonkesecker.com, in one place.</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 20px;">
+          <sc-for list="{{ tools }}" as="t" hint-placeholder-count="2">
+            <a href="{{ t.href }}" onClick="{{ t.go }}" onMouseEnter="{{ t.enter }}" onMouseLeave="{{ t.leave }}" style="display: flex; flex-direction: column; gap: 14px; padding: 28px; border: 1px solid #e2e2e2; border-radius: 8px; background: #ffffff; transition: border-color .3s ease;" style-hover="border-color: #000000;">
+              <span style="font-size: 22px; font-weight: 300; line-height: 1.25;">{{ t.label }}</span>
+              <span style="font-size: 14px; color: #555555; line-height: 1.6; text-wrap: pretty;">{{ t.desc }}</span>
+              <span data-ks-ul="1" style="--ks-ul: #000000; --ks-on: {{ t.on }}; position: relative; align-self: flex-start; padding-bottom: 8px; font-size: 13px; font-weight: 500;">Open</span>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isTool }}" hint-placeholder-val="{{ false }}">
+      <iframe src="{{ toolSrc }}" title="{{ toolTitle }}" style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; background: #ffffff;"></iframe>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  static TOOLS = [
+    { id: 'builder', label: 'Property Builder', desc: 'Build a new property page, or edit one you already published.', path: '/admin/property-builder/?embed=1&view=builder' },
+    { id: 'properties', label: 'My Properties', desc: 'Change status, mark a sale, and choose what shows in Notable Sales.', path: '/admin/property-builder/?embed=1&view=properties' },
+  ];
+  state = { page: this.fromHash(), narrow: typeof window !== 'undefined' && window.innerWidth < 760, hover: '' };
+  fromHash() { const h = (typeof location !== 'undefined' ? location.hash : '').replace('#', ''); return Component.TOOLS.some((t) => t.id === h) ? h : 'dashboard'; }
+  onHash = () => this.setState({ page: this.fromHash() });
+  onResize = () => { const n = window.innerWidth < 760; if (n !== this.state.narrow) this.setState({ narrow: n }); };
+  componentDidMount() { window.addEventListener('hashchange', this.onHash); window.addEventListener('resize', this.onResize); }
+  componentWillUnmount() { window.removeEventListener('hashchange', this.onHash); window.removeEventListener('resize', this.onResize); }
+  go = (id) => (e) => { if (e && (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) return; if (e) e.preventDefault(); history.replaceState(null, '', id === 'dashboard' ? location.pathname : '#' + id); this.setState({ page: id }); };
+  src(t) { return this.live ? t.path : 'Property Builder.dc.html' + t.path.slice(t.path.indexOf('?')); }
+  live = typeof location !== 'undefined' && /jacksonkesecker\.com$/.test(location.hostname);
+  renderVals() {
+    const s = this.state, n = s.narrow, tool = Component.TOOLS.find((t) => t.id === s.page);
+    const h = new Date().getHours();
+    const nav = [{ id: 'dashboard', label: 'Dashboard' }].concat(Component.TOOLS);
+    return {
+      layoutDir: n ? 'column' : 'row', navWidth: n ? '100%' : '232px', navDir: n ? 'row' : 'column', navAlign: n ? 'center' : 'stretch',
+      navGap: n ? '24px' : '48px', itemGap: n ? '20px' : '18px', navPad: n ? '0 20px' : '32px 28px', navListFlex: n ? '1 1 auto' : '1 1 auto',
+      goDash: this.go('dashboard'),
+      navItems: nav.map((t) => ({ label: t.label, href: t.path ? (this.live ? t.path.slice(0, t.path.indexOf('?')) + '?view=' + t.id : '#' + t.id) : '/admin/', go: this.go(t.id), on: s.page === t.id ? 1 : 0, opacity: s.page === t.id ? 1 : 0.7 })),
+      isDash: !tool, isTool: !!tool, toolTitle: tool ? tool.label : '',
+      toolSrc: tool ? this.src(tool) : '',
+      greeting: h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening',
+      tools: Component.TOOLS.map((t) => ({ label: t.label, desc: t.desc, href: this.live ? t.path.slice(0, t.path.indexOf('?')) + '?view=' + t.id : '#' + t.id, go: this.go(t.id), on: s.hover === t.id ? 1 : 0, enter: () => this.setState({ hover: t.id }), leave: () => this.setState({ hover: '' }) })),
+    };
+  }
+}
+</script>
+</body>
+</html>
