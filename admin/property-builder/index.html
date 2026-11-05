@@ -274,7 +274,7 @@
       <div style="display: flex; flex-wrap: wrap; gap: 12px;">
         <button onClick="{{ publish }}" disabled="{{ busy }}" style="height: 50px; padding: 0 28px; border-radius: 8px; border: 1px solid #ffffff; background: #ffffff; color: #000000; font-size: 14px; font-weight: 600; cursor: pointer; opacity: {{ busyOpacity }}; transition: background .3s ease, color .3s ease;" style-hover="background: transparent; color: #ffffff;">Publish to website</button>
         <button onClick="{{ downloadZip }}" disabled="{{ busy }}" style="height: 50px; padding: 0 28px; border-radius: 8px; border: 1px solid #ffffff; background: transparent; color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; opacity: {{ busyOpacity }}; transition: background .3s ease, color .3s ease;" style-hover="background: #ffffff; color: #000000;">Download package (.zip)</button>
-        <button onClick="{{ toggleSettings }}" data-ks-ul="1" style="align-self: center; height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; position: relative;" style-hover="--ks-on: 1;">{{ settingsLabel }}</button>
+        <sc-if value="{{ showSettingsToggle }}" hint-placeholder-val="{{ true }}"><button onClick="{{ toggleSettings }}" data-ks-ul="1" style="align-self: center; height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; position: relative;" style-hover="--ks-on: 1;">{{ settingsLabel }}</button></sc-if>
       </div>
       <sc-if value="{{ showSettings }}" hint-placeholder-val="{{ false }}">
         <div style="border-top: 1px solid rgba(255,255,255,0.18); padding-top: 18px; display: flex; flex-direction: column; gap: 14px;">
@@ -477,14 +477,18 @@ class Component extends DCLogic {
   };
 
   b64 = (blob) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(blob); });
+  get viaWorker() { return typeof location !== 'undefined' && /jacksonkesecker\.com$/.test(location.hostname); }
   async gh(path, opts) {
-    const r = await fetch('https://api.github.com' + path, Object.assign({}, opts, { headers: { Authorization: 'Bearer ' + this.state.token.trim(), Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' } }));
-    if (!r.ok) { let m = ''; try { m = (await r.json()).message; } catch (e) {} throw new Error('GitHub ' + r.status + ': ' + (m || r.statusText) + (r.status === 401 || r.status === 403 ? ' (check the token and its permissions)' : '')); }
+    const w = this.viaWorker;
+    const r = w
+      ? await fetch('/admin/api/gh' + path, Object.assign({}, opts, { credentials: 'same-origin', headers: { Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' } }))
+      : await fetch('https://api.github.com' + path, Object.assign({}, opts, { headers: { Authorization: 'Bearer ' + this.state.token.trim(), Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' } }));
+    if (!r.ok) { let m = ''; try { m = (await r.json()).message; } catch (e) {} throw new Error((w && r.status === 401) ? 'Your admin sign-in expired. Reload the page and sign in again.' : 'GitHub ' + r.status + ': ' + (m || r.statusText) + (!w && (r.status === 401 || r.status === 403) ? ' (check the token and its permissions)' : '')); }
     return r.json();
   }
   publish = async () => {
     if (this.state.busy) return;
-    if (!this.state.token.trim()) { this.setState({ showSettings: true }); alert('Add your GitHub token first (one-time setup below).'); return; }
+    if (!this.viaWorker && !this.state.token.trim()) { this.setState({ showSettings: true }); alert('Add your GitHub token first (one-time setup below).'); return; }
     if (!this.validate()) return;
     this.setState({ busy: true, log: [], live: false });
     try {
@@ -554,7 +558,7 @@ class Component extends DCLogic {
   async readIndex() { try { const t = await this.ghText('properties/index.json'); const a = JSON.parse(t); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
   loadProps = async () => {
     if (this.state.propsBusy) return;
-    if (!this.state.token.trim()) { this.setState({ showSettings: true, propsMsg: this.adminView === 'properties' ? 'Add your GitHub token below, then click Load my properties.' : 'Add your GitHub token first (Publish → GitHub settings, below).', propsErr: true }); return; }
+    if (!this.viaWorker && !this.state.token.trim()) { this.setState({ showSettings: true, propsMsg: this.adminView === 'properties' ? 'Add your GitHub token below, then click Load my properties.' : 'Add your GitHub token first (Publish → GitHub settings, below).', propsErr: true }); return; }
     this.setState({ propsBusy: true, propsMsg: 'Loading your properties…', propsErr: false });
     try {
       const repo = this.state.repo.trim(), br = this.state.branch.trim() || 'main';
@@ -804,7 +808,7 @@ class Component extends DCLogic {
   };
   onMsg = (e) => { if (e.origin === location.origin && e.data && e.data.type === 'ks-preview-ready') { this._readyFired = true; this.sendPreview(e.source); } };
   componentDidMount() {
-    if (this.adminView === 'properties' && this.state.token) setTimeout(this.loadProps, 300);
+    if (this.adminView === 'properties' && (this.viaWorker || this.state.token)) setTimeout(this.loadProps, 300);
     try { const ls = new URLSearchParams(location.search).get('load'); if (ls && this.adminView !== 'properties') this.setState({ loadSlug: ls }, () => setTimeout(this.loadExisting, 200)); } catch (e) {}
     window.addEventListener('message', this.onMsg);
     this._io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('ks-in'); this._io.unobserve(e.target); } }), { threshold: 0.05, rootMargin: '0px 0px -8% 0px' });
@@ -900,13 +904,13 @@ class Component extends DCLogic {
       slugValue: f.slug || this.autoSlug(), onSlug: (e) => this.setF('slug', e.target.value), autoSlug: this.autoSlug() || 'street-city',
       pageUrl: 'https://jacksonkesecker.com/properties/' + (slug || '…') + '/',
       publish: this.publish, downloadZip: this.downloadZip, busy: s.busy, busyOpacity: s.busy ? 0.5 : 1,
-      showSettings: s.showSettings, settingsLabel: s.showSettings ? 'Hide GitHub settings' : (s.token ? 'GitHub settings' : 'Set up GitHub publishing'),
+      showSettings: s.showSettings && !this.viaWorker, showSettingsToggle: !this.viaWorker, settingsLabel: s.showSettings ? 'Hide GitHub settings' : (s.token ? 'GitHub settings' : 'Set up GitHub publishing'),
       toggleSettings: () => this.setState((st) => ({ showSettings: !st.showSettings })),
       tokenValue: s.token, onToken: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-token', v); this.setState({ token: v, tokenEditing: true }); },
       repoValue: s.repo, onRepo: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-repo', v); this.setState({ repo: v }); },
       branchValue: s.branch, onBranch: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-branch', v); this.setState({ branch: v }); },
       hasLog: s.log.length > 0, logLines: s.log, hasLiveLink: s.live,
-      needTokenHere: this.adminView === 'properties' && !String(s.token || '').trim() || (this.adminView === 'properties' && !!s.tokenEditing), showChrome: !this.adminEmbed, showForm: this.adminView !== 'properties', showPropsPanel: this.adminView !== 'builder',
+      needTokenHere: !this.viaWorker && (this.adminView === 'properties' && !String(s.token || '').trim() || (this.adminView === 'properties' && !!s.tokenEditing)), showChrome: !this.adminEmbed, showForm: this.adminView !== 'properties', showPropsPanel: this.adminView !== 'builder',
       loadProps: this.loadProps, propsBusy: !!s.propsBusy, propsBtn: s.propsBusy ? 'Working…' : ((s.props || []).length ? 'Refresh' : 'Load my properties'),
       hasPropsMsg: !!s.propsMsg, propsMsg: s.propsMsg || '', propsMsgColor: s.propsErr ? '#c62828' : '#555555',
       statusOptions: ['Active', 'Coming Soon', 'Contingent', 'Pending', 'Sold'],
