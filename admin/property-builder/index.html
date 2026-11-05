@@ -720,7 +720,7 @@ class Component extends DCLogic {
       const leaves = [];
       roots.forEach((r) => r.querySelectorAll('*').forEach((el) => {
         if (el.children.length || /^(SCRIPT|STYLE|SVG|PATH)$/i.test(el.tagName)) return;
-        if (el.closest('.similar-listings, [class*="similar" i], [data-ihf-mc], [role="dialog"], [data-ks-ri-top]')) return;
+        if (el.closest('.similar-listings, [class*="similar" i], [data-ihf-mc], [role="dialog"], [data-ks-ri-top], .listing-header, .ihf-stats-clone')) return;
         const t = txt(el); if (t) leaves.push(t);
       }));
       const val = (re) => { for (let i = 0; i < leaves.length - 1; i++) { if (re.test(leaves[i].replace(/[:\s]+$/, ''))) return leaves[i + 1].replace(/^[:\s]+/, ''); } return ''; };
@@ -755,15 +755,21 @@ class Component extends DCLogic {
       const btn = qa(roots, 'button, a, [role="button"]').find((b) => /^(view all|see all|show all)?\s*(\d+\s*)?photos?$|^\d+\s*\/\s*\d+$|^(view )?gallery$/i.test(txt(b)) && !b.closest('.similar-listings'));
       let photos = photosOf(roots);
       if (btn) { try { btn.click(); await sleep(1800); roots = getRoots(fr.contentDocument); const more = photosOf(roots); if (more.length > photos.length) photos = more; } catch (e) {} }
+      const hBeds = hm(/(\d+(?:\.\d+)?)\s*(?:bd|beds?|bedrooms?)\b/i);
+      const hFull = hm(/(\d+)\s*full\b/i), hHalf = hm(/(\d+)\s*(?:partial|half)\b/i);
+      const fullB = hFull || num(val(/^(full baths?|full bathrooms?|bathrooms full)$/i)), halfB = hHalf || num(val(/^(half|partial) (baths?|bathrooms?)$|^bathrooms (half|partial)$/i));
+      const totB = num(val(/^(total baths|total bathrooms|bathrooms total)$/i)) || hm(/(\d+(?:\.\d+)?)\s*(?:ba|baths?|bathrooms?)\b/i) || (fullB ? String(Number(fullB) + 0.5 * Number(halfB || 0)) : '') || num(val(/^(baths?|bathrooms?)$/i));
+      const hSq = hm(/([\d.]+)\s*(?:sq\.?\s*ft|sqft|square feet)(?!\.?\s*lot)/i);
+      const hLotAc = hm(/([\d.]+)\s*acres?\b/i), hLotSq = hm(/([\d.]+)\s*(?:sq\.?\s*ft\.?|sqft)\s*lot/i);
       const f = {
         street, city: am ? am[1].trim() : '', state: am ? am[2].toUpperCase() : 'CA', zip: am && am[3] ? am[3] : (l2.match(/\b\d{5}\b/) || [''])[0],
         status, price: listP || soldP, soldPrice: sold ? soldP : '',
         mls: val(/^(mls|listing|mls listing)\s*(#|number|id|no\.?)$/i).replace(/\s/g, '') || mlsGuess,
-        beds: num(val(/^(beds?|bedrooms?|total bedrooms|bedrooms total)$/i)) || hm(/(\d+(?:\.\d+)?)\s*(?:bd|beds?|bedrooms?)\b/i),
-        baths: num(val(/^(baths?|bathrooms?|total baths|total bathrooms|bathrooms total)$/i)) || hm(/(\d+(?:\.\d+)?)\s*(?:ba|baths?|bathrooms?)\b/i),
-        fullBaths: num(val(/^(full baths?|full bathrooms?|bathrooms full)$/i)), halfBaths: num(val(/^(half|partial) (baths?|bathrooms?)$|^bathrooms (half|partial)$/i)),
-        sqft: num(val(/^(sq\.?\s*ft\.?|square (feet|footage)|living (area|sq\.? ?ft\.?)|building area|interior sq\.? ?ft\.?|approx\.? sq\.? ?ft\.?)$/i)) || hm(/([\d.]+)\s*(?:sq\.?\s*ft|sqft|square feet)/i),
-        lot: num(lotRaw), lotUnit: lotAc ? 'Acres' : 'Sq ft', yearBuilt: num(val(/^year built$/i)), type, stories: num(val(/^(stories|levels|# of stories|number of stories|stories total)$/i)),
+        beds: hBeds || num(val(/^(beds?|bedrooms?|total bedrooms|bedrooms total)$/i)),
+        baths: totB,
+        fullBaths: fullB, halfBaths: halfB,
+        sqft: hSq || num(val(/^(sq\.?\s*ft\.?|square (feet|footage)|living (area|sq\.? ?ft\.?)|building area|interior sq\.? ?ft\.?|approx\.? sq\.? ?ft\.?)$/i)),
+        lot: hLotAc || hLotSq || num(lotRaw), lotUnit: hLotAc ? 'Acres' : hLotSq ? 'Sq ft' : (lotAc ? 'Acres' : 'Sq ft'), yearBuilt: num(val(/^year built$/i)) || hm(/built\s*(?:in\s*)?(\d{4})/i), type, stories: num(val(/^(stories|levels|# of stories|number of stories|stories total)$/i)),
         neighborhood: val(/^(neighborhood|subdivision|subdivision name)$/i), view: val(/^(view|views)$/i), schoolDistrict: val(/^(school district|high school district|unified school district)$/i),
         hoa: val(/^(hoa|association) (fee|dues)s?$/i), description: desc,
       };
