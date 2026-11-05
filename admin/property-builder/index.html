@@ -89,7 +89,7 @@
           <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2;">My Properties</h2>
           <span style="font-size: 14px; color: #666666; line-height: 1.6;">Change status or Notable Sales here, then Save. The page and the homepage update in about 1–2 minutes.</span>
         </div>
-        <button onClick="{{ loadProps }}" disabled="{{ propsBusy }}" style="height: 46px; padding: 0 26px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">{{ propsBtn }}</button>
+        <button onClick="{{ loadProps }}" disabled="{{ propsBusy }}" style="align-self: flex-end; margin-bottom: -6px; height: 34px; padding: 0 20px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">{{ propsBtn }}</button>
       </div>
       <sc-if value="{{ hasPropsMsg }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: {{ propsMsgColor }};">{{ propsMsg }}</span></sc-if>
       <sc-if value="{{ needTokenHere }}" hint-placeholder-val="{{ false }}">
@@ -110,26 +110,29 @@
           </div>
           <label style="display: flex; flex-direction: column; gap: 4px; width: 140px;">
             <span style="font-size: 12px; font-weight: 600; color: #777777;">Status</span>
-            <select value="{{ p.status }}" onChange="{{ p.onStatus }}" style="height: 38px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; background: transparent; width: 100%; color: #1a1a1a;">
+            <select value="{{ p.status }}" onChange="{{ p.onStatus }}" style="height: 32px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; background: transparent; width: 100%; color: #1a1a1a;">
               <sc-for list="{{ statusOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o }}">{{ o }}</option></sc-for>
             </select>
           </label>
           <sc-if value="{{ p.sold }}" hint-placeholder-val="{{ false }}">
             <label style="display: flex; flex-direction: column; gap: 4px; width: 130px;">
               <span style="font-size: 12px; font-weight: 600; color: #777777;">Sold price</span>
-              <input type="text" inputmode="decimal" value="{{ p.soldPrice }}" onChange="{{ p.onSoldPrice }}" placeholder="1800000" style="height: 38px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; background: transparent; width: 100%; box-sizing: border-box; color: #1a1a1a;">
+              <input type="text" inputmode="decimal" value="{{ p.soldPrice }}" onChange="{{ p.onSoldPrice }}" placeholder="1800000" style="height: 32px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; background: transparent; width: 100%; box-sizing: border-box; color: #1a1a1a;">
             </label>
           </sc-if>
           <div style="display: flex; flex-direction: column; gap: 4px;">
             <span style="font-size: 12px; font-weight: 600; color: #777777;">Notable sale?</span>
             <div style="display: flex; gap: 6px;">
-              <button onClick="{{ p.setYes }}" style="height: 38px; padding: 0 16px; border-radius: 8px; border: 1px solid #1a1a1a; background: {{ p.yesBg }}; color: {{ p.yesFg }}; font-size: 13px; font-weight: 600; cursor: pointer;">Yes</button>
-              <button onClick="{{ p.setNo }}" style="height: 38px; padding: 0 16px; border-radius: 8px; border: 1px solid #1a1a1a; background: {{ p.noBg }}; color: {{ p.noFg }}; font-size: 13px; font-weight: 600; cursor: pointer;">No</button>
+              <button onClick="{{ p.setYes }}" style="height: 32px; padding: 0 14px; border-radius: 8px; border: 1px solid #1a1a1a; background: {{ p.yesBg }}; color: {{ p.yesFg }}; font-size: 12px; font-weight: 600; cursor: pointer;">Yes</button>
+              <button onClick="{{ p.setNo }}" style="height: 32px; padding: 0 14px; border-radius: 8px; border: 1px solid #1a1a1a; background: {{ p.noBg }}; color: {{ p.noFg }}; font-size: 12px; font-weight: 600; cursor: pointer;">No</button>
             </div>
           </div>
-          <div style="display: flex; gap: 8px; margin-left: auto;">
-            <button onClick="{{ p.edit }}" style="height: 38px; padding: 0 16px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">Edit</button>
-            <button onClick="{{ p.save }}" disabled="{{ propsBusy }}" style="height: 38px; padding: 0 18px; border-radius: 8px; border: 1px solid #000000; background: #000000; color: #ffffff; font-size: 13px; font-weight: 600; cursor: pointer; opacity: {{ p.saveOpacity }}; transition: opacity .3s ease;">{{ p.saveLabel }}</button>
+          <div style="display: flex; flex-direction: column; gap: 4px; margin-left: auto;">
+            <span aria-hidden="true" style="font-size: 12px; font-weight: 600; visibility: hidden;">&nbsp;</span>
+            <div style="display: flex; gap: 6px;">
+            <button onClick="{{ p.edit }}" style="height: 32px; padding: 0 14px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 12px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">Edit</button>
+            <button onClick="{{ p.save }}" disabled="{{ propsBusy }}" style="height: 32px; padding: 0 16px; border-radius: 8px; border: 1px solid #000000; background: #000000; color: #ffffff; font-size: 12px; font-weight: 600; cursor: pointer; opacity: {{ p.saveOpacity }}; transition: opacity .3s ease;">{{ p.saveLabel }}</button>
+            </div>
           </div>
         </div>
       </sc-for>
