@@ -851,21 +851,24 @@ class Component extends DCLogic {
     const fld = (key, label, o) => Object.assign({ key, label, value: f[key], onChange: (e) => this.setF(key, e.target.value), isInput: true, isSelect: false, isTextarea: false, type: 'text', placeholder: '', inputmode: 'text', span: 'auto', rows: 3, options: [] }, o || {});
     const num = { inputmode: 'decimal' };
     const sold = /sold/i.test(f.status);
+    const digits = (v) => String(v || '').replace(/[^\d]/g, '');
+    const commas = (v) => { const d = digits(v); return d ? Number(d).toLocaleString('en-US') : ''; };
+    const money = (key) => ({ inputmode: 'numeric', placeholder: '$1,800,000', value: f[key] ? '$' + commas(f[key]) : '', onChange: (e) => this.setF(key, digits(e.target.value)) });
     const groups = [
       { title: 'Address & Status', fields: [
         fld('street', 'Street address', { placeholder: '33900 Fabry Road', span: '1 / -1' }),
         fld('city', 'City', { placeholder: 'Soledad' }), fld('state', 'State'), fld('zip', 'ZIP', { inputmode: 'numeric' }),
         fld('status', 'Status', { isInput: false, isSelect: true, options: ['Active', 'Coming Soon', 'Contingent', 'Pending', 'Sold'] }),
-        fld('price', sold ? 'List price' : 'Price', Object.assign({ placeholder: '1800000' }, num)),
-        ...(sold ? [fld('soldPrice', 'Sold price', Object.assign({ placeholder: '1800000' }, num))] : []),
-        fld('represented', 'Representation', { isInput: false, isSelect: true, options: ['None', 'Seller represented', 'Buyer represented'] }),
+        fld('price', sold ? 'List price' : 'Price', money('price')),
+        ...(sold ? [fld('soldPrice', 'Sold price', money('soldPrice'))] : []),
+        ...(sold ? [fld('represented', 'Representation', { isInput: false, isSelect: true, options: ['None', 'Seller represented', 'Buyer represented'] })] : []),
         fld('notable', 'Notable sale?', { isInput: false, isSelect: true, options: ['No', 'Yes'] }),
         fld('mls', 'MLS #', { placeholder: 'ML82028688' }),
         fld('title', 'Property name (optional)', { placeholder: 'e.g. The Summit at Tehama', span: '1 / -1' }),
       ] },
       { title: 'Key Facts', fields: [
         fld('beds', 'Bedrooms', num), fld('baths', 'Total bathrooms', Object.assign({ placeholder: '2.5' }, num)), fld('fullBaths', 'Full baths', num), fld('halfBaths', 'Half baths', num),
-        fld('sqft', 'Living area (sq ft)', num), fld('lot', 'Lot size', num), fld('lotUnit', 'Lot unit', { isInput: false, isSelect: true, options: ['Acres', 'Sq ft'] }), fld('yearBuilt', 'Year built', { inputmode: 'numeric' }),
+        fld('sqft', 'Living area (sq ft)', { inputmode: 'numeric', placeholder: '2,732', value: commas(f.sqft), onChange: (e) => this.setF('sqft', digits(e.target.value)) }), fld('lot', 'Lot size', num), fld('lotUnit', 'Lot unit', { isInput: false, isSelect: true, options: ['Acres', 'Sq ft'] }), fld('yearBuilt', 'Year built', { inputmode: 'numeric' }),
         fld('type', 'Property type', { placeholder: 'Single family residence' }), fld('stories', 'Stories', num),
         fld('neighborhood', 'Neighborhood'), fld('view', 'View', { placeholder: 'Ocean, mountains' }), fld('schoolDistrict', 'School district'), fld('hoa', 'HOA', { placeholder: '$250/mo' }), fld('taxes', 'Property taxes'),
       ] },
