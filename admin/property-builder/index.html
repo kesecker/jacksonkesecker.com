@@ -109,26 +109,26 @@
             <span style="font-size: 13px; color: #666666;">{{ p.sub }}</span>
           </div>
           <label style="display: flex; flex-direction: column; gap: 4px; width: 140px;">
-            <span style="font-size: 12px; font-weight: 600; color: #777777;">Status</span>
+            <span style="display: block; height: 16px; line-height: 16px; font-size: 12px; font-weight: 600; color: #777777;">Status</span>
             <select value="{{ p.status }}" onChange="{{ p.onStatus }}" style="height: 32px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; background: transparent; width: 100%; color: #1a1a1a;">
               <sc-for list="{{ statusOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o }}">{{ o }}</option></sc-for>
             </select>
           </label>
           <sc-if value="{{ p.sold }}" hint-placeholder-val="{{ false }}">
             <label style="display: flex; flex-direction: column; gap: 4px; width: 130px;">
-              <span style="font-size: 12px; font-weight: 600; color: #777777;">Sold price</span>
+              <span style="display: block; height: 16px; line-height: 16px; font-size: 12px; font-weight: 600; color: #777777;">Sold price</span>
               <input type="text" inputmode="decimal" value="{{ p.soldPrice }}" onChange="{{ p.onSoldPrice }}" placeholder="1800000" style="height: 32px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; background: transparent; width: 100%; box-sizing: border-box; color: #1a1a1a;">
             </label>
           </sc-if>
           <div style="display: flex; flex-direction: column; gap: 4px;">
-            <span style="font-size: 12px; font-weight: 600; color: #777777;">Notable sale?</span>
+            <span style="display: block; height: 16px; line-height: 16px; font-size: 12px; font-weight: 600; color: #777777;">Notable sale?</span>
             <div style="display: flex; gap: 6px;">
               <button onClick="{{ p.setYes }}" style="height: 32px; padding: 0 14px; border-radius: 8px; border: 1px solid #1a1a1a; background: {{ p.yesBg }}; color: {{ p.yesFg }}; font-size: 12px; font-weight: 600; cursor: pointer;">Yes</button>
               <button onClick="{{ p.setNo }}" style="height: 32px; padding: 0 14px; border-radius: 8px; border: 1px solid #1a1a1a; background: {{ p.noBg }}; color: {{ p.noFg }}; font-size: 12px; font-weight: 600; cursor: pointer;">No</button>
             </div>
           </div>
           <div style="display: flex; flex-direction: column; gap: 4px; margin-left: auto;">
-            <span aria-hidden="true" style="font-size: 12px; font-weight: 600; visibility: hidden;">&nbsp;</span>
+            <span aria-hidden="true" style="display: block; height: 16px;"></span>
             <div style="display: flex; gap: 6px;">
             <button onClick="{{ p.edit }}" style="height: 32px; padding: 0 14px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 12px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">Edit</button>
             <button onClick="{{ p.save }}" disabled="{{ propsBusy }}" style="height: 32px; padding: 0 16px; border-radius: 8px; border: 1px solid #000000; background: #000000; color: #ffffff; font-size: 12px; font-weight: 600; cursor: pointer; opacity: {{ p.saveOpacity }}; transition: opacity .3s ease;">{{ p.saveLabel }}</button>
