@@ -2,6 +2,11 @@
 <html lang="en">
 <head><!--email_off-->
 <style data-ks-boot>x-dc{display:none!important}body:not(:has(#dc-root *)){visibility:hidden}</style>
+<script data-ks-fadein>(function(){var h=document.documentElement;try{if(sessionStorage.getItem('ksFadeIn')!=='1')return;sessionStorage.removeItem('ksFadeIn');}catch(e){return;}
+var st=document.createElement('style');st.textContent='html.ks-fadein::after{content:"";position:fixed;inset:0;background:#000000;z-index:2147483550;pointer-events:none;opacity:1;transition:opacity 1s cubic-bezier(.4,0,.2,1)}html.ks-fadein.ks-fadein-go::after{opacity:0}';(document.head||h).appendChild(st);h.classList.add('ks-fadein');
+var t0=Date.now();function done(){h.classList.add('ks-fadein-go');setTimeout(function(){h.classList.remove('ks-fadein','ks-fadein-go');},1100);}
+function wait(){if(document.querySelector('#dc-root *')||Date.now()-t0>4000){requestAnimationFrame(function(){requestAnimationFrame(done);});}else{requestAnimationFrame(wait);}}
+wait();})();</script>
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-light.png" media="(prefers-color-scheme: light)">
 <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-dark.png" media="(prefers-color-scheme: dark)">
