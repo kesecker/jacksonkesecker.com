@@ -745,7 +745,7 @@ class Component extends DCLogic {
       const status = sold ? 'Sold' : /contingent/i.test(stRaw) ? 'Contingent' : /pending|under contract/i.test(stRaw) ? 'Pending' : /coming soon/i.test(stRaw) ? 'Coming Soon' : 'Active';
       const isoDate = (s) => { const m = String(s || '').match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/); if (!m) return ''; const y = m[3].length === 2 ? '20' + m[3] : m[3]; return y + '-' + m[1].padStart(2, '0') + '-' + m[2].padStart(2, '0'); };
       const soldDate = sold ? (isoDate(val(/^(sold|close|closed|closing|sale|settled) date$/i)) || isoDate(txt(q1(roots, '[data-ks-sold-date]')))) : '';
-      const lotRaw = val(/^lot (size|area)( \(?(acres|sq\.? ?ft\.?)\)?)?$/i) || val(/^(acres|lot acres|lot sq\.? ?ft\.?)$/i);
+      const lotRaw = val(/^lot size in acres$/i) || val(/^lot (size|area)( \(?(acres|sq\.? ?ft\.?)\)?)?$/i) || val(/^(acres|lot acres|lot sq\.? ?ft\.?)$/i) || val(/^lot size in sq\.? ?ft\.?$/i);
       const lotAc = /acre/i.test(lotRaw) || /acres?\)?$/i.test(leaves[leaves.indexOf(lotRaw) - 1] || '');
       let type = val(/^property sub\s*-?\s*type$/i) || val(/^property type$/i);
       if (/^(sfr|single family|single family residence|residential)$/i.test(type)) type = 'Single family residence';
@@ -763,9 +763,10 @@ class Component extends DCLogic {
       const btn = qa(roots, 'button, a, [role="button"]').find((b) => /^(view all|see all|show all)?\s*(\d+\s*)?photos?$|^\d+\s*\/\s*\d+$|^(view )?gallery$/i.test(txt(b)) && !b.closest('.similar-listings'));
       let photos = photosOf(roots);
       if (btn) { try { btn.click(); await sleep(1800); roots = getRoots(fr.contentDocument); const more = photosOf(roots); if (more.length > photos.length) photos = more; } catch (e) {} }
+      const tidy = (s) => String(s || '').replace(/\s+,/g, ',').replace(/\s{2,}/g, ' ').trim();
       const hBeds = hm(/(\d+(?:\.\d+)?)\s*(?:bd|beds?|bedrooms?)\b/i);
       const hFull = hm(/(\d+)\s*full\b/i), hHalf = hm(/(\d+)\s*(?:partial|half)\b/i);
-      const fullB = hFull || num(val(/^(full baths?|full bathrooms?|bathrooms full)$/i)), halfB = hHalf || num(val(/^(half|partial) (baths?|bathrooms?)$|^bathrooms (half|partial)$/i));
+      const fullB = hFull || num(val(/^(full baths?|full bathrooms?|bathrooms full)$/i)), halfB = hHalf || num(val(/^(half|partial) (baths?|bathrooms?)$|^bathrooms (half|partial)$|^1\/2 baths?$/i));
       const totB = num(val(/^(total baths|total bathrooms|bathrooms total)$/i)) || hm(/(\d+(?:\.\d+)?)\s*(?:ba|baths?|bathrooms?)\b/i) || (fullB ? String(Number(fullB) + 0.5 * Number(halfB || 0)) : '') || num(val(/^(baths?|bathrooms?)$/i));
       const hSq = hm(/([\d.]+)\s*(?:sq\.?\s*ft|sqft|square feet)(?!\.?\s*lot)/i);
       const hLotAc = hm(/([\d.]+)\s*acres?\b/i), hLotSq = hm(/([\d.]+)\s*(?:sq\.?\s*ft\.?|sqft)\s*lot/i);
@@ -778,11 +779,60 @@ class Component extends DCLogic {
         fullBaths: fullB, halfBaths: halfB,
         sqft: hSq || num(val(/^(sq\.?\s*ft\.?|square (feet|footage)|living (area|sq\.? ?ft\.?)|building area|interior sq\.? ?ft\.?|approx\.? sq\.? ?ft\.?)$/i)),
         lot: hLotAc || hLotSq || num(lotRaw), lotUnit: hLotAc ? 'Acres' : hLotSq ? 'Sq ft' : (lotAc ? 'Acres' : 'Sq ft'), yearBuilt: num(val(/^year built$/i)) || hm(/built\s*(?:in\s*)?(\d{4})/i), type, stories: num(val(/^(stories|levels|# of stories|number of stories|stories total)$/i)),
-        neighborhood: val(/^(neighborhood|subdivision|subdivision name)$/i), view: val(/^(view|views)$/i), schoolDistrict: val(/^(school district|high school district|unified school district)$/i),
+        neighborhood: val(/^(neighborhood|subdivision|subdivision name)$/i), view: tidy(val(/^(view|views|view description)$/i)), schoolDistrict: val(/^(school district|high school district|unified school district)$/i),
         hoa: val(/^(hoa|association) (fee|dues)s?$/i), description: desc,
       };
       if (!f.street) throw new Error('Couldn’t read that listing’s details. Paste the listing’s link from the site instead.');
-      return { f, interior: feats(INT), exterior: feats(EXT), photos: photos.slice(0, 80) };
+      const MAP = [
+        [/^kitchen( description| features)?$/i, 'int', 'Kitchen'],
+        [/^(primary|master) (bedroom|suite)( description| features)?$/i, 'int', 'Primary suite'],
+        [/^(floors?|flooring)( description)?$/i, 'int', 'Flooring'],
+        [/^fireplaces?( description| features| type)?$/i, 'int', 'Fireplace'],
+        [/^appliances?( description| included)?$/i, 'int', 'Appliances'],
+        [/^dining room( description| features)?$/i, 'int', 'Dining room'],
+        [/^family room( description| features)?$/i, 'int', 'Family room'],
+        [/^laundry( description| features)?$/i, 'int', 'Laundry'],
+        [/^energy features$/i, 'int', 'Energy features'],
+        [/^(window features|windows)$/i, 'int', 'Windows'],
+        [/^accessibility( features)?$/i, 'int', 'Accessibility'],
+        [/^(amenities|interior amenities|other interior features)$/i, 'int', 'Other interior features'],
+        [/^pool( description| features)?$/i, 'ext', 'Pool'],
+        [/^roof(ing)?( description| type)?$/i, 'ext', 'Roof'],
+        [/^heating( description| type| features)?$/i, 'ext', 'Heating'],
+        [/^cooling( description| type| features)?$/i, 'ext', 'Cooling'],
+        [/^parking( description| features)?$/i, 'ext', 'Parking'],
+        [/^(style|architectural style)$/i, 'ext', 'Architectural style'],
+        [/^construction( materials| description)?$/i, 'ext', 'Construction'],
+        [/^foundation( description)?$/i, 'ext', 'Foundation'],
+        [/^fenc(e|ing)( description)?$/i, 'ext', 'Fencing'],
+        [/^(yard|patio( and porch features)?|patio description)$/i, 'ext', 'Yard & patio'],
+        [/^lot (description|features)$/i, 'ext', 'Lot'],
+        [/^(horse property description|horse amenities)$/i, 'ext', 'Horse facilities'],
+        [/^spa( description| features)?$/i, 'ext', 'Spa'],
+        [/^other structures$/i, 'ext', 'Other structures'],
+        [/^water( source| description)?$/i, 'ext', 'Water'],
+        [/^(septic or sewer|sewer( description)?)$/i, 'ext', 'Sewer'],
+        [/^utilities$/i, 'ext', 'Utilities'],
+        [/^zoning$/i, 'ext', 'Zoning'],
+        [/^(exterior amenities|other exterior features)$/i, 'ext', 'Other exterior features'],
+      ];
+      const isLabel = (s) => MAP.some((m) => m[0].test(s));
+      const interior = [], exterior = [], used = new Set();
+      for (let i = 0; i < leaves.length - 1; i++) {
+        const lab = leaves[i].replace(/[:\s]+$/, ''), v = leaves[i + 1];
+        if (lab.length > 45 || !v || v.length > 400 || isLabel(v)) continue;
+        const m = MAP.find((x) => x[0].test(lab));
+        if (!m || used.has(m[2])) continue;
+        used.add(m[2]);
+        (m[1] === 'int' ? interior : exterior).push({ label: m[2], value: tidy(v) });
+      }
+      const yes = (re) => /^yes$/i.test(val(re));
+      if (!used.has('Fireplace') && yes(/^has (a )?fireplace$/i)) interior.push({ label: 'Fireplace', value: 'Yes' });
+      if (!used.has('Pool')) { const hp = val(/^has (a )?pool$/i); if (/^(yes|no)$/i.test(hp)) exterior.push({ label: 'Pool', value: /^yes$/i.test(hp) ? 'Yes' : 'None' }); }
+      const gar = num(val(/^(garage spaces|garage|# of garage spaces)$/i));
+      if (gar) { const pk = exterior.find((x) => x.label === 'Parking'); const g = gar + '-car garage'; if (pk) { if (!/garage/i.test(pk.value) || !/\d/.test(pk.value)) pk.value = g + ' · ' + pk.value; } else exterior.push({ label: 'Parking', value: g }); }
+      if (!used.has('Horse facilities') && yes(/^is a horse property$/i)) exterior.push({ label: 'Horse facilities', value: 'Horse property' });
+      return { f, interior, exterior, photos: photos.slice(0, 80) };
     })();
   }
 
@@ -792,7 +842,7 @@ class Component extends DCLogic {
     const f = Object.assign({}, cur);
     Object.keys(d.f).forEach((k) => { if (d.f[k] !== '' && d.f[k] != null) f[k] = String(d.f[k]); });
     if (!cur.communityName && f.city) f.communityName = f.city;
-    const merge = (rows, add) => { rows = rows.map((r) => Object.assign({}, r)); add.forEach((a) => { const hit = rows.find((r) => r.label.toLowerCase() === a.label.toLowerCase() || (r.label.toLowerCase().split(' ')[0] === a.label.toLowerCase().split(' ')[0] && !r.value)); if (hit && !hit.value) hit.value = a.value; else if (!hit) rows.push({ id: this.uid(), label: a.label, value: a.value }); }); return rows; };
+    const merge = (rows, add) => { rows = rows.map((r) => Object.assign({}, r)); add.forEach((a) => { const hit = rows.find((r) => r.label.trim().toLowerCase() === a.label.toLowerCase()); if (hit && !hit.value) hit.value = a.value; else if (!hit) rows.push({ id: this.uid(), label: a.label, value: a.value }); }); return rows; };
     const next = { f, interior: merge(this.state.interior, d.interior), exterior: merge(this.state.exterior, d.exterior) };
     let photos = this.state.photos, copied = 0, linked = 0;
     if (d.photos.length && (!photos.length || confirm('Replace the ' + photos.length + ' photos already added with the ' + d.photos.length + ' MLS photos?'))) {
