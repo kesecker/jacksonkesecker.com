@@ -18,6 +18,7 @@
 <body>
 <x-dc>
 <helmet>
+  <style data-ks-unbold>/*ks-unbold*/html:root:not([data-ks-none]) body :is(b, strong, th, [style*="font-weight: 600"], [style*="font-weight:600"], [style*="font-weight: 700"], [style*="font-weight:700"], [style*="font-weight: 800"], [style*="font-weight:800"], [style*="font-weight: bold"], [style*="font-weight:bold"]):not([data-ks-bold]):not([class*="ihf"]):not([class*="ihf"] *) { font-weight: 400 !important; }</style>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..800;1,300..800&display=swap">
   <meta name="robots" content="noindex, nofollow">
   <title>Property Builder | Jackson Kesecker</title>
@@ -45,7 +46,7 @@
   <sc-if value="{{ showChrome }}" hint-placeholder-val="{{ true }}">
   <div style="position: sticky; top: 0; z-index: 50; height: 92px; background: #000000; color: #ffffff; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 clamp(16px, 4vw, 40px);">
     <div style="display: flex; align-items: center; gap: 18px; min-width: 0;">
-      <a href="https://jacksonkesecker.com/" target="_self" aria-label="Home" style="display: flex; align-items: center;"><img src="/assets/key-landing-logo.png" alt="Jackson Kesecker Realtor" style="height: 34px; width: auto;"></a>
+      <a href="https://jacksonkesecker.com/" target="_self" aria-label="Home" style="display: flex; align-items: center;"><img src="{{ ksLogoSrc }}" alt="Jackson Kesecker Realtor" style="height: 34px; width: auto;"></a>
       <span style="font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.7); padding-left: 18px; border-left: 1px solid rgba(255,255,255,0.25); white-space: nowrap; flex-shrink: 0;">Property Builder</span>
     </div>
     <div style="display: flex; align-items: center; gap: 10px;">
@@ -60,7 +61,7 @@
     <sc-if value="{{ showForm }}" hint-placeholder-val="{{ true }}">
     <div data-ks-reveal="1" style="background: #000000; color: #ffffff; border-radius: 0; padding: clamp(28px, 5vw, 48px); margin-bottom: 24px; display: flex; flex-direction: column; gap: 22px;">
       <div style="display: flex; flex-direction: column; gap: 4px;">
-        <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2; color: #ffffff;">Import from MLS</h2>
+        <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2; color: #ffffff;">Import From MLS</h2>
         <span style="font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.6; max-width: 620px; text-wrap: pretty;">Type the MLS # (or paste the listing’s link from jacksonkesecker.com). Address, price, facts, description, features and photos fill in automatically. Review everything before publishing.</span>
       </div>
       <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
@@ -85,7 +86,7 @@
     <div data-ks-reveal="1" style="padding: 0 0 44px; display: flex; flex-direction: column; gap: 18px;">
       <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
         <div style="display: flex; flex-direction: column; gap: 4px;">
-          <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2;">My properties</h2>
+          <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2;">My Properties</h2>
           <span style="font-size: 14px; color: #666666; line-height: 1.6;">Change status or Notable Sales here, then Save. The page and the homepage update in about 1–2 minutes.</span>
         </div>
         <button onClick="{{ loadProps }}" disabled="{{ propsBusy }}" style="height: 46px; padding: 0 26px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">{{ propsBtn }}</button>
@@ -214,7 +215,7 @@
 
     <div data-ks-reveal="1" style="padding: 44px 0; border-top: 1px solid #e6e6e6; display: flex; flex-direction: column; gap: 20px;">
       <div style="display: flex; flex-direction: column; gap: 4px;">
-        <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2;">Open houses</h2>
+        <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2;">Open Houses</h2>
         <span style="font-size: 14px; color: #666666; line-height: 1.6;">Shown only while the property isn’t sold.</span>
       </div>
       <sc-for list="{{ ohItems }}" as="o" hint-placeholder-count="0">
@@ -246,7 +247,7 @@
 
     <div data-ks-reveal="1" style="padding: 44px 0; border-top: 1px solid #e6e6e6; display: flex; flex-direction: column; gap: 20px;">
       <div style="display: flex; flex-direction: column; gap: 4px;">
-        <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2;">Community photo</h2>
+        <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2;">Community Photo</h2>
         <span style="font-size: 14px; color: #666666; line-height: 1.6;">Optional image beside the community paragraph.</span>
       </div>
       <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
@@ -819,13 +820,14 @@ class Component extends DCLogic {
     this.setState({ f: Object.assign({}, Component.FIELDS), interior: rows(Component.INTERIOR), exterior: rows(Component.EXTERIOR), oh: [], photos: [], dls: [], comm: null, log: [], live: false, loadSlug: '' });
   };
 
+  get ksLogoSrc() { return this.base() + 'assets/key-landing-logo.png'; }
   renderVals() {
     const s = this.state, f = s.f;
     const fld = (key, label, o) => Object.assign({ key, label, value: f[key], onChange: (e) => this.setF(key, e.target.value), isInput: true, isSelect: false, isTextarea: false, type: 'text', placeholder: '', inputmode: 'text', span: 'auto', rows: 3, options: [] }, o || {});
     const num = { inputmode: 'decimal' };
     const sold = /sold/i.test(f.status);
     const groups = [
-      { title: 'Address & status', fields: [
+      { title: 'Address & Status', fields: [
         fld('street', 'Street address', { placeholder: '33900 Fabry Road', span: '1 / -1' }),
         fld('city', 'City', { placeholder: 'Soledad' }), fld('state', 'State'), fld('zip', 'ZIP', { inputmode: 'numeric' }),
         fld('status', 'Status', { isInput: false, isSelect: true, options: ['Active', 'Coming Soon', 'Contingent', 'Pending', 'Sold'] }),
@@ -836,7 +838,7 @@ class Component extends DCLogic {
         fld('mls', 'MLS #', { placeholder: 'ML82028688' }),
         fld('title', 'Property name (optional)', { placeholder: 'e.g. The Summit at Tehama', span: '1 / -1' }),
       ] },
-      { title: 'Key facts', fields: [
+      { title: 'Key Facts', fields: [
         fld('beds', 'Bedrooms', num), fld('baths', 'Total bathrooms', Object.assign({ placeholder: '2.5' }, num)), fld('fullBaths', 'Full baths', num), fld('halfBaths', 'Half baths', num),
         fld('sqft', 'Living area (sq ft)', num), fld('lot', 'Lot size', num), fld('lotUnit', 'Lot unit', { isInput: false, isSelect: true, options: ['Acres', 'Sq ft'] }), fld('yearBuilt', 'Year built', { inputmode: 'numeric' }),
         fld('type', 'Property type', { placeholder: 'Single family residence' }), fld('stories', 'Stories', num),
@@ -846,7 +848,7 @@ class Component extends DCLogic {
         fld('headline', 'Section heading (optional)', { span: '1 / -1' }),
         fld('description', 'Description', { isInput: false, isTextarea: true, rows: 10, span: '1 / -1' }),
       ] },
-      { title: 'Video, 3D tour & hero', fields: [
+      { title: 'Video, 3D Tour & Hero', fields: [
         fld('video', 'Video link (YouTube, Vimeo or .mp4)', { span: '1 / -1', placeholder: 'https://youtu.be/…' }),
         fld('matterport', 'Matterport / 3D tour link', { span: '1 / -1', placeholder: 'https://my.matterport.com/show/?m=…' }),
         fld('heroCount', 'Photos in the hero slideshow', { isInput: false, isSelect: true, options: ['1', '3', '5', '7', '10'] }),
@@ -868,6 +870,7 @@ class Component extends DCLogic {
     }));
     const slug = this.slug();
     return {
+      ksLogoSrc: this.ksLogoSrc,
       groups, photoItems,
       photoSummary: n ? n + ' photo' + (n === 1 ? '' : 's') + ' added' : 'no photos yet',
       zoneBorder: s.zoneHot ? '#000000' : '#bbbbbb',
@@ -879,8 +882,8 @@ class Component extends DCLogic {
       deleteAllPhotos: () => { if (!confirm('Delete all ' + s.photos.length + ' photos?')) return; s.photos.forEach((p) => { if (p.kind === 'new' && p.url) URL.revokeObjectURL(p.url); }); this.setState({ photos: [] }); },
       onPhotoFiles: (e) => { this.addPhotoFiles(e.target.files); e.target.value = ''; },
       rowLists: [
-        { title: 'Interior features', rows: this.rowsHandlers('interior'), add: () => this.setState((st) => ({ interior: st.interior.concat([{ id: this.uid(), label: '', value: '' }]) })) },
-        { title: 'Exterior features', rows: this.rowsHandlers('exterior'), add: () => this.setState((st) => ({ exterior: st.exterior.concat([{ id: this.uid(), label: '', value: '' }]) })) },
+        { title: 'Interior Features', rows: this.rowsHandlers('interior'), add: () => this.setState((st) => ({ interior: st.interior.concat([{ id: this.uid(), label: '', value: '' }]) })) },
+        { title: 'Exterior Features', rows: this.rowsHandlers('exterior'), add: () => this.setState((st) => ({ exterior: st.exterior.concat([{ id: this.uid(), label: '', value: '' }]) })) },
       ],
       ohItems: s.oh.map((o, i) => {
         const up = (k) => (e) => { const v = e.target.value; this.setState((st) => ({ oh: st.oh.map((x, j) => j === i ? Object.assign({}, x, { [k]: v }) : x) }), this.saveDraft); };

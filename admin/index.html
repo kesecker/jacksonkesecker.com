@@ -93,7 +93,7 @@ class Component extends DCLogic {
       navItems: nav.map((t) => ({ label: t.label, href: t.path ? (this.live ? t.path.slice(0, t.path.indexOf('?')) + '?view=' + t.id : '#' + t.id) : '/admin/', go: this.go(t.id), on: s.page === t.id ? 1 : 0, opacity: s.page === t.id ? 1 : 0.7 })),
       isDash: !tool, isTool: !!tool, toolTitle: tool ? tool.label : '',
       toolSrc: tool ? this.src(tool) + (tool.id === 'builder' && s.loadSlug ? '&load=' + encodeURIComponent(s.loadSlug) + '&k=' + s.loadKey : '') : '',
-      greeting: h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening',
+      greeting: h < 12 ? 'Good Morning' : h < 18 ? 'Good Afternoon' : 'Good Evening',
       tools: Component.TOOLS.map((t) => ({ label: t.label, desc: t.desc, href: this.live ? t.path.slice(0, t.path.indexOf('?')) + '?view=' + t.id : '#' + t.id, go: this.go(t.id), on: s.hover === t.id ? 1 : 0, enter: () => this.setState({ hover: t.id }), leave: () => this.setState({ hover: '' }) })),
     };
   }
