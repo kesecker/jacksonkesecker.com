@@ -525,7 +525,9 @@ class Component extends DCLogic {
   };
 
   // ---- My properties: read every published page from GitHub, quick-edit status / notable, keep properties/index.json in sync ----
+  get preview() { return !this.viaWorker && !this.state.token.trim(); }
   ghText = async (path) => {
+    if (this.preview) { const r0 = await fetch(this.base() + path, { cache: 'no-store' }); if (!r0.ok) throw new Error(path + ' ' + r0.status); return r0.text(); }
     const repo = this.state.repo.trim(), br = this.state.branch.trim() || 'main';
     const j = await this.gh('/repos/' + repo + '/contents/' + path + '?ref=' + encodeURIComponent(br));
     if (j.content) return new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g, '')), (c) => c.charCodeAt(0)));
@@ -564,8 +566,9 @@ class Component extends DCLogic {
     this.setState({ propsBusy: true, propsMsg: 'Loading your properties…', propsErr: false });
     try {
       const repo = this.state.repo.trim(), br = this.state.branch.trim() || 'main';
-      const list = await this.gh('/repos/' + repo + '/contents/properties?ref=' + encodeURIComponent(br));
-      const dirs = list.filter((x) => x.type === 'dir' && x.name !== 'template').map((x) => x.name);
+      const dirs = this.preview
+        ? JSON.parse(await this.ghText('properties/index.json')).map((x) => x.slug).filter(Boolean)
+        : (await this.gh('/repos/' + repo + '/contents/properties?ref=' + encodeURIComponent(br))).filter((x) => x.type === 'dir' && x.name !== 'template').map((x) => x.name);
       const props = [];
       for (const slug of dirs) {
         try {
