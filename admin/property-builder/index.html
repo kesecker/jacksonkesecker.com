@@ -74,11 +74,14 @@
     </div>
 
     <div data-ks-reveal="1" style="padding: 20px 0 44px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px;">
-      <div style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 6px;">
+      <label style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 6px;">
         <span style="font-size: 12px; font-weight: 600; color: #777777;">Edit a property you already published</span>
-        <input type="text" value="{{ loadSlug }}" onChange="{{ onLoadSlug }}" placeholder="e.g. 33900-fabry-road-soledad" style="height: 44px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; background: transparent; box-sizing: border-box; width: 100%; transition: border-color .3s ease;">
-      </div>
-      <button onClick="{{ loadExisting }}" style="height: 46px; padding: 0 26px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">Load</button>
+        <select value="{{ loadSlug }}" onChange="{{ onPickExisting }}" style="height: 44px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; background: transparent; box-sizing: border-box; width: 100%; color: #1a1a1a; transition: border-color .3s ease;">
+          <option value="">{{ existingPlaceholder }}</option>
+          <sc-for list="{{ existingOpts }}" as="o" hint-placeholder-count="2"><option value="{{ o.slug }}">{{ o.label }}</option></sc-for>
+        </select>
+      </label>
+      <button onClick="{{ resetAll }}" style="height: 44px; padding: 0 22px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">Clear All Fields</button>
     </div>
 
     </sc-if>
@@ -519,7 +522,7 @@ class Component extends DCLogic {
       } catch (e) { this.log('Notable Sales list not updated: ' + e.message); }
       await this.commitTree(tree, 'Property page: ' + slug);
       this.log('Published. The page goes live in about 1–2 minutes.', 'ok');
-      this.setState({ live: true, loadSlug: slug });
+      this.setState((s) => ({ live: true, loadSlug: slug, existing: (s.existing || []).some((x) => x.slug === slug) ? s.existing : (s.existing || []).concat([{ slug, label: s.f.title || s.f.street || slug }]) }));
     } catch (e) { this.log(String(e.message || e), 'err'); }
     this.setState({ busy: false });
   };
@@ -627,8 +630,12 @@ class Component extends DCLogic {
     this.setState({ propsBusy: false });
   };
 
+  loadExistingList = async () => {
+    try { const r = await fetch(this.base() + 'properties/index.json', { cache: 'no-store' }); if (!r.ok) return; const a = JSON.parse(await r.text()); if (Array.isArray(a)) this.setState({ existing: a.filter((x) => x && x.slug).map((x) => ({ slug: x.slug, label: [x.title || x.street, [x.title ? x.street : '', x.city].filter(Boolean).join(', ')].filter(Boolean).join(' \u2014 ') })) }); } catch (e) {}
+  };
   loadExisting = async () => {
-    const slug = this.slugify(this.state.loadSlug.replace(/^.*\/properties\//, '').replace(/\/.*$/, ''));
+    const raw = String(this.state.loadSlug || '').trim();
+    const slug = (this.state.existing || []).some((x) => x.slug === raw) ? raw : this.slugify(raw.replace(/^.*\/properties\//, '').replace(/\/.*$/, ''));
     if (!slug) return;
     try {
       const dir = this.base() + 'properties/' + slug + '/';
@@ -819,6 +826,7 @@ class Component extends DCLogic {
   };
   onMsg = (e) => { if (e.origin === location.origin && e.data && e.data.type === 'ks-preview-ready') { this._readyFired = true; this.sendPreview(e.source); } };
   componentDidMount() {
+    this.loadExistingList();
     if (this.adminView === 'properties') setTimeout(this.loadProps, 300);
     try { const ls = new URLSearchParams(location.search).get('load'); if (ls && this.adminView !== 'properties') this.setState({ loadSlug: ls }, () => setTimeout(this.loadExisting, 200)); } catch (e) {}
     window.addEventListener('message', this.onMsg);
@@ -939,6 +947,8 @@ class Component extends DCLogic {
         };
       }),
       loadSlug: s.loadSlug, onLoadSlug: (e) => this.setState({ loadSlug: e.target.value }), loadExisting: this.loadExisting,
+      existingOpts: s.existing || [], existingPlaceholder: (s.existing || []).length ? 'Choose a property\u2026' : 'No published properties yet',
+      onPickExisting: (e) => { const v = e.target.value; this.setState({ loadSlug: v }, () => { if (v) this.loadExisting(); }); },
       preview: this.preview, resetAll: this.resetAll,
       importQ: s.importQ || '', onImportQ: (e) => this.setState({ importQ: e.target.value }),
       onImportKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.importMls(); } },
