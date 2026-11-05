@@ -937,5 +937,51 @@ class Component extends DCLogic {
   }
 }
 </script>
+<style data-ks-select>
+.ks-menu{position:fixed;z-index:9999;background:#ffffff;border:1px solid #ececec;border-radius:8px;box-shadow:0 12px 32px rgba(0,0,0,.08);padding:8px 0;margin:0;list-style:none;font-family:Montserrat,system-ui,sans-serif;opacity:0;transform:translateY(-4px);transition:opacity .18s ease,transform .18s ease;max-height:320px;overflow-y:auto;box-sizing:border-box}
+.ks-menu.ks-open{opacity:1;transform:none}
+.ks-menu li{padding:11px 20px;font-size:14px;font-weight:300;letter-spacing:.04em;color:#1a1a1a;cursor:pointer;white-space:nowrap;transition:background .15s ease}
+.ks-menu li span{text-decoration:underline transparent;text-decoration-thickness:1px;text-underline-offset:5px;transition:text-decoration-color .2s ease}
+.ks-menu li:hover,.ks-menu li.ks-hi{background:#f6f6f6}
+.ks-menu li.ks-sel span{text-decoration-color:#1a1a1a}
+select:focus{outline:none;border-bottom-color:#1a1a1a!important}
+</style>
+<script data-ks-select>
+(function(){
+  if (window.__ksSelect) return; window.__ksSelect = 1;
+  if (window.matchMedia && !matchMedia('(pointer:fine)').matches) return;
+  var menu = null, sel = null, hi = -1;
+  var setVal = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
+  function close(){ if (!menu) return; var m = menu; menu = null; sel = null; m.classList.remove('ks-open'); setTimeout(function(){ m.remove(); }, 180); document.removeEventListener('mousedown', outside, true); window.removeEventListener('scroll', close, true); window.removeEventListener('resize', close); }
+  function outside(e){ if (menu && !menu.contains(e.target)) close(); }
+  function pick(i){ var s = sel, o = s.options[i]; close(); if (!o || s.value === o.value) { s.focus(); return; } setVal.call(s, o.value); s.dispatchEvent(new Event('input', { bubbles: true })); s.dispatchEvent(new Event('change', { bubbles: true })); s.focus(); }
+  function mark(i){ hi = i; Array.prototype.forEach.call(menu.children, function(li, k){ li.classList.toggle('ks-hi', k === i); }); var li = menu.children[i]; if (li) li.scrollIntoView({ block: 'nearest' }); }
+  function open(s){
+    close(); sel = s; menu = document.createElement('ul'); menu.className = 'ks-menu'; menu.setAttribute('role', 'listbox');
+    Array.prototype.forEach.call(s.options, function(o, i){ var li = document.createElement('li'); li.setAttribute('role', 'option'); var t = document.createElement('span'); t.textContent = o.textContent; li.appendChild(t); if (i === s.selectedIndex) { li.classList.add('ks-sel'); li.setAttribute('aria-selected', 'true'); } li.addEventListener('mousedown', function(e){ e.preventDefault(); }); li.addEventListener('click', function(){ pick(i); }); li.addEventListener('mousemove', function(){ if (hi !== i) mark(i); }); menu.appendChild(li); });
+    document.body.appendChild(menu);
+    var r = s.getBoundingClientRect(), h = menu.offsetHeight, below = innerHeight - r.bottom;
+    menu.style.minWidth = Math.max(r.width, 160) + 'px';
+    menu.style.left = Math.max(8, Math.min(r.left, innerWidth - menu.offsetWidth - 8)) + 'px';
+    menu.style.top = (below < h + 12 && r.top > h + 12 ? r.top - h - 6 : r.bottom + 6) + 'px';
+    hi = s.selectedIndex; mark(hi);
+    requestAnimationFrame(function(){ if (menu) menu.classList.add('ks-open'); });
+    document.addEventListener('mousedown', outside, true); window.addEventListener('scroll', close, true); window.addEventListener('resize', close);
+  }
+  document.addEventListener('mousedown', function(e){ var s = e.target.closest && e.target.closest('select'); if (!s || s.multiple || s.disabled || s.size > 1) return; e.preventDefault(); s.focus(); if (sel === s) close(); else open(s); }, true);
+  document.addEventListener('keydown', function(e){
+    var t = e.target;
+    if (menu) {
+      var n = menu.children.length;
+      if (e.key === 'ArrowDown') { e.preventDefault(); mark(Math.min(n - 1, hi + 1)); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); mark(Math.max(0, hi - 1)); }
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(hi); }
+      else if (e.key === 'Escape' || e.key === 'Tab') { if (e.key === 'Escape') e.preventDefault(); var s = sel; close(); if (s && e.key === 'Escape') s.focus(); }
+      return;
+    }
+    if (t && t.tagName === 'SELECT' && !t.multiple && (e.key === ' ' || e.key === 'Enter' || (e.altKey && e.key === 'ArrowDown') || e.key === 'F4')) { e.preventDefault(); open(t); }
+  }, true);
+})();
+</script>
 </body>
 </html>
