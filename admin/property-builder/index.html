@@ -485,7 +485,7 @@ class Component extends DCLogic {
     const w = this.viaWorker;
     const r = w
       ? await fetch('/admin/api/gh' + path, Object.assign({}, opts, { credentials: 'same-origin', headers: { Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' } }))
-      : await fetch('https://api.github.com' + path, Object.assign({}, opts, { headers: { Authorization: 'Bearer ' + this.state.token.trim(), Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' } }));
+      : await (async () => { const tk = this.state.token.trim(); if (!tk && opts && opts.method && opts.method !== 'GET') throw new Error('This is a read-only preview. Publishing and saving work at jacksonkesecker.com/admin.'); return fetch('https://api.github.com' + path, Object.assign({}, opts, { headers: Object.assign({ Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' }, tk ? { Authorization: 'Bearer ' + tk } : {}) })); })();
     if (!r.ok) { let m = ''; try { m = (await r.json()).message; } catch (e) {} throw new Error((w && r.status === 401) ? 'Your admin sign-in expired. Reload the page and sign in again.' : 'GitHub ' + r.status + ': ' + (m || r.statusText) + (!w && (r.status === 401 || r.status === 403) ? ' (check the token and its permissions)' : '')); }
     return r.json();
   }
@@ -561,7 +561,6 @@ class Component extends DCLogic {
   async readIndex() { try { const t = await this.ghText('properties/index.json'); const a = JSON.parse(t); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
   loadProps = async () => {
     if (this.state.propsBusy) return;
-    if (!this.viaWorker && !this.state.token.trim()) { this.setState({ showSettings: true, propsMsg: this.adminView === 'properties' ? 'Add your GitHub token below, then click Load my properties.' : 'Add your GitHub token first (Publish → GitHub settings, below).', propsErr: true }); return; }
     this.setState({ propsBusy: true, propsMsg: 'Loading your properties…', propsErr: false });
     try {
       const repo = this.state.repo.trim(), br = this.state.branch.trim() || 'main';
@@ -811,7 +810,7 @@ class Component extends DCLogic {
   };
   onMsg = (e) => { if (e.origin === location.origin && e.data && e.data.type === 'ks-preview-ready') { this._readyFired = true; this.sendPreview(e.source); } };
   componentDidMount() {
-    if (this.adminView === 'properties' && (this.viaWorker || this.state.token)) setTimeout(this.loadProps, 300);
+    if (this.adminView === 'properties') setTimeout(this.loadProps, 300);
     try { const ls = new URLSearchParams(location.search).get('load'); if (ls && this.adminView !== 'properties') this.setState({ loadSlug: ls }, () => setTimeout(this.loadExisting, 200)); } catch (e) {}
     window.addEventListener('message', this.onMsg);
     this._io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('ks-in'); this._io.unobserve(e.target); } }), { threshold: 0.05, rootMargin: '0px 0px -8% 0px' });
@@ -913,7 +912,7 @@ class Component extends DCLogic {
       repoValue: s.repo, onRepo: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-repo', v); this.setState({ repo: v }); },
       branchValue: s.branch, onBranch: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-branch', v); this.setState({ branch: v }); },
       hasLog: s.log.length > 0, logLines: s.log, hasLiveLink: s.live,
-      needTokenHere: !this.viaWorker && (this.adminView === 'properties' && !String(s.token || '').trim() || (this.adminView === 'properties' && !!s.tokenEditing)), showChrome: !this.adminEmbed, showForm: this.adminView !== 'properties', showPropsPanel: this.adminView !== 'builder',
+      needTokenHere: !this.viaWorker && this.adminView === 'properties' && !!s.tokenEditing, showChrome: !this.adminEmbed, showForm: this.adminView !== 'properties', showPropsPanel: this.adminView !== 'builder',
       loadProps: this.loadProps, propsBusy: !!s.propsBusy, propsBtn: s.propsBusy ? 'Working…' : ((s.props || []).length ? 'Refresh' : 'Load my properties'),
       hasPropsMsg: !!s.propsMsg, propsMsg: s.propsMsg || '', propsMsgColor: s.propsErr ? '#c62828' : '#555555',
       statusOptions: ['Active', 'Coming Soon', 'Contingent', 'Pending', 'Sold'],
