@@ -1600,13 +1600,18 @@ class Component extends DCLogic {
     let reduce = false; try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (err) {}
     e.preventDefault();
     try { sessionStorage.setItem('ksFadeIn', '1'); } catch (err) {}
-    if (reduce) { window.location.href = href; return; }
+    if (reduce) { if (/jacksonkesecker\.com$/.test(location.hostname)) window.location.href = href; return; }
     const ov = document.createElement('div');
     ov.setAttribute('aria-hidden', 'true');
     ov.style.cssText = 'position:fixed;inset:0;background:#000000;z-index:2147483550;opacity:0;pointer-events:none;transition:opacity .45s cubic-bezier(.4,0,.2,1);';
     document.body.appendChild(ov);
     void ov.offsetWidth; ov.style.opacity = '1';
     window.addEventListener('pageshow', (ev) => { if (ev.persisted) ov.remove(); }, { once: true });
+    if (!/jacksonkesecker\.com$/.test(location.hostname)) {
+      try { sessionStorage.removeItem('ksFadeIn'); } catch (err) {}
+      setTimeout(() => { ov.style.transition = 'opacity 1s cubic-bezier(.4,0,.2,1)'; ov.style.opacity = '0'; setTimeout(() => ov.remove(), 1050); }, 700);
+      return;
+    }
     setTimeout(() => { window.location.href = href; }, 460);
   };
   notableCardsFor(es) {
