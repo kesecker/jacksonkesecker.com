@@ -73,5 +73,24 @@
   "lotUnit": "Sq ft",
   "cover": "/properties/1388-boles-court-seaside-ca-93955/photos/01-kttkrw.jpg",
   "coverCrop": "36.8,50,1.22,1.5"
+ },
+ {
+  "slug": "338-geil-street-salinas-ca-93901",
+  "title": "Mission Park Charmer",
+  "street": "338 Geil Street",
+  "city": "Salinas",
+  "state": "CA",
+  "status": "Sold",
+  "price": "700000",
+  "soldPrice": "700000",
+  "represented": "Seller represented",
+  "notable": "Yes",
+  "beds": "2",
+  "baths": "1.5",
+  "sqft": "1183",
+  "lot": "6422",
+  "lotUnit": "Sq ft",
+  "cover": "/properties/338-geil-street-salinas-ca-93901/photos/01-1gs7s7.jpg",
+  "coverCrop": "47.7,50,1,1.5"
  }
 ]
