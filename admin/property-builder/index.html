@@ -191,7 +191,7 @@
         <span style="font-size: 14px; color: #666666; line-height: 1.6;">JPG, PNG or WebP · {{ photoSummary }}</span>
       </div>
       <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
-        <button type="button" onClick="{{ pickDrive }}" disabled="{{ driveBusy }}" style="height: 46px; padding: 0 22px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; opacity: {{ driveOpacity }}; transition: background .3s ease, color .3s ease;" style-hover="background: #1a1a1a; color: #ffffff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 3h7l6 10.5-3.5 6h-12L2.5 13.5z"></path><path d="M8.5 3l6.5 11.5M15.5 3L9 14.5M2.5 13.5h19"></path></svg>{{ driveBtnLabel }}</button>
+        <button type="button" onClick="{{ pickDrive }}" disabled="{{ driveBusy }}" style="height: 46px; padding: 0 22px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; opacity: {{ driveOpacity }}; transition: background .3s ease, color .3s ease;" style-hover="background: #1a1a1a; color: #ffffff;">{{ driveBtnLabel }}</button>
         <span style="font-size: 13px; line-height: 1.6; color: {{ driveMsgColor }}; max-width: 560px;">{{ driveMsg }}</span>
       </div>
       <input ref="{{ photoInputRef }}" type="file" accept="image/jpeg,image/png,image/webp" multiple="true" onChange="{{ onPhotoFiles }}" style="display: none;">
@@ -1257,7 +1257,7 @@ class Component extends DCLogic {
       showCardCrop: s.photos.length > 0 && /sold/i.test(s.f.status || ''), preview: this.preview, resetAll: this.resetAll, importAnother: this.importAnother, backToTop: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
       importQ: s.importQ || '', onImportQ: (e) => this.setState({ importQ: e.target.value }),
       importPhotos: !!s.importPhotos, onImportPhotos: (e) => this.setState({ importPhotos: !!e.target.checked }),
-      pickDrive: this.pickDrive, driveBusy: !!s.driveBusy, driveOpacity: s.driveBusy ? 0.6 : 1, driveBtnLabel: s.driveBusy ? 'Working\u2026' : 'Choose From Google Drive', driveMsg: s.driveMsg || 'Full-resolution photos straight from your Drive.', driveMsgColor: s.driveErr ? '#b3261e' : '#666666',
+      pickDrive: this.pickDrive, driveBusy: !!s.driveBusy, driveOpacity: s.driveBusy ? 0.6 : 1, driveBtnLabel: s.driveBusy ? 'Working\u2026' : 'Choose from Google Drive', driveMsg: s.driveMsg || 'Full-resolution photos straight from your Drive.', driveMsgColor: s.driveErr ? '#b3261e' : '#666666',
       onImportKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.importMls(); } },
       importMls: this.importMls, importing: !!s.importing, importOpacity: s.importing ? 0.5 : 1, importBtn: s.importing ? 'Importing…' : 'Import',
       hasImportMsg: !!s.importMsg, importMsg: s.importMsg || '', importMsgColor: s.importErr ? '#ff8a80' : 'rgba(255,255,255,0.85)',
