@@ -488,10 +488,11 @@ class Component extends DCLogic {
   // ---- Google Drive photo picker (Google Picker + Drive API, drive.file scope: only the photos you pick are shared with the builder) ----
   static GDRIVE = { clientId: '894914722393-m24ds6qckau4v80pseq8mqcb0l80tqeb.apps.googleusercontent.com', apiKey: 'AIzaSyB3RES4UHq6rVxx8E6DsMe_QIU8jbf5xXQ', appId: '894914722393' };
   _loadScript = (src) => new Promise((res, rej) => { if (document.querySelector('script[src="' + src + '"]')) { res(); return; } const s = document.createElement('script'); s.src = src; s.async = true; s.onload = () => res(); s.onerror = () => rej(new Error('Couldn\u2019t load ' + src)); document.head.appendChild(s); });
-  _driveReady = async () => {
+  _driveReady = () => this._drivePromise || (this._drivePromise = (async () => {
     await Promise.all([this._loadScript('https://apis.google.com/js/api.js'), this._loadScript('https://accounts.google.com/gsi/client')]);
     if (!(window.google && window.google.picker)) await new Promise((res) => window.gapi.load('picker', res));
-  };
+  })().catch((e) => { this._drivePromise = null; throw e; }));
+  _drivePreload = typeof window !== 'undefined' && Component.GDRIVE.clientId ? setTimeout(() => { try { this._driveReady().catch(() => {}); } catch (e) {} }, 1500) : null;
   _driveToken = () => new Promise((res, rej) => {
     const c = Component.GDRIVE;
     if (this._dTok && this._dTokExp > Date.now() + 60000) { res(this._dTok); return; }
