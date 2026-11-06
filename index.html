@@ -312,7 +312,7 @@
         <img data-ks-feat-img="1" src="{{ feat.cover }}" alt="{{ feat.name }}" loading="lazy" style="position: absolute; left: {{ feat.cl }}; top: {{ feat.ct }}; width: {{ feat.cw }}; height: {{ feat.ch }}; max-width: none; max-height: none; object-fit: cover; display: block;">
         <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.7) 26%, rgba(0,0,0,0.38) 50%, rgba(0,0,0,0.08) 72%, rgba(0,0,0,0) 85%); box-shadow: inset 0 0 140px 16px rgba(0,0,0,0.4);"></div>
         <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 140px 24px rgba(0,0,0,0.45); opacity: {{ featOn }}; transition: opacity .7s cubic-bezier(.16,1,.3,1);"></div>
-        <img data-ks-card-key="1" src="assets/key-landing-logo.png" alt="" aria-hidden="true" style="position: absolute; right: clamp(20px, 3vw, 40px); bottom: clamp(20px, 3vw, 40px); width: clamp(72px, 7vw, 104px); height: auto; display: block; pointer-events: none; opacity: {{ featOn }}; transition: opacity .7s cubic-bezier(.16,1,.3,1); filter: drop-shadow(0 2px 10px rgba(0,0,0,0.35));">
+        <img data-ks-card-key="1" src="assets/key-landing-logo.png" alt="" aria-hidden="true" style="position: absolute; right: clamp(20px, 3vw, 40px); bottom: clamp(20px, 3vw, 40px); width: clamp(126px, 12.25vw, 182px); height: auto; display: block; pointer-events: none; opacity: {{ featOn }}; transition: opacity .7s cubic-bezier(.16,1,.3,1); filter: drop-shadow(0 2px 10px rgba(0,0,0,0.35));">
         <div data-ks-feat-info="1" style="position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; gap: 10px; padding: clamp(24px, 4vw, 56px); padding-right: clamp(120px, 14vw, 200px); text-shadow: 0 1px 14px rgba(0,0,0,0.35);">
           <span style="font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.8);">{{ feat.city }}</span>
           <span style="font-size: clamp(28px, 3.4vw, 48px); font-weight: 300; line-height: 1.1; color: #ffffff; text-wrap: balance;">{{ feat.name }}</span>
@@ -413,7 +413,7 @@
           <div style="position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: #eeeeee;">
             <img src="{{ c.cover }}" alt="{{ c.name }}" loading="lazy" style="position: absolute; left: {{ c.cl }}; top: {{ c.ct }}; width: {{ c.cw }}; height: {{ c.ch }}; max-width: none; max-height: none; object-fit: cover; display: block;">
             <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 90px 12px rgba(0,0,0,0.42); opacity: {{ c.on }}; transition: opacity .7s cubic-bezier(.16,1,.3,1);"></div>
-            <img data-ks-card-key-n="1" src="assets/key-landing-logo.png" alt="" aria-hidden="true" style="position: absolute; right: 18px; bottom: 18px; width: 76px; height: auto; display: block; pointer-events: none; opacity: {{ c.on }}; transition: opacity .7s cubic-bezier(.16,1,.3,1); filter: drop-shadow(0 2px 10px rgba(0,0,0,0.35));">
+            <img data-ks-card-key-n="1" src="assets/key-landing-logo.png" alt="" aria-hidden="true" style="position: absolute; right: 18px; bottom: 18px; width: 133px; height: auto; display: block; pointer-events: none; opacity: {{ c.on }}; transition: opacity .7s cubic-bezier(.16,1,.3,1); filter: drop-shadow(0 2px 10px rgba(0,0,0,0.35));">
           </div>
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <span style="font-size: 13px; font-weight: 500; line-height: 1.3; color: #666666;">{{ c.city }}</span>
@@ -1639,12 +1639,12 @@ class Component extends DCLogic {
     try { const r = await fetch('/properties/index.json', { cache: 'no-store' }); if (r.ok) { const j = await r.json(); if (Array.isArray(j)) list = j; } } catch (e) {}
     if (!list.length && !/jacksonkesecker\.com$/.test(location.hostname)) list = [{ slug: 'diamond-o-ranch', title: 'Diamond O Ranch', street: '36000 Ranch Road', city: 'Soledad', status: 'Sold', price: '1425000', soldPrice: '1425000', represented: 'Seller represented', notable: 'Yes', beds: '3', baths: '2', sqft: '1860', lot: '40', lotUnit: 'Acres', cover: 'uploads/files-1793321239769-39wc.jpeg' }];
     const val = (x) => Number(String((/sold/i.test(x.status) && x.soldPrice) || x.price || 0).replace(/[^\d.]/g, '')) || 0;
-    let feat = list.filter((x) => x && x.slug && !/sold/i.test(x.status || ''));
+    let feat = list.filter((x) => x && x.slug && !/sold/i.test(x.status || '') && x.featured !== 'No');
     if (!feat.length && !/jacksonkesecker\.com$/.test(location.hostname)) feat = [
       { slug: 'sample-listing', title: 'Sample Featured Listing', street: '123 Sample Lane', city: 'Soledad', state: 'CA', status: 'Active', price: '1250000', beds: '4', baths: '3', sqft: '2450', lot: '0.5', lotUnit: 'Acres', cover: 'uploads/white-modern-house-curved-patio-archway-c0a4a3b3-aa51b24d14d0464ea15d36e05aa85ac9.jpg' },
       { slug: 'sample-listing-2', title: 'Second Sample Listing', street: '456 Example Road', city: 'Salinas', state: 'CA', status: 'Coming Soon', price: '895000', beds: '3', baths: '2', sqft: '1780', cover: 'uploads/Pinnacles.png' },
     ];
-    this.setState({ notableList: list.filter((x) => x && x.notable === 'Yes').sort((a, b) => val(b) - val(a)), featuredList: feat, featIdx: 0 });
+    this.setState({ notableList: list.filter((x) => x && x.notable === 'Yes' && /sold/i.test(x.status || '')).sort((a, b) => val(b) - val(a)), featuredList: feat, featIdx: 0 });
   };
   ksCardGo = (e, href) => {
     if (!e || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;

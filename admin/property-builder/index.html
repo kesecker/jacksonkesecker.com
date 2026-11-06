@@ -92,7 +92,7 @@
       <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
         <div style="display: flex; flex-direction: column; gap: 4px;">
           <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2;">My Properties</h2>
-          <span style="font-size: 14px; color: #666666; line-height: 1.6;">Change status or Notable Sales here, then Save. The page and the homepage update in about 1–2 minutes.</span>
+          <span style="font-size: 14px; color: #666666; line-height: 1.6;">Change status, Featured Listings or Notable Sales here, then Save. The page and the homepage update in about 1–2 minutes.</span>
         </div>
         <button onClick="{{ loadProps }}" disabled="{{ propsBusy }}" style="align-self: flex-end; margin-bottom: -6px; height: 34px; padding: 0 20px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">{{ propsBtn }}</button>
       </div>
@@ -126,7 +126,7 @@
             </label>
           </sc-if>
           <div style="display: flex; flex-direction: column; gap: 4px;">
-            <span style="display: block; height: 16px; line-height: 16px; font-size: 12px; font-weight: 600; color: #777777;">Notable sale?</span>
+            <span style="display: block; height: 16px; line-height: 16px; font-size: 12px; font-weight: 600; color: #777777;">{{ p.flagLabel }}</span>
             <div style="display: flex; gap: 6px;">
               <button onClick="{{ p.setYes }}" style="height: 32px; padding: 0 14px; border-radius: 8px; border: 1px solid #1a1a1a; background: {{ p.yesBg }}; color: {{ p.yesFg }}; font-size: 12px; font-weight: 600; cursor: pointer;">Yes</button>
               <button onClick="{{ p.setNo }}" style="height: 32px; padding: 0 14px; border-radius: 8px; border: 1px solid #1a1a1a; background: {{ p.noBg }}; color: {{ p.noFg }}; font-size: 12px; font-weight: 600; cursor: pointer;">No</button>
@@ -369,7 +369,7 @@
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
   static FIELDS = {
-    street: '', city: '', state: 'CA', zip: '', title: '', headline: '', status: 'Active', price: '', soldPrice: '', represented: 'None', notable: 'No', mls: '',
+    street: '', city: '', state: 'CA', zip: '', title: '', headline: '', status: 'Active', price: '', soldPrice: '', represented: 'None', notable: 'No', featured: 'Yes', mls: '',
     beds: '', baths: '', fullBaths: '', halfBaths: '', sqft: '', lot: '', lotUnit: 'Acres', yearBuilt: '', type: 'Single family residence', stories: '',
     description: '', neighborhood: '', view: '', schoolDistrict: '', hoa: '', taxes: '', coverCrop: '',
     video: '', matterport: '', heroCount: '5', communityName: '', communityText: '', slug: '',
@@ -695,7 +695,7 @@ class Component extends DCLogic {
   entryFor(slug, d) {
     const p0 = (d.photos || [])[0] || '';
     const cover = !p0 ? '' : /^(https?:)?\//.test(p0) ? p0 : '/properties/' + slug + '/' + p0;
-    return { slug, title: d.title || '', street: d.street || '', city: d.city || '', state: d.state || '', status: d.status || '', price: d.price || '', soldPrice: d.soldPrice || '', represented: d.represented || 'None', notable: d.notable === 'Yes' ? 'Yes' : 'No', beds: d.beds || '', baths: d.baths || '', sqft: d.sqft || '', lot: d.lot || '', lotUnit: d.lotUnit || '', cover, coverCrop: d.coverCrop || '' };
+    return { slug, title: d.title || '', street: d.street || '', city: d.city || '', state: d.state || '', status: d.status || '', price: d.price || '', soldPrice: d.soldPrice || '', represented: d.represented || 'None', notable: d.notable === 'Yes' ? 'Yes' : 'No', featured: d.featured === 'No' ? 'No' : 'Yes', beds: d.beds || '', baths: d.baths || '', sqft: d.sqft || '', lot: d.lot || '', lotUnit: d.lotUnit || '', cover, coverCrop: d.coverCrop || '' };
   }
   async commitTree(tree, message) {
     const repo = this.state.repo.trim(), br = this.state.branch.trim() || 'main';
@@ -735,7 +735,7 @@ class Component extends DCLogic {
           const m = html.match(/window\.KS_PROPERTY = (\{[\s\S]*?\});\/\*KS_DATA\*\//);
           if (!m) continue;
           const d = JSON.parse(m[1]);
-          props.push({ slug, d, html, status: (!d.status || /^for sale$/i.test(d.status)) ? 'Active' : d.status, soldPrice: d.soldPrice || '', notable: d.notable === 'Yes' ? 'Yes' : 'No', dirty: false });
+          props.push({ slug, d, html, status: (!d.status || /^for sale$/i.test(d.status)) ? 'Active' : d.status, soldPrice: d.soldPrice || '', notable: d.notable === 'Yes' ? 'Yes' : 'No', featured: d.featured === 'No' ? 'No' : 'Yes', dirty: false });
         } catch (e) {}
       }
       this.setState({ props, propsMsg: props.length ? '' : 'No published properties found yet.', propsErr: false });
@@ -750,7 +750,7 @@ class Component extends DCLogic {
     if (sold && !String(row.soldPrice || '').trim()) { alert('Add the sold price first.'); return; }
     this.setState({ propsBusy: true, propsMsg: 'Saving ' + (row.d.title || row.d.street) + '…', propsErr: false });
     try {
-      const d = Object.assign({}, row.d, { status: row.status, soldPrice: sold ? String(row.soldPrice || '').replace(/[^\d.]/g, '') : '', notable: row.notable });
+      const d = Object.assign({}, row.d, { status: row.status, soldPrice: sold ? String(row.soldPrice || '').replace(/[^\d.]/g, '') : '', notable: row.notable, featured: row.featured === 'No' ? 'No' : 'Yes' });
       const json = JSON.stringify(d).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
       let html = row.html.replace(/window\.KS_PROPERTY = \{[\s\S]*?\};\/\*KS_DATA\*\//, () => 'window.KS_PROPERTY = ' + json + ';/*KS_DATA*/');
       const extra = [];
@@ -1089,7 +1089,7 @@ class Component extends DCLogic {
         fld('status', 'Status', { isInput: false, isSelect: true, options: ['Active', 'Coming Soon', 'Contingent', 'Pending', 'Sold'] }),
         sold ? fld('soldPrice', 'Sold price', money('soldPrice')) : fld('price', 'Price', money('price')),
         ...(sold ? [fld('represented', 'Representation', { isInput: false, isSelect: true, options: ['None', 'Seller represented', 'Buyer represented'] })] : []),
-        fld('notable', 'Notable sale?', { isInput: false, isSelect: true, options: ['No', 'Yes'] }),
+        sold ? fld('notable', 'Notable sale?', { isInput: false, isSelect: true, options: ['No', 'Yes'] }) : fld('featured', 'Featured listing?', { isInput: false, isSelect: true, options: ['Yes', 'No'] }),
         fld('mls', 'MLS #', { placeholder: 'ML82028688' }),
         fld('title', 'Property name (optional)', { placeholder: 'e.g. The Summit at Tehama', span: '1 / -1' }),
       ] },
@@ -1175,13 +1175,13 @@ class Component extends DCLogic {
       hasPropsMsg: !!s.propsMsg, propsMsg: s.propsMsg || '', propsMsgColor: s.propsErr ? '#c62828' : '#555555',
       statusOptions: ['Active', 'Coming Soon', 'Contingent', 'Pending', 'Sold'],
       propRows: (s.props || []).map((p) => {
-        const d = p.d, p0 = (d.photos || [])[0] || '', yes = p.notable === 'Yes';
+        const d = p.d, p0 = (d.photos || [])[0] || '', isSold = /sold/i.test(p.status), key = isSold ? 'notable' : 'featured', yes = isSold ? p.notable === 'Yes' : p.featured !== 'No';
         return {
           thumb: !p0 ? '' : /^(https?:)?\//.test(p0) ? p0 : this.base() + 'properties/' + p.slug + '/' + p0,
           name: d.title || d.street || p.slug, sub: [d.title ? d.street : '', d.city].filter(Boolean).join(', '),
           status: p.status, sold: /sold/i.test(p.status), soldPrice: p.soldPrice,
           onStatus: (e) => this.setProp(p.slug, { status: e.target.value }), onSoldPrice: (e) => this.setProp(p.slug, { soldPrice: e.target.value }),
-          setYes: () => this.setProp(p.slug, { notable: 'Yes' }), setNo: () => this.setProp(p.slug, { notable: 'No' }),
+          flagLabel: isSold ? 'Notable sale?' : 'Featured listing?', setYes: () => this.setProp(p.slug, { [key]: 'Yes' }), setNo: () => this.setProp(p.slug, { [key]: 'No' }),
           yesBg: yes ? '#000000' : '#ffffff', yesFg: yes ? '#ffffff' : '#1a1a1a', noBg: yes ? '#ffffff' : '#000000', noFg: yes ? '#1a1a1a' : '#ffffff',
           save: () => this.saveProp(p.slug), saveLabel: p.dirty ? 'Save' : 'Saved', saveOpacity: p.dirty ? 1 : 0.45,
           edit: () => { if (this.adminView === 'properties' && window.parent !== window) { try { window.parent.postMessage({ type: 'ks-admin-open', tool: 'builder', slug: p.slug }, location.origin); return; } catch (e) {} } this.setState({ loadSlug: p.slug }, () => { this.loadExisting(); window.scrollTo({ top: 0, behavior: 'smooth' }); }); },
@@ -1247,6 +1247,121 @@ select:focus{outline:none;border-bottom-color:#1a1a1a!important}
       return;
     }
     if (t && t.tagName === 'SELECT' && !t.multiple && (e.key === ' ' || e.key === 'Enter' || (e.altKey && e.key === 'ArrowDown') || e.key === 'F4')) { e.preventDefault(); open(t); }
+  }, true);
+})();
+</script>
+<style data-ks-picker>
+input[type=date]::-webkit-datetime-edit-month-field:focus,input[type=date]::-webkit-datetime-edit-day-field:focus,input[type=date]::-webkit-datetime-edit-year-field:focus,input[type=time]::-webkit-datetime-edit-hour-field:focus,input[type=time]::-webkit-datetime-edit-minute-field:focus,input[type=time]::-webkit-datetime-edit-ampm-field:focus{background-color:#1a1a1a;color:#ffffff;border-radius:3px}
+.ks-pick{position:fixed;z-index:9999;background:#ffffff;border:1px solid #ececec;border-radius:10px;box-shadow:0 14px 36px rgba(0,0,0,.10);font-family:Montserrat,system-ui,sans-serif;color:#1a1a1a;opacity:0;transform:translateY(-4px);transition:opacity .18s ease,transform .18s ease;box-sizing:border-box;user-select:none}
+.ks-pick.ks-open{opacity:1;transform:none}
+.ks-pick button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+.ks-cal{width:300px;padding:16px 16px 12px}
+.ks-cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.ks-cal-title{font-size:15px;font-weight:500;letter-spacing:.01em}
+.ks-cal-nav{display:flex;gap:4px}
+.ks-cal-nav button{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .15s ease}
+.ks-cal-nav button:hover{background:#f2f2f2}
+.ks-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.ks-cal-dow{font-size:11px;font-weight:500;letter-spacing:.06em;color:#8a8a8a;padding:4px 0 8px}
+.ks-cal-day{height:36px;border-radius:50%!important;font-size:13px!important;font-weight:400;transition:background .15s ease,color .15s ease;position:relative}
+.ks-cal-day:hover{background:#f2f2f2!important}
+.ks-cal-day.ks-out{color:#c4c4c4!important}
+.ks-cal-day.ks-today::after{content:"";position:absolute;left:50%;bottom:6px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:#1a1a1a}
+.ks-cal-day.ks-sel{background:#000000!important;color:#ffffff!important}
+.ks-cal-day.ks-sel.ks-today::after{background:#ffffff}
+.ks-pick-foot{display:flex;justify-content:space-between;padding:10px 4px 2px;margin-top:8px;border-top:1px solid #f0f0f0}
+.ks-pick-foot button{font-size:13px;font-weight:500;padding:6px 2px;text-decoration:underline transparent;text-underline-offset:5px;text-decoration-thickness:1px;transition:text-decoration-color .2s ease}
+.ks-pick-foot button:hover{text-decoration-color:#1a1a1a}
+.ks-time{display:flex;gap:6px;padding:10px}
+.ks-time-col{width:64px;max-height:252px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;scrollbar-width:thin}
+.ks-time-col button{height:36px;flex:none;border-radius:8px!important;font-size:14px!important;font-weight:400;font-variant-numeric:tabular-nums;transition:background .15s ease,color .15s ease}
+.ks-time-col button:hover{background:#f2f2f2!important}
+.ks-time-col button.ks-sel{background:#000000!important;color:#ffffff!important}
+</style>
+<script data-ks-picker>
+(function(){
+  if (window.__ksPicker) return; window.__ksPicker = 1;
+  if (window.matchMedia && !matchMedia('(pointer:fine)').matches) return;
+  var setVal = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+  var pop = null, inp = null;
+  var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var chev = function (d) { return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="' + (d < 0 ? 'M15 18l-6-6 6-6' : 'M9 18l6-6-6-6') + '"></path></svg>'; };
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function commit(v) { var i = inp; close(); if (!i) return; if (i.value !== v) { setVal.call(i, v); i.dispatchEvent(new Event('input', { bubbles: true })); i.dispatchEvent(new Event('change', { bubbles: true })); } i.focus(); }
+  function close() { if (!pop) return; var p = pop; pop = null; inp = null; p.classList.remove('ks-open'); setTimeout(function () { p.remove(); }, 180); document.removeEventListener('mousedown', outside, true); window.removeEventListener('scroll', onScroll, true); window.removeEventListener('resize', close); }
+  function outside(e) { if (pop && !pop.contains(e.target) && e.target !== inp) close(); }
+  function onScroll(e) { if (pop && !pop.contains(e.target)) close(); }
+  function place(p, el) {
+    document.body.appendChild(p);
+    var r = el.getBoundingClientRect(), h = p.offsetHeight, w = p.offsetWidth;
+    p.style.left = Math.max(8, Math.min(r.left, innerWidth - w - 8)) + 'px';
+    p.style.top = (innerHeight - r.bottom < h + 12 && r.top > h + 12 ? r.top - h - 6 : r.bottom + 6) + 'px';
+    requestAnimationFrame(function () { if (pop === p) p.classList.add('ks-open'); });
+    document.addEventListener('mousedown', outside, true); window.addEventListener('scroll', onScroll, true); window.addEventListener('resize', close);
+  }
+  function openDate(el) {
+    close(); inp = el;
+    var cur = /^\d{4}-\d{2}-\d{2}$/.test(el.value) ? el.value : '';
+    var now = new Date(), todayS = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+    var base = cur ? new Date(cur + 'T12:00:00') : now, y = base.getFullYear(), m = base.getMonth();
+    var p = pop = document.createElement('div'); p.className = 'ks-pick ks-cal'; p.setAttribute('role', 'dialog'); p.setAttribute('aria-label', 'Choose a date');
+    p.addEventListener('mousedown', function (e) { e.preventDefault(); });
+    function render() {
+      var first = new Date(y, m, 1), start = new Date(y, m, 1 - first.getDay()), html = '';
+      html += '<div class="ks-cal-head"><span class="ks-cal-title">' + MONTHS[m] + ' ' + y + '</span><span class="ks-cal-nav"><button type="button" data-nav="-1" aria-label="Previous month">' + chev(-1) + '</button><button type="button" data-nav="1" aria-label="Next month">' + chev(1) + '</button></span></div><div class="ks-cal-grid">';
+      ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(function (d) { html += '<span class="ks-cal-dow">' + d + '</span>'; });
+      for (var k = 0; k < 42; k++) {
+        var d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + k), s = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+        var cls = 'ks-cal-day' + (d.getMonth() !== m ? ' ks-out' : '') + (s === todayS ? ' ks-today' : '') + (s === cur ? ' ks-sel' : '');
+        html += '<button type="button" class="' + cls + '" data-d="' + s + '" aria-label="' + MONTHS[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear() + '">' + d.getDate() + '</button>';
+      }
+      html += '</div><div class="ks-pick-foot"><button type="button" data-act="clear">Clear</button><button type="button" data-act="today">Today</button></div>';
+      p.innerHTML = html;
+    }
+    p.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.nav) { m += +b.dataset.nav; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; } render(); return; }
+      if (b.dataset.d) return commit(b.dataset.d);
+      if (b.dataset.act === 'clear') return commit('');
+      if (b.dataset.act === 'today') return commit(todayS);
+    });
+    render(); place(p, el);
+  }
+  function openTime(el) {
+    close(); inp = el;
+    var mt = (el.value || '').match(/^(\d{2}):(\d{2})/), H = mt ? +mt[1] : 13, M = mt ? +mt[2] : 0;
+    var h12 = H % 12 || 12, ap = H >= 12 ? 'PM' : 'AM';
+    var mins = []; for (var k = 0; k < 60; k += 5) mins.push(k); if (mins.indexOf(M) < 0) { mins.push(M); mins.sort(function (a, b) { return a - b; }); }
+    var p = pop = document.createElement('div'); p.className = 'ks-pick'; p.setAttribute('role', 'dialog'); p.setAttribute('aria-label', 'Choose a time');
+    p.addEventListener('mousedown', function (e) { e.preventDefault(); });
+    function val() { var hh = (h12 % 12) + (ap === 'PM' ? 12 : 0); return pad(hh) + ':' + pad(M); }
+    function render() {
+      var col = function (name, items, sel, fmt) { return '<div class="ks-time-col" data-col="' + name + '">' + items.map(function (v) { return '<button type="button" data-' + name + '="' + v + '" class="' + (v === sel ? 'ks-sel' : '') + '">' + fmt(v) + '</button>'; }).join('') + '</div>'; };
+      p.innerHTML = '<div class="ks-time">' + col('h', [1,2,3,4,5,6,7,8,9,10,11,12], h12, function (v) { return v; }) + col('m', mins, M, pad) + col('ap', ['AM','PM'], ap, function (v) { return v; }) + '</div><div class="ks-pick-foot" style="margin:0 10px 6px"><button type="button" data-act="clear">Clear</button><button type="button" data-act="done">Done</button></div>';
+      p.querySelectorAll('.ks-time-col').forEach(function (c) { var s = c.querySelector('.ks-sel'); if (s) c.scrollTop = s.offsetTop - c.clientHeight / 2 + s.offsetHeight / 2; });
+    }
+    p.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.h) { h12 = +b.dataset.h; } else if (b.dataset.m) { M = +b.dataset.m; } else if (b.dataset.ap) { ap = b.dataset.ap; }
+      else if (b.dataset.act === 'clear') return commit(''); else if (b.dataset.act === 'done') return commit(val());
+      var keep = {}; p.querySelectorAll('.ks-time-col').forEach(function (c) { keep[c.dataset.col] = c.scrollTop; });
+      var i = inp; if (i && i.value !== val()) { setVal.call(i, val()); i.dispatchEvent(new Event('input', { bubbles: true })); i.dispatchEvent(new Event('change', { bubbles: true })); }
+      render(); p.querySelectorAll('.ks-time-col').forEach(function (c) { c.scrollTop = keep[c.dataset.col]; });
+    });
+    render(); place(p, el);
+  }
+  document.addEventListener('mousedown', function (e) {
+    var t = e.target; if (!t || t.tagName !== 'INPUT' || t.disabled || t.readOnly) return;
+    if (t.type !== 'date' && t.type !== 'time') return;
+    e.preventDefault(); t.focus();
+    if (inp === t) { close(); return; }
+    if (t.type === 'date') openDate(t); else openTime(t);
+  }, true);
+  document.addEventListener('click', function (e) { var t = e.target; if (t && t.tagName === 'INPUT' && (t.type === 'date' || t.type === 'time')) e.preventDefault(); }, true);
+  document.addEventListener('keydown', function (e) {
+    if (pop && e.key === 'Escape') { e.preventDefault(); var i = inp; close(); if (i) i.focus(); return; }
+    var t = e.target;
+    if (t && t.tagName === 'INPUT' && (t.type === 'date' || t.type === 'time') && (e.key === ' ' || (e.altKey && e.key === 'ArrowDown') || e.key === 'F4')) { e.preventDefault(); if (t.type === 'date') openDate(t); else openTime(t); }
   }, true);
 })();
 </script>
