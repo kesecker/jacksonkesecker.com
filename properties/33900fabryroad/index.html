@@ -72,7 +72,7 @@ wait();})();</script>
       [data-ks-mosaic-rest] { height: 64vw !important; }
       [data-ks-row] { grid-template-columns: minmax(0, 1fr) !important; row-gap: 6px !important; }
       [data-ks-v-arrow] { display: none !important; }
-      [data-ks-agent] { flex-direction: column !important; align-items: flex-start !important; }
+      [data-ks-agent] { flex-direction: column !important; align-items: center !important; text-align: center; } [data-ks-agent] > div, [data-ks-agent] > div > div { align-items: center !important; justify-content: center !important; } [data-ks-agent] a[href="#"] { align-self: center !important; }
     }
   </style>
 <style>[data-ks-ul]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--ks-line,1px);background:var(--ks-ul,currentColor);transform:scaleX(var(--ks-on,0));transform-origin:var(--ks-ul-o,left) center;transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none;will-change:transform;}</style>
@@ -302,7 +302,7 @@ wait();})();</script>
   </sc-if>
 
   <div data-screen-label="Agent" style="padding: clamp(64px, 9vw, 130px) clamp(20px, 5vw, 72px); max-width: 1100px; margin: 0 auto; width: 100%; box-sizing: border-box;">
-    <div data-ks-agent="1" style="display: flex; align-items: center; gap: clamp(28px, 4vw, 56px); padding-top: clamp(40px, 5vw, 64px); border-top: 1px solid #e5e5e5;">
+    <div data-ks-agent="1" style="display: flex; align-items: center; justify-content: center; gap: clamp(28px, 4vw, 56px); padding-top: clamp(40px, 5vw, 64px); border-top: 1px solid #e5e5e5;">
       <img src="/uploads/Website%20Headshot.png" alt="Jackson Kesecker" style="width: 180px; height: 210px; object-fit: cover; object-position: top; flex-shrink: 0; background: #f2f2f2;">
       <div style="display: flex; flex-direction: column; gap: 22px; min-width: 0;">
         <div style="display: flex; flex-direction: column; gap: 6px;">
@@ -581,7 +581,7 @@ class Component extends DCLogic {
       hasStatus: !!statusText, statusText, statusDot,
       addressLine, title: d.title || d.street || '', priceText,
       photoCount: n, openViewerAt0: () => this.openViewer(0),
-      overviewHeading: String(d.headline || (sold ? 'A recent sale in ' + (d.city || 'Monterey County') : 'Welcome to ' + (d.street || 'home'))).replace(/(^|[\s\-])([a-z])/g, (m, a, b) => a + b.toUpperCase()),
+      overviewHeading: String(d.headline || (sold ? 'A recent sale in ' + (d.city || 'Monterey County') : 'Welcome to ' + (d.street || 'home'))).replace(/^[\s\S]*$/, (s) => /[.?!]["'\u201d)]?\s*$/.test(s) ? s : s.replace(/(^|[\s\-])([a-z])/g, (m, a, b) => a + b.toUpperCase())),
       descParas: paras,
       hasOpenHouses: !sold && ohs.length > 0, openHouses: ohs,
       ctaPrimary: sold ? 'Thinking of selling? Let’s talk' : 'Schedule a private tour',
