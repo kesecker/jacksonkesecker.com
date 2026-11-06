@@ -119,9 +119,9 @@ wait();})();</script>
     <dc-import name="ContactModalV2" hint-size="0,0"></dc-import>
   </div>
 
-  <div data-ks-hero="1" data-screen-label="Hero" style="position: relative; width: 100%; height: calc(100svh - 92px); min-height: 520px; max-height: 1100px; overflow: hidden; background: #000000;">
+  <div data-ks-hero="1" data-screen-label="Hero" onTouchStart="{{ heroTouchStart }}" onTouchEnd="{{ heroTouchEnd }}" style="position: relative; width: 100%; height: calc(100svh - 92px); min-height: 520px; max-height: 1100px; overflow: hidden; background: #000000;">
     <sc-for list="{{ heroSlides }}" as="s" hint-placeholder-count="1">
-      <img src="{{ s.src }}" alt="{{ s.alt }}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1.2s ease, transform 7s ease-out; {{ s.anim }}">
+      <img src="{{ s.src }}" alt="{{ s.alt }}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .45s ease; {{ s.anim }}">
     </sc-for>
     <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.18) 24%, rgba(0,0,0,0.06) 46%, rgba(0,0,0,0.45) 70%, rgba(0,0,0,0.88) 100%); pointer-events: none;"></div>
     <div data-ks-hero-arrows="1" style="position: absolute; left: clamp(20px, 3vw, 40px); right: clamp(20px, 3vw, 40px); top: 50%; transform: translateY(-50%); display: flex; justify-content: space-between; pointer-events: none;">
@@ -465,7 +465,9 @@ class Component extends DCLogic {
   heroGo = (d) => { const n = this.heroCount(); this.setState((s) => ({ hero: (s.hero + d + n) % n })); this.restartHero(); };
   heroPrev = () => this.heroGo(-1);
   heroNext = () => this.heroGo(1);
-  restartHero = () => { clearInterval(this._heroIv); this._heroIv = setInterval(() => { if (!this.state.viewer && !document.hidden) { const n = this.heroCount(); this.setState((s) => ({ hero: (s.hero + 1) % n })); } }, 6500); };
+  restartHero = () => { clearInterval(this._heroIv); };
+  heroTouchStart = (e) => { const t = e.touches && e.touches[0]; this._hx = t ? t.clientX : null; this._hy = t ? t.clientY : null; };
+  heroTouchEnd = (e) => { const t = e.changedTouches && e.changedTouches[0]; if (this._hx == null || !t) return; const dx = t.clientX - this._hx, dy = t.clientY - this._hy; this._hx = null; if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) this.heroGo(dx < 0 ? 1 : -1); };
 
   openViewer = (i) => { this.setState({ viewer: true, vi: i, drag: 0, dragging: false }); document.documentElement.style.overflow = 'hidden'; };
   closeViewer = () => { this.setState({ viewer: false }); document.documentElement.style.overflow = ''; };
@@ -542,7 +544,7 @@ class Component extends DCLogic {
     const priceText = sold ? (this.money(d.soldPrice || d.price) ? (this.money(d.soldPrice || d.price) + (d.soldPrice ? '' : '')) : '') : this.money(d.price);
     const alt = (i) => (d.title || d.street || 'Property') + ' photo ' + (i + 1);
     const hc = this.heroCount();
-    const heroSlides = ph.slice(0, hc).map((src, i) => ({ src, alt: alt(i), anim: i === st.hero ? 'opacity: 1; transform: scale(1);' : 'opacity: 0; transform: scale(1.06);' }));
+    const heroSlides = ph.slice(0, hc).map((src, i) => ({ src, alt: alt(i), anim: i === st.hero ? 'opacity: 1;' : 'opacity: 0;' }));
     const lot = this.num(d.lot) ? this.num(d.lot) + ' ' + (d.lotUnit || 'Acres') : '';
     const facts = [
       this.num(d.beds) && { isBed: true, value: this.num(d.beds), label: Number(d.beds) === 1 ? 'Bed' : 'Beds' },
@@ -577,7 +579,7 @@ class Component extends DCLogic {
       openContactModal: this.openContactModal,
       isPhoneOpen: st.isPhoneOpen, togglePhonePopup: this.togglePhonePopup, onPhoneClose: this.onPhoneClose,
       phonePopoverStyle: st.isPhoneOpen ? 'opacity:1;visibility:visible;transform:translateY(0);transition:opacity 0.3s ease,transform 0.3s ease;' : 'opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity 0.3s ease,transform 0.3s ease;',
-      heroSlides, heroPrev: this.heroPrev, heroNext: this.heroNext,
+      heroSlides, heroPrev: this.heroPrev, heroNext: this.heroNext, heroTouchStart: this.heroTouchStart, heroTouchEnd: this.heroTouchEnd,
       heroCounter: String(st.hero + 1).padStart(2, '0') + ' / ' + String(hc).padStart(2, '0'),
       hasStatus: !!statusText, statusText, statusDot,
       addressLine, title: d.title || d.street || '', priceText,
