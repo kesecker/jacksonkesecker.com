@@ -324,13 +324,25 @@
           </div>
         </div>
       </sc-if>
+      <sc-if value="{{ hasProg }}" hint-placeholder-val="{{ false }}">
+        <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ progPct }}" aria-label="Publishing progress" style="border-top: 1px solid rgba(255,255,255,0.18); padding: 18px 0 0; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px;">
+            <span style="font-size: 12px; font-weight: 500; letter-spacing: 0.04em; color: rgba(255,255,255,0.55);">{{ progLabel }}</span>
+            <span style="font-size: 22px; font-weight: 300; color: #ffffff; font-variant-numeric: tabular-nums;">{{ progPct }}%</span>
+          </div>
+          <div style="height: 4px; border-radius: 2px; background: rgba(255,255,255,0.15); overflow: hidden;">
+            <div style="height: 100%; width: {{ progPct }}%; background: {{ progColor }}; border-radius: 2px; transition: width .35s ease, background .3s ease;"></div>
+          </div>
+          <span style="font-size: 13px; line-height: 1.5; color: {{ progTextColor }};">{{ progText }}</span>
+        </div>
+      </sc-if>
       <sc-if value="{{ hasLog }}" hint-placeholder-val="{{ false }}">
-        <div style="background: transparent; border-top: 1px solid rgba(255,255,255,0.18); border-radius: 0; padding: 18px 0 0; display: flex; flex-direction: column; gap: 6px; max-height: 240px; overflow: auto;">
+        <div style="background: transparent; border-top: {{ logBorder }}; border-radius: 0; padding: {{ logPad }}; display: flex; flex-direction: column; gap: 6px; max-height: 240px; overflow: auto;">
           <sc-for list="{{ logLines }}" as="l" hint-placeholder-count="0">
             <span style="font-size: 13px; line-height: 1.5; color: {{ l.color }}; word-break: break-word;">{{ l.text }}</span>
           </sc-for>
           <sc-if value="{{ hasLiveLink }}" hint-placeholder-val="{{ false }}">
-            <a href="{{ pageUrl }}" target="_blank" rel="noopener" style="margin-top: 6px; color: #ffffff; font-size: 14px; font-weight: 700; text-decoration: underline;">Open the live page</a>
+            <a href="{{ pageUrl }}" target="_blank" rel="noopener" style="margin-top: 6px; color: #ffffff; font-size: 14px; font-weight: 400; text-decoration: underline; text-underline-offset: 4px;">Open the live page</a>
           </sc-if>
         </div>
       </sc-if>
@@ -376,7 +388,7 @@ class Component extends DCLogic {
       exterior: (draft && draft.exterior) || rows(Component.EXTERIOR),
       oh: (draft && draft.oh) || [],
       photos: [], dls: [], comm: null,
-      zoneHot: false, dragId: null, busy: false, log: [], live: false, showSettings: false, loadSlug: '',
+      zoneHot: false, dragId: null, busy: false, log: [], prog: null, live: false, showSettings: false, loadSlug: '',
       drafts: [], draftId: '', draftMsg: '', draftErr: false, draftBusy: false, guard: null,
       token: localStorage.getItem('ks-gh-token') || '', repo: localStorage.getItem('ks-gh-repo') || 'kesecker/jacksonkesecker.com', branch: localStorage.getItem('ks-gh-branch') || 'main',
     };
@@ -438,7 +450,7 @@ class Component extends DCLogic {
       const photos = (await Promise.all((d.photos || []).map(back))).filter(Boolean);
       const dls = (await Promise.all((d.dls || []).map(back))).filter(Boolean);
       const comm = await back(d.comm);
-      this.setState({ f: Object.assign({}, Component.FIELDS, d.f), interior: d.interior || [], exterior: d.exterior || [], oh: d.oh || [], photos, dls, comm, log: [], live: false, draftId: id, loadSlug: 'draft:' + id, draftMsg: 'Draft opened. Click Save As Draft to keep your changes, or Publish To Website when it’s ready.', draftErr: false }, this.setBaseline);
+      this.setState({ f: Object.assign({}, Component.FIELDS, d.f), interior: d.interior || [], exterior: d.exterior || [], oh: d.oh || [], photos, dls, comm, log: [], prog: null, live: false, draftId: id, loadSlug: 'draft:' + id, draftMsg: 'Draft opened. Click Save As Draft to keep your changes, or Publish To Website when it’s ready.', draftErr: false }, this.setBaseline);
     } catch (e) { this.setState({ draftMsg: String(e.message || e), draftErr: true }); }
   };
   guardThen = (title, body, proceedLabel, go) => { if (!this.isDirty()) { go(); return; } this.setState({ guard: { title, body, proceedLabel, go } }); };
@@ -449,6 +461,7 @@ class Component extends DCLogic {
   autoSlug() { const f = this.state.f; if (!f.street) return ''; const st = String(f.street).replace(/\s*(#|unit|apt|suite|ste)\s*/i, ' unit '); return this.slugify([st, f.city, f.state || 'CA', f.zip].filter(Boolean).join(' ')); }
   slug() { return this.slugify(this.state.f.slug) || this.autoSlug(); }
   uid() { return Math.random().toString(36).slice(2, 8); }
+  prog = (pct, text) => this.setState((s) => ({ prog: { pct: Math.max(s.prog ? s.prog.pct : 0, Math.min(100, Math.round(pct))), text: text || (s.prog ? s.prog.text : ''), done: false, err: false } }));
   log = (text, kind) => this.setState((s) => ({ log: s.log.concat([{ text, color: kind === 'err' ? '#ff8a80' : kind === 'ok' ? '#9be7a8' : 'rgba(255,255,255,0.8)' }]) }));
 
   cfClean(t) {
@@ -549,7 +562,8 @@ class Component extends DCLogic {
 
   async buildFiles() {
     const slug = this.slug(), dir = 'properties/' + slug + '/', files = [];
-    this.log('Preparing ' + this.state.photos.length + ' photos…');
+    const np = this.state.photos.length;
+    this.prog(1, 'Preparing photos…');
     const photoPaths = [];
     for (let i = 0; i < this.state.photos.length; i++) {
       const p = this.state.photos[i];
@@ -558,7 +572,7 @@ class Component extends DCLogic {
       const blob = await this.compress(p.file, 2560);
       const path = 'photos/' + String(i + 1).padStart(2, '0') + '-' + this.uid() + '.jpg';
       files.push({ path: dir + path, blob }); photoPaths.push(path);
-      if ((i + 1) % 5 === 0) this.log('  ' + (i + 1) + ' photos done');
+      this.prog(1 + 34 * (i + 1) / np, 'Preparing photos (' + (i + 1) + ' of ' + np + ')…');
     }
     const downloads = [];
     for (const d of this.state.dls) {
@@ -571,6 +585,7 @@ class Component extends DCLogic {
       if (this.state.comm.kind === 'existing') comm = this.state.comm.path;
       else { comm = 'community-' + this.uid() + '.jpg'; files.push({ path: dir + comm, blob: await this.compress(this.state.comm.file, 2000) }); }
     }
+    this.prog(35, 'Building the page…');
     const data = this.dataFor({ photos: photoPaths, downloads, comm });
     const tplRes = await fetch(this.base() + 'properties/template/index.html', { cache: 'no-store' });
     if (!tplRes.ok) throw new Error('Could not load the page template (' + tplRes.status + '). Is /properties/template/ published?');
@@ -629,36 +644,39 @@ class Component extends DCLogic {
     if (this.state.busy) return;
     if (!this.viaWorker && !this.state.token.trim()) { this.setState({ showSettings: true }); alert('Add your GitHub token first (one-time setup below).'); return; }
     if (!this.validate()) return;
-    this.setState({ busy: true, log: [], live: false });
+    this.setState({ busy: true, log: [], live: false, prog: { pct: 0, text: 'Starting…', done: false, err: false } });
     try {
       const repo = this.state.repo.trim(), br = this.state.branch.trim() || 'main';
       const { files, url, slug, data } = await this.buildFiles();
-      this.log('Uploading ' + files.length + ' files to GitHub…');
+      this.prog(38, 'Uploading to your website…');
       const tree = [];
       for (let i = 0; i < files.length; i++) {
         const f = files[i];
         const content = f.blob ? await this.b64(f.blob) : f.text;
         const b = await this.gh('/repos/' + repo + '/git/blobs', { method: 'POST', body: JSON.stringify(f.blob ? { content, encoding: 'base64' } : { content, encoding: 'utf-8' }) });
         tree.push({ path: f.path, mode: '100644', type: 'blob', sha: b.sha });
-        if ((i + 1) % 5 === 0) this.log('  ' + (i + 1) + ' / ' + files.length + ' uploaded');
+        this.prog(38 + 52 * (i + 1) / files.length, 'Uploading to your website (' + (i + 1) + ' of ' + files.length + ' files)…');
       }
+      this.prog(91, 'Updating the sitemap…');
       try {
         const sm = await this.gh('/repos/' + repo + '/contents/sitemap.xml?ref=' + encodeURIComponent(br));
         const xml = new TextDecoder().decode(Uint8Array.from(atob(sm.content.replace(/\n/g, '')), (c) => c.charCodeAt(0)));
         const next = this.sitemapWith(xml, url);
-        if (next) { const b = await this.gh('/repos/' + repo + '/git/blobs', { method: 'POST', body: JSON.stringify({ content: next, encoding: 'utf-8' }) }); tree.push({ path: 'sitemap.xml', mode: '100644', type: 'blob', sha: b.sha }); this.log('Added to sitemap.'); }
+        if (next) { const b = await this.gh('/repos/' + repo + '/git/blobs', { method: 'POST', body: JSON.stringify({ content: next, encoding: 'utf-8' }) }); tree.push({ path: 'sitemap.xml', mode: '100644', type: 'blob', sha: b.sha }); }
       } catch (e) { this.log('Sitemap not updated: ' + e.message); }
+      this.prog(94, 'Updating your property list…');
       try {
         const idx = (await this.readIndex()).filter((x) => x && x.slug !== slug);
         idx.push(this.entryFor(slug, data));
         tree.push({ path: 'properties/index.json', mode: '100644', type: 'blob', sha: await this.textBlob(JSON.stringify(idx, null, 1)) });
       } catch (e) { this.log('Notable Sales list not updated: ' + e.message); }
+      this.prog(97, 'Finishing up…');
       await this.commitTree(tree, 'Property page: ' + slug);
-      this.log('Published. The page goes live in about 1–2 minutes.', 'ok');
+      this.setState({ prog: { pct: 100, text: 'Published. The page goes live in about 1–2 minutes.', done: true, err: false } });
       if (this.state.draftId) { try { await this.draftApi('/' + this.state.draftId, { method: 'DELETE' }); } catch (e) {} this.setState({ draftId: '', draftMsg: '' }, this.loadDraftList); }
       setTimeout(this.setBaseline, 0);
       this.setState((s) => ({ live: true, loadSlug: slug, existing: (s.existing || []).some((x) => x.slug === slug) ? s.existing : (s.existing || []).concat([{ slug, label: s.f.title || s.f.street || slug }]) }));
-    } catch (e) { this.log(String(e.message || e), 'err'); }
+    } catch (e) { this.log(String(e.message || e), 'err'); this.setState((s) => ({ prog: s.prog ? Object.assign({}, s.prog, { err: true, text: 'Publishing stopped at ' + s.prog.pct + '%.' }) : null })); }
     this.setState({ busy: false });
   };
 
@@ -688,7 +706,7 @@ class Component extends DCLogic {
         return;
       } catch (e) {
         if (attempt >= 4 || !/422|fast forward|409/i.test(String(e.message || e))) throw e;
-        this.log('GitHub changed meanwhile, retrying (' + attempt + ')…');
+        if (this.state.prog) this.prog(this.state.prog.pct, 'Retrying (' + attempt + ')…'); else this.log('GitHub changed meanwhile, retrying (' + attempt + ')…');
         await new Promise((r) => setTimeout(r, 1500 * attempt));
       }
     }
@@ -789,7 +807,7 @@ class Component extends DCLogic {
         photos: (d.photos || []).map((p) => ({ id: this.uid(), kind: 'existing', path: p, url: dir + p })),
         dls: (d.downloads || []).map((x) => ({ id: this.uid(), kind: 'existing', label: x.label, href: x.href, name: x.href.split('/').pop() })),
         comm: d.communityImage ? { kind: 'existing', path: d.communityImage, url: dir + d.communityImage } : null,
-        log: [], live: false, draftId: '', draftMsg: '', draftErr: false,
+        log: [], prog: null, live: false, draftId: '', draftMsg: '', draftErr: false,
       }, this.setBaseline);
     } catch (e) { this.setState({ draftMsg: 'Couldn\u2019t open "' + slug + '": ' + e.message, draftErr: true }); }
   };
@@ -978,7 +996,7 @@ class Component extends DCLogic {
       const ok = await new Promise((res) => { if (!this.isDirty()) { res(true); return; } this.setState({ guard: { title: 'Replace the current property?', body: 'Importing ' + (d.f.street || 'this listing') + ' starts a fresh form, so your unsaved changes will be lost.', proceedLabel: 'Replace Without Saving', go: () => res(true), cancel: () => res(false) } }); });
       if (!ok) { this.setState({ importMsg: 'Import cancelled.' }); return; }
       const rows = (labels) => labels.map((l) => ({ id: this.uid(), label: l, value: '' }));
-      await new Promise((r) => this.setState({ f: Object.assign({}, Component.FIELDS), interior: rows(Component.INTERIOR), exterior: rows(Component.EXTERIOR), oh: [], photos: [], dls: [], comm: null, log: [], live: false, loadSlug: '', draftId: '', draftMsg: '' }, r));
+      await new Promise((r) => this.setState({ f: Object.assign({}, Component.FIELDS), interior: rows(Component.INTERIOR), exterior: rows(Component.EXTERIOR), oh: [], photos: [], dls: [], comm: null, log: [], prog: null, live: false, loadSlug: '', draftId: '', draftMsg: '' }, r));
     }
     const cur = this.state.f;
     const f = Object.assign({}, cur);
@@ -1038,7 +1056,7 @@ class Component extends DCLogic {
   resetAll = () => { this.guardThen('Clear all fields?', 'This empties the form. Anything you haven\u2019t saved will be lost.', 'Clear Without Saving', this.doReset); };
   doReset = () => {
     const rows = (labels) => labels.map((l) => ({ id: this.uid(), label: l, value: '' }));
-    this.setState({ f: Object.assign({}, Component.FIELDS), interior: rows(Component.INTERIOR), exterior: rows(Component.EXTERIOR), oh: [], photos: [], dls: [], comm: null, log: [], live: false, loadSlug: '' , draftId: '', draftMsg: '', draftErr: false }, this.setBaseline);
+    this.setState({ f: Object.assign({}, Component.FIELDS), interior: rows(Component.INTERIOR), exterior: rows(Component.EXTERIOR), oh: [], photos: [], dls: [], comm: null, log: [], prog: null, live: false, loadSlug: '' , draftId: '', draftMsg: '', draftErr: false }, this.setBaseline);
   };
 
   get ksLogoSrc() { return this.base() + 'assets/key-landing-logo.png'; }
@@ -1136,7 +1154,10 @@ class Component extends DCLogic {
       tokenValue: s.token, onToken: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-token', v); this.setState({ token: v, tokenEditing: true }); },
       repoValue: s.repo, onRepo: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-repo', v); this.setState({ repo: v }); },
       branchValue: s.branch, onBranch: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-branch', v); this.setState({ branch: v }); },
-      hasLog: s.log.length > 0, logLines: s.log, hasLiveLink: s.live,
+      hasLog: s.log.length > 0 || (s.live && !!s.prog), logLines: s.log, hasLiveLink: s.live,
+      hasProg: !!s.prog, progPct: s.prog ? s.prog.pct : 0, progText: s.prog ? s.prog.text : '', progLabel: s.prog ? (s.prog.err ? 'Not Published' : s.prog.done ? 'Published' : 'Publishing') : '',
+      progColor: s.prog && s.prog.err ? '#ff8a80' : s.prog && s.prog.done ? '#9be7a8' : '#ffffff', progTextColor: s.prog && s.prog.err ? '#ff8a80' : s.prog && s.prog.done ? '#9be7a8' : 'rgba(255,255,255,0.8)',
+      logBorder: s.prog ? 'none' : '1px solid rgba(255,255,255,0.18)', logPad: s.prog ? '0' : '18px 0 0',
       needTokenHere: !this.viaWorker && this.adminView === 'properties' && !!s.tokenEditing, showChrome: !this.adminEmbed, showForm: this.adminView !== 'properties', showPropsPanel: this.adminView !== 'builder',
       loadProps: this.loadProps, propsBusy: !!s.propsBusy, propsBtn: s.propsBusy ? 'Working…' : ((s.props || []).length ? 'Refresh' : 'Load my properties'),
       hasPropsMsg: !!s.propsMsg, propsMsg: s.propsMsg || '', propsMsgColor: s.propsErr ? '#c62828' : '#555555',
