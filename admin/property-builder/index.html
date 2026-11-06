@@ -303,6 +303,7 @@
       <div style="display: flex; flex-wrap: wrap; gap: 12px;">
         <button onClick="{{ publish }}" disabled="{{ busy }}" style="height: 50px; padding: 0 28px; border-radius: 8px; border: 1px solid #ffffff; background: #ffffff; color: #000000; font-size: 14px; font-weight: 600; cursor: pointer; opacity: {{ busyOpacity }}; transition: background .3s ease, color .3s ease;" style-hover="background: transparent; color: #ffffff;">Publish To Website</button>
         <button onClick="{{ saveDraftBtn }}" style="height: 50px; padding: 0 28px; border-radius: 8px; border: 1px solid #ffffff; background: transparent; color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #ffffff; color: #000000;">{{ draftBtnLabel }}</button>
+        <button onClick="{{ backToTop }}" style="height: 50px; padding: 0 28px; border-radius: 8px; border: 1px solid #ffffff; background: transparent; color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background .3s ease, color .3s ease;" style-hover="background: #ffffff; color: #000000;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M5 12l7-7 7 7"></path></svg>Back to Top</button>
         <sc-if value="{{ showSettingsToggle }}" hint-placeholder-val="{{ true }}"><button onClick="{{ toggleSettings }}" data-ks-ul="1" style="align-self: center; height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; position: relative;" style-hover="--ks-on: 1;">{{ settingsLabel }}</button></sc-if>
       </div>
       <sc-if value="{{ showSettings }}" hint-placeholder-val="{{ false }}">
@@ -1195,7 +1196,7 @@ class Component extends DCLogic {
       hasGuard: !!s.guard, guardTitle: s.guard ? s.guard.title : '', guardBody: s.guard ? s.guard.body : '', guardProceed: s.guard ? s.guard.proceedLabel : '', guardSaveLabel: s.draftBusy ? 'Saving\u2026' : 'Save As Draft',
       guardSave: async () => { const g = s.guard; if (!g) return; const ok = await this.saveAsDraft(); if (ok) { this.setState({ guard: null }); g.go(); } },
       guardLeave: () => { const g = s.guard; this.setState({ guard: null }); if (g) g.go(); }, guardCancel: () => { const g = s.guard; this.setState({ guard: null }); if (g && g.cancel) g.cancel(); },
-      preview: this.preview, resetAll: this.resetAll, importAnother: this.importAnother,
+      preview: this.preview, resetAll: this.resetAll, importAnother: this.importAnother, backToTop: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
       importQ: s.importQ || '', onImportQ: (e) => this.setState({ importQ: e.target.value }),
       onImportKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.importMls(); } },
       importMls: this.importMls, importing: !!s.importing, importOpacity: s.importing ? 0.5 : 1, importBtn: s.importing ? 'Importing…' : 'Import',
