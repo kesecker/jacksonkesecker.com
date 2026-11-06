@@ -62,12 +62,16 @@
     <div data-ks-reveal="1" style="background: #000000; color: #ffffff; border-radius: 0; padding: clamp(28px, 5vw, 48px); margin-bottom: 24px; display: flex; flex-direction: column; gap: 22px;">
       <div style="display: flex; flex-direction: column; gap: 4px;">
         <h2 style="margin: 0; font-size: clamp(22px, 2.4vw, 26px); font-weight: 700; line-height: 1.2; color: #ffffff;">Import From MLS</h2>
-        <span style="font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.6; max-width: 620px; text-wrap: pretty;">Type the MLS # (or paste the listing’s link from jacksonkesecker.com). Address, price, facts, description, features and photos fill in automatically. Review everything before publishing.</span>
+        <span style="font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.6; max-width: 620px; text-wrap: pretty;">Type the MLS # (or paste the listing’s link from jacksonkesecker.com). Address, price, facts, description, and features fill in automatically. For HD photos, add them below from Google Drive or your computer. Review everything before publishing.</span>
       </div>
       <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
         <input data-ks-dark="1" type="text" value="{{ importQ }}" onChange="{{ onImportQ }}" onKeyDown="{{ onImportKey }}" placeholder="ML82028688" style="flex: 1 1 260px; height: 46px; padding: 0 2px; border: none; border-bottom: 1px solid rgba(255,255,255,0.3); border-radius: 0; background: transparent; color: #ffffff; box-sizing: border-box; transition: border-color .3s ease;">
         <button onClick="{{ importMls }}" disabled="{{ importing }}" style="height: 46px; padding: 0 28px; border-radius: 8px; border: 1px solid #ffffff; background: #ffffff; color: #000000; font-size: 14px; font-weight: 600; cursor: pointer; opacity: {{ importOpacity }}; transition: background .3s ease, color .3s ease;" style-hover="background: transparent; color: #ffffff;">{{ importBtn }}</button>
       </div>
+      <label style="display: inline-flex; align-items: center; gap: 10px; cursor: pointer; align-self: flex-start; font-size: 13px; color: rgba(255,255,255,0.8);">
+        <input type="checkbox" checked="{{ importPhotos }}" onChange="{{ onImportPhotos }}" style="width: 16px; height: 16px; margin: 0; accent-color: #ffffff; cursor: pointer;">
+        <span>Also import MLS photos as a backup (web quality, 1440px)</span>
+      </label>
       <sc-if value="{{ hasImportMsg }}" hint-placeholder-val="{{ false }}">
         <span style="font-size: 13px; line-height: 1.6; color: {{ importMsgColor }};">{{ importMsg }}</span>
       </sc-if>
@@ -185,6 +189,10 @@
       <div onDragOver="{{ zoneOver }}" onDragLeave="{{ zoneLeave }}" onDrop="{{ zoneDrop }}" onClick="{{ pickPhotos }}" style="border: 1px dashed {{ zoneBorder }}; border-radius: 0; padding: 56px 20px; text-align: center; cursor: pointer; background: #fafafa; transition: border-color .3s ease, background .3s ease; display: flex; flex-direction: column; gap: 6px; align-items: center;">
         <span style="font-size: 16px; font-weight: 600;">Drop photos here or click to choose</span>
         <span style="font-size: 14px; color: #666666; line-height: 1.6;">JPG, PNG or WebP · {{ photoSummary }}</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;">
+        <button type="button" onClick="{{ pickDrive }}" disabled="{{ driveBusy }}" style="height: 46px; padding: 0 22px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; opacity: {{ driveOpacity }}; transition: background .3s ease, color .3s ease;" style-hover="background: #1a1a1a; color: #ffffff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 3h7l6 10.5-3.5 6h-12L2.5 13.5z"></path><path d="M8.5 3l6.5 11.5M15.5 3L9 14.5M2.5 13.5h19"></path></svg>{{ driveBtnLabel }}</button>
+        <span style="font-size: 13px; line-height: 1.6; color: {{ driveMsgColor }}; max-width: 560px;">{{ driveMsg }}</span>
       </div>
       <input ref="{{ photoInputRef }}" type="file" accept="image/jpeg,image/png,image/webp" multiple="true" onChange="{{ onPhotoFiles }}" style="display: none;">
       <sc-if value="{{ showCardCrop }}" hint-placeholder-val="{{ false }}">
@@ -477,6 +485,54 @@ class Component extends DCLogic {
     return t;
   }
 
+  // ---- Google Drive photo picker (Google Picker + Drive API, drive.file scope: only the photos you pick are shared with the builder) ----
+  static GDRIVE = { clientId: '', apiKey: '', appId: '' };
+  _loadScript = (src) => new Promise((res, rej) => { if (document.querySelector('script[src="' + src + '"]')) { res(); return; } const s = document.createElement('script'); s.src = src; s.async = true; s.onload = () => res(); s.onerror = () => rej(new Error('Couldn\u2019t load ' + src)); document.head.appendChild(s); });
+  _driveReady = async () => {
+    await Promise.all([this._loadScript('https://apis.google.com/js/api.js'), this._loadScript('https://accounts.google.com/gsi/client')]);
+    if (!(window.google && window.google.picker)) await new Promise((res) => window.gapi.load('picker', res));
+  };
+  _driveToken = () => new Promise((res, rej) => {
+    const c = Component.GDRIVE;
+    if (this._dTok && this._dTokExp > Date.now() + 60000) { res(this._dTok); return; }
+    const tc = window.google.accounts.oauth2.initTokenClient({ client_id: c.clientId, scope: 'https://www.googleapis.com/auth/drive.file', callback: (r) => { if (r && r.access_token) { this._dTok = r.access_token; this._dTokExp = Date.now() + (Number(r.expires_in) || 3600) * 1000; res(r.access_token); } else rej(new Error((r && r.error_description) || 'Google sign-in was cancelled.')); }, error_callback: (e) => rej(new Error(e && e.type === 'popup_closed' ? 'Google sign-in was closed.' : 'Google sign-in didn\u2019t finish.')) });
+    tc.requestAccessToken({ prompt: this._dTok ? '' : 'select_account' });
+  });
+  pickDrive = async () => {
+    const c = Component.GDRIVE;
+    if (!c.clientId || !c.apiKey || !c.appId) { this.setState({ driveMsg: 'Google Drive isn\u2019t connected yet. Upload from your computer for now.', driveErr: true }); return; }
+    if (this.state.driveBusy) return;
+    this.setState({ driveBusy: true, driveErr: false, driveMsg: 'Opening Google Drive\u2026' });
+    try {
+      await this._driveReady();
+      const token = await this._driveToken();
+      const P = window.google.picker;
+      const docs = await new Promise((res) => {
+        const view = new P.DocsView(P.ViewId.DOCS_IMAGES).setIncludeFolders(true).setSelectFolderEnabled(false).setMode(P.DocsViewMode.GRID);
+        const picker = new P.PickerBuilder().addView(view).enableFeature(P.Feature.MULTISELECT_ENABLED).enableFeature(P.Feature.SUPPORT_DRIVES)
+          .setOAuthToken(token).setDeveloperKey(c.apiKey).setAppId(c.appId).setOrigin(location.protocol + '//' + location.host).setTitle('Choose listing photos').setSize(1051, 650)
+          .setCallback((d) => { if (d.action === P.Action.PICKED) res(d.docs || []); else if (d.action === P.Action.CANCEL) res([]); }).build();
+        picker.setVisible(true);
+      });
+      if (!docs.length) { this.setState({ driveBusy: false, driveMsg: '' }); return; }
+      const list = docs.slice().sort((a, b) => String(a.name).localeCompare(String(b.name), undefined, { numeric: true, sensitivity: 'base' }));
+      const items = []; let skipped = 0, failed = 0;
+      for (let i = 0; i < list.length; i++) {
+        const doc = list[i];
+        this.setState({ driveMsg: 'Copying from Google Drive\u2026 ' + (i + 1) + ' of ' + list.length });
+        if (!/^image\/(jpeg|png|webp)$/i.test(doc.mimeType || '')) { skipped++; continue; }
+        try {
+          const r = await fetch('https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(doc.id) + '?alt=media&supportsAllDrives=true', { headers: { Authorization: 'Bearer ' + token } });
+          if (!r.ok) throw new Error(r.status);
+          const b = await r.blob();
+          const file = new File([b], doc.name || ('drive-' + (i + 1) + '.jpg'), { type: b.type || doc.mimeType });
+          items.push({ id: this.uid(), kind: 'new', file, url: URL.createObjectURL(file) });
+        } catch (e) { failed++; }
+      }
+      this.setState((s) => ({ photos: s.photos.concat(items), driveBusy: false, driveErr: !!failed,
+        driveMsg: 'Added ' + items.length + ' photo' + (items.length === 1 ? '' : 's') + ' from Google Drive at full resolution.' + (skipped ? ' Skipped ' + skipped + ' that aren\u2019t JPG, PNG or WebP (iPhone HEIC: export as JPG first).' : '') + (failed ? ' ' + failed + ' couldn\u2019t be copied.' : '') }));
+    } catch (e) { this.setState({ driveBusy: false, driveErr: true, driveMsg: String(e.message || e) }); }
+  };
   addPhotoFiles = (files) => {
     const list = Array.from(files || []).filter((f) => /^image\/(jpeg|png|webp)$/i.test(f.type))
       .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
@@ -834,7 +890,7 @@ class Component extends DCLogic {
     document.body.appendChild(fr);
     try {
       const d = await this.scrapeFrame(fr, mlsGuess);
-      this.setState({ importMsg: 'Found ' + (d.f.street || 'the listing') + '. Copying ' + d.photos.length + ' photos…' });
+      this.setState({ importMsg: 'Found ' + (d.f.street || 'the listing') + (this.state.importPhotos ? '. Copying ' + d.photos.length + ' photos…' : '. Filling in the details…') });
       await this.applyImport(d);
     } catch (e) {
       this.setState({ importErr: true, importMsg: String(e.message || e) });
@@ -1005,6 +1061,7 @@ class Component extends DCLogic {
   }
 
   async applyImport(d) {
+    if (!this.state.importPhotos) d = Object.assign({}, d, { photos: [] });
     const s0 = this.state, had = !!(s0.f.street || s0.f.title || (s0.photos || []).length || (s0.dls || []).length);
     if (had) {
       const ok = await new Promise((res) => { if (!this.isDirty()) { res(true); return; } this.setState({ guard: { title: 'Replace the current property?', body: 'Importing ' + (d.f.street || 'this listing') + ' starts a fresh form, so your unsaved changes will be lost.', proceedLabel: 'Replace Without Saving', go: () => res(true), cancel: () => res(false) } }); });
@@ -1198,6 +1255,8 @@ class Component extends DCLogic {
       guardLeave: () => { const g = s.guard; this.setState({ guard: null }); if (g) g.go(); }, guardCancel: () => { const g = s.guard; this.setState({ guard: null }); if (g && g.cancel) g.cancel(); },
       showCardCrop: s.photos.length > 0 && /sold/i.test(s.f.status || ''), preview: this.preview, resetAll: this.resetAll, importAnother: this.importAnother, backToTop: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
       importQ: s.importQ || '', onImportQ: (e) => this.setState({ importQ: e.target.value }),
+      importPhotos: !!s.importPhotos, onImportPhotos: (e) => this.setState({ importPhotos: !!e.target.checked }),
+      pickDrive: this.pickDrive, driveBusy: !!s.driveBusy, driveOpacity: s.driveBusy ? 0.6 : 1, driveBtnLabel: s.driveBusy ? 'Working\u2026' : 'Choose From Google Drive', driveMsg: s.driveMsg || 'Full-resolution photos straight from your Drive.', driveMsgColor: s.driveErr ? '#b3261e' : '#666666',
       onImportKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.importMls(); } },
       importMls: this.importMls, importing: !!s.importing, importOpacity: s.importing ? 0.5 : 1, importBtn: s.importing ? 'Importing…' : 'Import',
       hasImportMsg: !!s.importMsg, importMsg: s.importMsg || '', importMsgColor: s.importErr ? '#ff8a80' : 'rgba(255,255,255,0.85)',
