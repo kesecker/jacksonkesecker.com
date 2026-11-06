@@ -584,7 +584,7 @@ class Component extends DCLogic {
       { title: 'Area & Lot', rows: rows([{ label: 'Status', value: sold ? 'Sold' : d.status }, { label: 'Living area', value: this.num(d.sqft) ? this.num(d.sqft) + ' sq ft' : '' }, { label: 'Lot area', value: lot }, { label: 'Type', value: d.type }, { label: 'Year built', value: d.yearBuilt }, { label: 'Neighborhood', value: d.neighborhood }, { label: 'View', value: d.view }, { label: 'School district', value: d.schoolDistrict }, { label: 'MLS #', value: d.mls }]) },
       { title: 'Exterior', rows: rows([{ label: 'Stories', value: d.stories }, ...custom(d.exterior)]) },
       ...((d.extra || []).filter((x) => x && x.title).map((x) => ({ title: x.title, rows: rows(x.rows || []) }))),
-      { title: 'Financial', rows: rows([{ label: sold ? 'List price' : 'Price', value: sold ? (d.soldPrice && d.price !== d.soldPrice ? this.money(d.price) : '') : this.money(d.price) }, { label: 'Sold price', value: sold ? this.money(d.soldPrice || d.price) : '' }, { label: 'HOA', value: d.hoa }, { label: 'Property taxes', value: d.taxes }]) },
+      { title: 'Financial', rows: rows([{ label: 'Price', value: sold ? '' : this.money(d.price) }, { label: 'Sold price', value: sold ? this.money(d.soldPrice || d.price) : '' }, { label: 'HOA', value: d.hoa }, { label: 'Property taxes', value: d.taxes }]) },
     ].filter((s) => s.rows.length);
     const near = (i) => Math.abs(i - st.vi) <= 2 || (st.vi === 0 && i === n - 1) || (st.vi === n - 1 && i === 0);
     const viewerSlides = ph.map((src, i) => ({ src: near(i) ? src : '', alt: alt(i), opacity: i === st.vi ? 1 : 0.35 }));

@@ -557,6 +557,7 @@ class Component extends DCLogic {
     if (!f.street.trim()) errs.push('Street address');
     if (!f.city.trim()) errs.push('City');
     if (!this.state.photos.length) errs.push('At least one photo');
+    if (/sold/i.test(f.status) && !String(f.soldPrice || '').trim()) errs.push('Sold price');
     if (errs.length) { alert('Please add: ' + errs.join(', ')); return false; }
     return true;
   }
@@ -745,10 +746,10 @@ class Component extends DCLogic {
     if (this.state.propsBusy) return;
     const row = this.state.props.find((p) => p.slug === slug); if (!row) return;
     const sold = /sold/i.test(row.status);
-    if (sold && !String(row.soldPrice || '').trim() && !row.d.price) { alert('Add the sold price first.'); return; }
+    if (sold && !String(row.soldPrice || '').trim()) { alert('Add the sold price first.'); return; }
     this.setState({ propsBusy: true, propsMsg: 'Saving ' + (row.d.title || row.d.street) + '…', propsErr: false });
     try {
-      const d = Object.assign({}, row.d, { status: row.status, soldPrice: sold ? String(row.soldPrice || row.d.price || '').replace(/[^\d.]/g, '') : '', notable: row.notable });
+      const d = Object.assign({}, row.d, { status: row.status, soldPrice: sold ? String(row.soldPrice || '').replace(/[^\d.]/g, '') : '', notable: row.notable });
       const json = JSON.stringify(d).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
       let html = row.html.replace(/window\.KS_PROPERTY = \{[\s\S]*?\};\/\*KS_DATA\*\//, () => 'window.KS_PROPERTY = ' + json + ';/*KS_DATA*/');
       const extra = [];
@@ -1075,8 +1076,7 @@ class Component extends DCLogic {
         fld('street', 'Street address', { placeholder: '33900 Fabry Road', span: '1 / -1' }),
         fld('city', 'City', { placeholder: 'Soledad' }), fld('state', 'State'), fld('zip', 'ZIP', { inputmode: 'numeric' }),
         fld('status', 'Status', { isInput: false, isSelect: true, options: ['Active', 'Coming Soon', 'Contingent', 'Pending', 'Sold'] }),
-        fld('price', sold ? 'List price' : 'Price', money('price')),
-        ...(sold ? [fld('soldPrice', 'Sold price', money('soldPrice'))] : []),
+        sold ? fld('soldPrice', 'Sold price', money('soldPrice')) : fld('price', 'Price', money('price')),
         ...(sold ? [fld('represented', 'Representation', { isInput: false, isSelect: true, options: ['None', 'Seller represented', 'Buyer represented'] })] : []),
         fld('notable', 'Notable sale?', { isInput: false, isSelect: true, options: ['No', 'Yes'] }),
         fld('mls', 'MLS #', { placeholder: 'ML82028688' }),
