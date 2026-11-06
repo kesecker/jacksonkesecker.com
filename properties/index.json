@@ -35,5 +35,24 @@
   "lotUnit": "Acres",
   "cover": "/properties/846-river-road-salinas-ca-93908/photos/01-rge3j0.jpg",
   "coverCrop": "32.1,50,1,1.499"
+ },
+ {
+  "slug": "1829-delancey-drive-salinas-ca-93906",
+  "title": "Harden Ranch Retreat",
+  "street": "1829 Delancey Drive",
+  "city": "Salinas",
+  "state": "CA",
+  "status": "Sold",
+  "price": "810000",
+  "soldPrice": "810000",
+  "represented": "None",
+  "notable": "No",
+  "beds": "3",
+  "baths": "2.5",
+  "sqft": "1443",
+  "lot": "5836",
+  "lotUnit": "Sq ft",
+  "cover": "/properties/1829-delancey-drive-salinas-ca-93906/photos/01-9p76kq.jpg",
+  "coverCrop": "45,50,1,1.5"
  }
 ]
