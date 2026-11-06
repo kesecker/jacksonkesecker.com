@@ -7,10 +7,10 @@ var st=document.createElement('style');st.textContent='html.ks-fadein::after{con
 var t0=Date.now();function done(){h.classList.add('ks-fadein-go');setTimeout(function(){h.classList.remove('ks-fadein','ks-fadein-go');},1100);}
 function wait(){if(document.querySelector('#dc-root *')||Date.now()-t0>4000){requestAnimationFrame(function(){requestAnimationFrame(done);});}else{requestAnimationFrame(wait);}}
 wait();})();</script>
-<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
-<link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-light.png" media="(prefers-color-scheme: light)">
-<link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-dark.png" media="(prefers-color-scheme: dark)">
-<link rel="apple-touch-icon" href="/assets/favicon-light.png">
+<link rel="icon" href="/favicon.ico?v=2" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-light.png?v=2" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-dark.png?v=2" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="/assets/favicon-light.png?v=2">
 <script src="/cookie-consent.js?v=6"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -34,8 +34,8 @@ wait();})();</script>
 <x-dc>
 <helmet>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..800;1,300..800&display=swap">
-  <link rel="icon" type="image/png" href="/assets/favicon-dark.png" media="(prefers-color-scheme: dark)">
-  <link rel="icon" type="image/png" href="/assets/favicon-light.png" media="(prefers-color-scheme: light)">
+  <link rel="icon" type="image/png" href="/assets/favicon-dark.png?v=2" media="(prefers-color-scheme: dark)">
+  <link rel="icon" type="image/png" href="/assets/favicon-light.png?v=2" media="(prefers-color-scheme: light)">
   <style>
     html, body { margin: 0; overflow-x: hidden; background: #ffffff; }
     html body *:not(svg):not(path) { font-family: 'Montserrat', system-ui, sans-serif !important; }
