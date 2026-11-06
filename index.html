@@ -149,6 +149,11 @@
     @media (max-width: 700px) {
     }
     @media (max-width: 640px) {
+      #featured { padding: 72px 24px !important; }
+      [data-ks-feat-card] { grid-template-columns: minmax(0, 1fr) !important; }
+      [data-ks-feat-info] { padding: 24px 22px 28px !important; }
+      [data-ks-feat-arrow] { width: 44px !important; height: 44px !important; top: calc((100vw - 48px) / 3) !important; }
+      [data-ks-feat-arrow="prev"] { left: -14px !important; } [data-ks-feat-arrow="next"] { right: -14px !important; }
       #listings, #idx, #neighborhoods, #footer-legal, #about { padding-left: 24px !important; padding-right: 24px !important; }
       #listings-viewport, #testimonials-viewport, #notable-viewport { padding-left: 24px !important; padding-right: 24px !important; }
       #hero-logo { font-size: 60px !important; }
@@ -259,6 +264,8 @@
   
 
   <!-- AGENT / ABOUT -->
+  <div data-ks-home-flow="1" style="display: flex; flex-direction: column;">
+  <div style="order: 1;">
   <div id="about" style="max-width: 1520px; margin: 0 auto; padding: 72px 64px 72px 140px; background: #ffffff; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 56px;">
     <sc-if value="{{ isBioModalVisible }}" hint-placeholder-val="{{ false }}">
       <div onClick="{{ closeBioModal }}" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 40px; animation: {{ modalOverlayAnimation }};">
@@ -290,8 +297,47 @@
     </div>
   </div>
 
+  </div>
+
+  <!-- FEATURED LISTINGS (curated, not sold; hidden when there are none) -->
+  <sc-if value="{{ hasFeatured }}" hint-placeholder-val="{{ true }}">
+  <div id="featured" style="order: 2; position: relative; padding: 96px 64px; background: #000000; color: #ffffff;">
+    <div style="text-align: center; margin: 0 auto 56px;">
+      <h2 data-ks-scaled="1" ref="{{ revealRefFeatured }}" style="font-size: clamp(28px, 4.83vw, 41px); font-weight: 600; margin: 0; color: #ffffff; letter-spacing: -0.01em; text-transform: none; {{ revealFeatured }}">{{ t.featuredHeading }}</h2>
+    </div>
+    <div data-ks-feat-wrap="1" onTouchStart="{{ featTouchStart }}" onTouchEnd="{{ featTouchEnd }}" style="position: relative; max-width: 1240px; margin: 0 auto;">
+      <a data-ks-feat-card="1" href="{{ feat.href }}" onClick="{{ feat.go }}" onMouseEnter="{{ featEnter }}" onMouseLeave="{{ featLeave }}" style="display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); border: 1px solid rgba(255,255,255,0.16); background: #000000; color: #ffffff; text-decoration: none; opacity: {{ featOpacity }}; transition: opacity .3s ease;">
+        <div style="position: relative; aspect-ratio: 3 / 2; overflow: hidden; background: #111111;">
+          <img src="{{ feat.cover }}" alt="{{ feat.name }}" loading="lazy" style="position: absolute; left: {{ feat.cl }}; top: {{ feat.ct }}; width: {{ feat.cw }}; height: {{ feat.ch }}; max-width: none; max-height: none; object-fit: cover; display: block;">
+          <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 110px 14px rgba(0,0,0,0.42); opacity: {{ featOn }}; transition: opacity .7s cubic-bezier(.16,1,.3,1);"></div>
+        </div>
+        <div data-ks-feat-info="1" style="display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: clamp(28px, 4vw, 56px);">
+          <span style="display: inline-flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.72);"><span aria-hidden="true" style="width: 7px; height: 7px; border-radius: 50%; background: {{ feat.dot }}; flex: none;"></span>{{ feat.status }}</span>
+          <span style="font-size: clamp(26px, 2.9vw, 40px); font-weight: 300; line-height: 1.15; color: #ffffff; text-wrap: balance;">{{ feat.name }}</span>
+          <span style="display: flex; flex-direction: column; gap: 4px;">
+            <sc-if value="{{ feat.hasStreet }}" hint-placeholder-val="{{ true }}"><span style="font-size: 15px; font-weight: 400; color: rgba(255,255,255,0.85);">{{ feat.street }}</span></sc-if>
+            <span style="font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.6);">{{ feat.city }}</span>
+          </span>
+          <span style="font-size: 22px; font-weight: 400; color: #ffffff; margin-top: 6px;">{{ feat.price }}</span>
+          <span style="font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.72);">{{ feat.facts }}</span>
+          <span data-ks-ul="1" style="--ks-ul: #ffffff; --ks-on: {{ featOn }}; position: relative; align-self: flex-start; margin-top: 14px; padding-bottom: 8px; font-size: 13px; font-weight: 500; color: #ffffff;">{{ feat.cta }}</span>
+        </div>
+      </a>
+      <sc-if value="{{ featMany }}" hint-placeholder-val="{{ true }}">
+        <button data-ks-feat-arrow="prev" onClick="{{ featPrev }}" aria-label="Previous featured property" style="position: absolute; top: 50%; left: -28px; transform: translateY(-50%); z-index: 2; width: 56px; height: 56px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.5); background: #000000; color: #ffffff; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .3s ease, color .3s ease;" style-hover="background: #ffffff; color: #000000;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><path d="M15 18l-6-6 6-6"></path></svg>
+        </button>
+        <button data-ks-feat-arrow="next" onClick="{{ featNext }}" aria-label="Next featured property" style="position: absolute; top: 50%; right: -28px; transform: translateY(-50%); z-index: 2; width: 56px; height: 56px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.5); background: #000000; color: #ffffff; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .3s ease, color .3s ease;" style-hover="background: #ffffff; color: #000000;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><path d="M9 18l6-6-6-6"></path></svg>
+        </button>
+        <div style="margin-top: 24px; text-align: center; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7); font-variant-numeric: tabular-nums;">{{ featPos }}</div>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
   <!-- TESTIMONIALS -->
-  <div style="padding: 96px 32px; background: #000000;">
+  <div style="order: {{ ordTesti }}; padding: 96px 32px; background: #000000;">
     <div style="text-align: center; margin-bottom: 48px;">
       <h2 data-ks-scaled="1" ref="{{ revealRefTestimonials }}" style="font-size: clamp(28px, 4.83vw, 41px); font-weight: 600; margin: 0; letter-spacing: -0.01em; color: #ffffff; text-transform: none; {{ revealTestimonials }}">{{ t.testimonialsHeading }}</h2>
     </div>
@@ -357,7 +403,7 @@
   </div>
 
   <!-- NOTABLE SALES -->
-  <div id="idx" style="padding: 96px 64px;">
+  <div id="idx" style="order: {{ ordNotable }}; padding: 96px 64px;">
     <div style="text-align: center; max-width: 640px; margin: 0 auto 64px;">
       <h2 data-ks-scaled="1" ref="{{ revealRefIdx }}" style="font-size: clamp(28px, 4.83vw, 41px); font-weight: 600; margin: 0; letter-spacing: -0.01em; text-transform: none; {{ revealIdx }}">{{ t.notableHeading }}</h2>
     </div>
@@ -385,7 +431,7 @@
   </div>
 
   <!-- HOME VALUATION CTA -->
-  <div style="background: #000000; padding: 72px 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; text-align: center;">
+  <div style="order: {{ ordCta }}; background: #000000; padding: 72px 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; text-align: center;">
     <div style="max-width: 560px;">
       <h2 data-ks-scaled="1" ref="{{ revealRefCta }}" style="font-size: clamp(25px, 4.37vw, 35px); font-weight: 600; color: #ffffff; margin: 0 0 10px; letter-spacing: -0.01em; text-transform: none; {{ revealCta }}">{{ t.ctaHeading }}</h2><p style="font-size: 15px; color: rgba(255,255,255,0.85); margin: 0; line-height: 1.6;">{{ t.ctaParagraph }}</p>
     </div>
@@ -393,7 +439,7 @@
   </div>
 
   <!-- NEIGHBORHOODS -->
-  <div id="neighborhoods" style="padding: 96px 64px; background: #ffffff;">
+  <div id="neighborhoods" style="order: {{ ordHoods }}; padding: 96px 64px; background: #ffffff;">
     <h2 data-ks-scaled="1" ref="{{ revealRefNeighborhoods }}" style="font-size: clamp(28px, 4.83vw, 41px); font-weight: 600; margin: 0 0 clamp(28px, 4vw, 56px); text-align: center; letter-spacing: -0.01em; text-transform: none; {{ revealNeighborhoods }}">{{ t.neighborhoodsHeading }}</h2>
     <div data-ks-regions="1" style="display: grid; grid-template-columns: max-content minmax(0, 640px); justify-content: center; align-items: start; gap: clamp(32px, 6vw, 96px); max-width: 1120px; margin: 0 auto;">
       <div data-ks-regions-list="1" style="display: flex; flex-direction: column; align-items: flex-start; gap: clamp(22px, 3vw, 40px); padding-top: clamp(12px, 4vw, 64px);">
@@ -409,6 +455,8 @@
         <img src="uploads/map-coastal-inland.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; opacity: {{ regionOnCoastal }}; transition: opacity 0.45s ease;">
       </div>
     </div>
+  </div>
+
   </div>
 
   <!-- CTA PHOTO BAND -->
@@ -1113,7 +1161,7 @@ class Component extends DCLogic {
       aboutEyebrow: 'Meet Your Agent',
       aboutParagraph: 'Born in Monterey and raised in Soledad, Jackson is an 11th-generation Monterey County resident. He grew up between the Peninsula\'s beaches and the Salinas Valley\'s farmland and mountains, and he knows this market from the coast to the valley floor.\n\nBuying or selling a home is one of the biggest decisions you\'ll ever make. It deserves an agent who understands the local neighborhoods and economy, and who measures success by whether his clients reach their goals, not by the size of the commission.\n\nJackson has made it his mission to help his Central Coast community achieve the dream of homeownership. Whether you\'re a first-time buyer, a growing family, or a homeowner ready to sell, he\'ll give you honest advice and clear communication from the first conversation to closing day.', aboutReady: 'Ready to get started?', aboutGetInTouch: 'Get in touch',
       aboutParagraphRest: 'Born in Monterey and raised in Soledad, Jackson is an 11th-generation Monterey County resident. He grew up between the Peninsula\'s beaches and the Salinas Valley\'s farmland and mountains, and he knows this market from the coast to the valley floor.\n\nBuying or selling a home is one of the biggest decisions you\'ll ever make. It deserves an agent who understands the local neighborhoods and economy, and who measures success by whether his clients reach their goals, not by the size of the commission.\n\nJackson has made it his mission to help his Central Coast community achieve the dream of homeownership. Whether you\'re a first-time buyer, a growing family, or a homeowner ready to sell, he\'ll give you honest advice and clear communication from the first conversation to closing day.',
-      learnMore: 'Learn More', closeModal: 'Close', aboutButton: 'Read Full Bio', notableHeading: 'Notable Sales', testimonialsHeading: 'Testimonials',
+      learnMore: 'Learn More', closeModal: 'Close', aboutButton: 'Read Full Bio', notableHeading: 'Notable Sales', featuredHeading: 'Featured Listings', testimonialsHeading: 'Testimonials',
       seeAllReviews: 'See All Reviews', writeAReview: 'Write a Review',
       neighborhoodsEyebrow: '', neighborhoodsHeading: 'Communities Served',
       groupSalinasValley: 'Salinas Valley', groupMontereyPeninsula: 'Monterey Peninsula', groupCoastalInland: 'Coastal & Inland',
@@ -1138,7 +1186,7 @@ class Component extends DCLogic {
       aboutEyebrow: 'Conoce a Tu Agente',
       aboutParagraph: 'Nacido en Monterey y criado en Soledad, Jackson es residente de undécima generación del Condado de Monterey. Creció entre las playas de la Península y los campos agrícolas y montañas del Valle de Salinas, y conoce este mercado desde la costa hasta el fondo del valle.\n\nComprar o vender una casa es una de las decisiones más importantes de su vida. Merece un agente que entienda los vecindarios y la economía local, y que mida el éxito por si sus clientes alcanzan sus metas, no por el tamaño de la comisión.\n\nJackson ha hecho su misión ayudar a su comunidad de la Costa Central a lograr el sueño de ser propietarios. Ya sea que usted compre por primera vez, tenga una familia en crecimiento o esté listo para vender, le dará consejos honestos y una comunicación clara desde la primera conversación hasta el día del cierre.', aboutReady: '¿Listo para comenzar?', aboutGetInTouch: 'Contáctenos',
       aboutParagraphRest: 'Nacido en Monterey y criado en Soledad, Jackson es residente de undécima generación del Condado de Monterey. Creció entre las playas de la Península y los campos agrícolas y montañas del Valle de Salinas, y conoce este mercado desde la costa hasta el fondo del valle.\n\nComprar o vender una casa es una de las decisiones más importantes de su vida. Merece un agente que entienda los vecindarios y la economía local, y que mida el éxito por si sus clientes alcanzan sus metas, no por el tamaño de la comisión.\n\nJackson ha hecho su misión ayudar a su comunidad de la Costa Central a lograr el sueño de ser propietarios. Ya sea que usted compre por primera vez, tenga una familia en crecimiento o esté listo para vender, le dará consejos honestos y una comunicación clara desde la primera conversación hasta el día del cierre.',
-      learnMore: 'Leer Más', closeModal: 'Cerrar', aboutButton: 'Leer Biografía Completa', notableHeading: 'Ventas Notables', testimonialsHeading: 'Testimonios',
+      learnMore: 'Leer Más', closeModal: 'Cerrar', aboutButton: 'Leer Biografía Completa', notableHeading: 'Ventas Notables', featuredHeading: 'Propiedades Destacadas', testimonialsHeading: 'Testimonios',
       seeAllReviews: 'Ver Todas las Reseñas', writeAReview: 'Escribir una Reseña',
       neighborhoodsEyebrow: '', neighborhoodsHeading: 'Comunidades Que Atendemos',
       groupSalinasValley: 'Valle de Salinas', groupMontereyPeninsula: 'Península de Monterey', groupCoastalInland: 'Costa e Interior',
@@ -1591,7 +1639,12 @@ class Component extends DCLogic {
     try { const r = await fetch('/properties/index.json', { cache: 'no-store' }); if (r.ok) { const j = await r.json(); if (Array.isArray(j)) list = j; } } catch (e) {}
     if (!list.length && !/jacksonkesecker\.com$/.test(location.hostname)) list = [{ slug: 'diamond-o-ranch', title: 'Diamond O Ranch', street: '36000 Ranch Road', city: 'Soledad', status: 'Sold', price: '1425000', soldPrice: '1425000', represented: 'Seller represented', notable: 'Yes', beds: '3', baths: '2', sqft: '1860', lot: '40', lotUnit: 'Acres', cover: 'uploads/files-1793321239769-39wc.jpeg' }];
     const val = (x) => Number(String((/sold/i.test(x.status) && x.soldPrice) || x.price || 0).replace(/[^\d.]/g, '')) || 0;
-    this.setState({ notableList: list.filter((x) => x && x.notable === 'Yes').sort((a, b) => val(b) - val(a)) });
+    let feat = list.filter((x) => x && x.slug && !/sold/i.test(x.status || ''));
+    if (!feat.length && !/jacksonkesecker\.com$/.test(location.hostname)) feat = [
+      { slug: 'sample-listing', title: 'Sample Featured Listing', street: '123 Sample Lane', city: 'Soledad', state: 'CA', status: 'Active', price: '1250000', beds: '4', baths: '3', sqft: '2450', lot: '0.5', lotUnit: 'Acres', cover: 'uploads/white-modern-house-curved-patio-archway-c0a4a3b3-aa51b24d14d0464ea15d36e05aa85ac9.jpg' },
+      { slug: 'sample-listing-2', title: 'Second Sample Listing', street: '456 Example Road', city: 'Salinas', state: 'CA', status: 'Coming Soon', price: '895000', beds: '3', baths: '2', sqft: '1780', cover: 'uploads/Pinnacles.png' },
+    ];
+    this.setState({ notableList: list.filter((x) => x && x.notable === 'Yes').sort((a, b) => val(b) - val(a)), featuredList: feat, featIdx: 0 });
   };
   ksCardGo = (e, href) => {
     if (!e || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -1612,6 +1665,26 @@ class Component extends DCLogic {
     }
     setTimeout(() => { window.location.href = href; }, 460);
   };
+  ksCrop(x, Fa) { const s = String(x.coverCrop || '').trim(); const a = s.split(',').map(Number); if (!s || a.length < 3 || !a.slice(0, 3).every(isFinite)) return { cl: '0%', ct: '0%', cw: '100%', ch: '100%' }; const z = Math.max(1, a[2]), ia = isFinite(a[3]) && a[3] > 0 ? a[3] : 1.5; let bw, bh; if (ia > Fa) { bh = 100; bw = ia / Fa * 100; } else { bw = 100; bh = Fa / ia * 100; } const W = bw * z, H = bh * z, L = Math.min(0, Math.max(100 - W, 50 - a[0] / 100 * W)), T = Math.min(0, Math.max(100 - H, 50 - a[1] / 100 * H)); return { cl: L + '%', ct: T + '%', cw: W + '%', ch: H + '%' }; }
+  featGo = (d) => { const n = (this.state.featuredList || []).length; if (n < 2 || this._featBusy) return; this._featBusy = true; this.setState({ featFade: true }); setTimeout(() => { this.setState((s) => ({ featIdx: ((s.featIdx || 0) + d + n) % n, featFade: false })); this._featBusy = false; }, 280); };
+  featPrev = (e) => { if (e) { e.preventDefault(); e.stopPropagation(); } this.featGo(-1); };
+  featNext = (e) => { if (e) { e.preventDefault(); e.stopPropagation(); } this.featGo(1); };
+  featTouchStart = (e) => { const t = e.touches && e.touches[0]; this._fx = t ? t.clientX : null; this._fy = t ? t.clientY : null; this._fSwiped = false; };
+  featTouchEnd = (e) => { const t = e.changedTouches && e.changedTouches[0]; if (this._fx == null || !t) return; const dx = t.clientX - this._fx, dy = t.clientY - this._fy; this._fx = null; if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { this._fSwiped = true; this.featGo(dx < 0 ? 1 : -1); } };
+  featCardFor(es) {
+    const list = this.state.featuredList || []; if (!list.length) return null;
+    const x = list[Math.min(this.state.featIdx || 0, list.length - 1)];
+    const money = (v) => { const n = Number(String(v || '').replace(/[^\d.]/g, '')); return n ? '$' + n.toLocaleString('en-US') : ''; };
+    const fmt = (n) => { const v = Number(String(n || '').replace(/[^\d.]/g, '')); return v ? v.toLocaleString('en-US') : ''; };
+    const st = (!x.status || /^for sale$/i.test(x.status)) ? 'Active' : x.status, stEs = { Active: 'Activa', 'Coming Soon': 'Próximamente', Contingent: 'Contingente', Pending: 'Pendiente' };
+    const dot = /pending|contingent/i.test(st) ? '#e3b341' : /coming/i.test(st) ? '#7fb2ff' : '#4cc38a';
+    const lot = x.lot ? fmt(x.lot) + ' ' + (/acre/i.test(x.lotUnit || '') ? 'Acres' : (es ? 'Pies² de Terreno' : 'Sq Ft Lot')) : '';
+    const facts = [x.beds && fmt(x.beds) + (es ? ' Habs' : ' Beds'), x.baths && x.baths + (es ? ' Baños' : ' Baths'), x.sqft && fmt(x.sqft) + (es ? ' Pies²' : ' Sq Ft'), lot].filter(Boolean).join(' · ');
+    const href = '/properties/' + x.slug + '/';
+    return Object.assign({ href, cover: x.cover, name: x.title || x.street || '', street: x.title && x.street ? x.street : '', hasStreet: !!(x.title && x.street), city: [x.city, x.state || 'CA'].filter(Boolean).join(', '),
+      status: es ? (stEs[st] || st) : st, dot, price: money(x.price), facts, cta: es ? 'Ver Propiedad' : 'View Property',
+      go: (e) => { if (this._fSwiped) { this._fSwiped = false; if (e) e.preventDefault(); return; } this.ksCardGo(e, href); } }, this.ksCrop(x, 1.5));
+  }
   notableCardsFor(es) {
     const money = (v) => { const n = Number(String(v || '').replace(/[^\d.]/g, '')); return n ? '$' + n.toLocaleString('en-US') : ''; };
     const fmt = (n) => { const v = Number(String(n || '').replace(/[^\d.]/g, '')); return v ? v.toLocaleString('en-US') : ''; };
@@ -1967,6 +2040,7 @@ class Component extends DCLogic {
       heroListingsUnderlineWidth: this.state.heroListingsHover ? '100%' : '0%',
       featuredListingsRef: this.featuredListingsRef,
       notableSalesRef: this.notableSalesRef, notableCards: this.notableCardsFor(this.state.lang === 'es'),
+      ...(() => { const fl = this.state.featuredList || [], has = fl.length > 0, n = fl.length; return { hasFeatured: has, featMany: n > 1, feat: this.featCardFor(this.state.lang === 'es') || {}, featPos: String(Math.min((this.state.featIdx || 0) + 1, n)) + ' / ' + n, featOpacity: this.state.featFade ? 0 : 1, featOn: this.state.featHover ? 1 : 0, featEnter: () => this.setState({ featHover: true }), featLeave: () => this.setState({ featHover: false }), featPrev: this.featPrev, featNext: this.featNext, featTouchStart: this.featTouchStart, featTouchEnd: this.featTouchEnd, revealRefFeatured: this.getRevealRef('featured'), revealFeatured: this.revealStyle('featured'), ordTesti: has ? 4 : 3, ordNotable: has ? 3 : 4, ordCta: has ? 6 : 5, ordHoods: has ? 5 : 6 }; })(),
       horizontalSearchRef: this.horizontalSearchRef,
       mReview: baseCards[((this.state.mReview || 0) % baseCards.length + baseCards.length) % baseCards.length],
       mReviewPos: ((((this.state.mReview || 0) % baseCards.length + baseCards.length) % baseCards.length) + 1) + ' / ' + baseCards.length,
