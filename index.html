@@ -125,9 +125,10 @@
     @media (max-width: 820px) {
       #contact { grid-template-columns: 1fr !important; gap: 40px !important; padding: 64px 24px !important; }
     }
+    @media (min-width: 761px) { [data-ks-cta] { height: 620px; } }
     @media (max-width: 760px) {
       [data-ks-cta] { height: auto !important; min-height: 620px; }
-      [data-ks-cta-inner] { position: relative !important; left: auto !important; top: auto !important; transform: none !important; margin: 0 auto !important; padding: 110px 24px 72px !important; }
+      [data-ks-cta-inner] { position: relative !important; left: auto !important; top: auto !important; transform: none !important; margin: 0 auto !important; padding: 110px 24px calc(96px + env(safe-area-inset-bottom, 0px)) !important; }
     }
     @media (max-width: 640px) {
     }
@@ -461,7 +462,7 @@
 
   <!-- CTA PHOTO BAND -->
   <sc-if value="{{ useJsPin }}" hint-placeholder-val="{{ false }}">
-    <div data-ks-cta="1" ref="{{ ctaBandRef }}" style="position: relative; width: 100%; height: 620px; overflow: hidden;">
+    <div data-ks-cta="1" ref="{{ ctaBandRef }}" style="position: relative; width: 100%; overflow: hidden;">
       <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100vh; background-image: url('uploads/Pinnacles.png'); background-size: cover; background-position: center; will-change: transform;"></div>
       <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 55%, #000000 96%, #000000 100%);"></div>
       <div data-ks-cta-inner="1" style="position: absolute; left: 50%; top: 150px; transform: translateX(-50%); width: 100%; max-width: 640px; padding: 0 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px; text-align: center;">
@@ -481,7 +482,7 @@
     </div>
   </sc-if>
   <sc-if value="{{ useCssPin }}" hint-placeholder-val="{{ true }}">
-    <div data-ks-cta="1" style="position: relative; width: 100%; height: 620px; overflow: hidden; clip-path: inset(0);">
+    <div data-ks-cta="1" style="position: relative; width: 100%; overflow: hidden; clip-path: inset(0);">
     <div aria-hidden="true" style="position: fixed; inset: 0; background-image: url('uploads/Pinnacles.png'); background-size: cover; background-position: center; will-change: transform; pointer-events: none;"></div>
       <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 55%, #000000 96%, #000000 100%);"></div>
       <div data-ks-cta-inner="1" style="position: absolute; left: 50%; top: 150px; transform: translateX(-50%); width: 100%; max-width: 640px; padding: 0 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px; text-align: center;">
@@ -2272,6 +2273,21 @@ class Component extends DCLogic {
   }
 }
 
+</script>
+<script data-ks-eyebrow-fit>
+(function () {
+  function fit() {
+    var s = document.getElementById('hero-eyebrow-span'); if (!s) return;
+    s.style.removeProperty('font-size');
+    s.style.setProperty('white-space', 'nowrap', 'important');
+    var box = s.parentElement, avail = box.clientWidth - (parseFloat(getComputedStyle(box).paddingLeft) || 0) - (parseFloat(getComputedStyle(box).paddingRight) || 0);
+    var fs = parseFloat(getComputedStyle(s).fontSize) || 12, w = s.scrollWidth;
+    if (w > avail && avail > 0) s.style.setProperty('font-size', Math.max(7, Math.floor(fs * avail / w * 10) / 10) + 'px', 'important');
+  }
+  var t; function soon() { clearTimeout(t); t = setTimeout(fit, 60); }
+  var tries = 0; (function wait() { if (document.getElementById('hero-eyebrow-span')) { fit(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit); setTimeout(fit, 1200); } else if (tries++ < 100) setTimeout(wait, 100); })();
+  window.addEventListener('resize', soon); window.addEventListener('orientationchange', soon);
+})();
 </script>
 </body>
 <<!--/email_off-->/html>
