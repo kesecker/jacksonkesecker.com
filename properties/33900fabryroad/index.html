@@ -66,7 +66,7 @@ wait();})();</script>
       [data-ks-foot-links] { flex-wrap: wrap !important; white-space: normal !important; row-gap: 12px !important; }
       [data-ks-copy] { white-space: normal !important; width: calc(100% - 40px) !important; line-height: 1.5 !important; }
       [data-ks-hero] { height: 78svh !important; min-height: 460px !important; }
-      [data-ks-hero-arrows] { display: none !important; }
+      [data-ks-hero-arrows] { display: none !important; } [data-ks-hero-info] { padding-bottom: 28px !important; gap: 18px !important; }
       [data-ks-facts] { border-left: none !important; padding-left: 0 !important; border-top: 1px solid #e5e5e5 !important; padding-top: 32px !important; }
       [data-ks-mosaic] { grid-template-columns: minmax(0, 1fr) !important; }
       [data-ks-mosaic-main] { height: 64vw !important; }
@@ -134,7 +134,7 @@ wait();})();</script>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
       </button>
     </div>
-    <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 0 clamp(20px, 5vw, 72px) clamp(96px, 12vh, 124px); display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; flex-wrap: wrap; color: #ffffff;">
+    <div data-ks-hero-info="1" style="position: absolute; left: 0; right: 0; bottom: 0; padding: 0 clamp(20px, 5vw, 72px) clamp(96px, 12vh, 124px); display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; flex-wrap: wrap; color: #ffffff;">
       <div style="display: flex; flex-direction: column; gap: 14px; max-width: 100%;">
         <sc-if value="{{ hasStatus }}" hint-placeholder-val="{{ true }}">
           <span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 14px; border-radius: 999px; background: #ffffff; color: #1a1a1a; font-size: 13px; font-weight: 500;">
