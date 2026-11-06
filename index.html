@@ -366,7 +366,7 @@
       <sc-for list="{{ notableCards }}" as="c" hint-placeholder-count="3">
         <a href="{{ c.href }}" onClick="{{ c.go }}" onMouseEnter="{{ c.enter }}" onMouseLeave="{{ c.leave }}" style="flex: 0 1 360px; min-width: min(100%, 280px); display: flex; flex-direction: column; gap: 18px; color: #000000; text-decoration: none;">
           <div style="position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: #eeeeee;">
-            <img src="{{ c.cover }}" alt="{{ c.name }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+            <img src="{{ c.cover }}" alt="{{ c.name }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; object-position: {{ c.coverPos }}; transform: scale({{ c.coverZoom }}); transform-origin: {{ c.coverPos }}; display: block;">
             <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 90px 12px rgba(0,0,0,0.42); opacity: {{ c.on }}; transition: opacity .7s cubic-bezier(.16,1,.3,1);"></div>
             <sc-if value="{{ c.hasBadge }}" hint-placeholder-val="{{ false }}">
               <span style="position: absolute; top: 14px; left: 14px; height: 26px; padding: 0 12px; display: inline-flex; align-items: center; border-radius: 999px; background: #ffffff; color: #000000; font-size: 12.5px; font-weight: 500;">{{ c.badge }}</span>
@@ -1627,7 +1627,7 @@ class Component extends DCLogic {
       const lot = x.lot ? fmt(x.lot) + ' ' + (/acre/i.test(x.lotUnit || '') ? (es ? 'Acres' : 'Acres') : (es ? 'Pies² de Terreno' : 'Sq Ft Lot')) : '';
       const facts = [x.beds && fmt(x.beds) + (es ? ' Habs' : ' Beds'), x.baths && x.baths + (es ? ' Baños' : ' Baths'), x.sqft && fmt(x.sqft) + (es ? ' Pies²' : ' Sq Ft'), lot].filter(Boolean).join(' · ');
       return {
-        href: '/properties/' + x.slug + '/', cover: x.cover, name: x.title || x.street, hasStreet: !!(x.title && x.street), street: x.street, city: x.city,
+        href: '/properties/' + x.slug + '/', cover: x.cover, coverPos: (() => { const a = String(x.coverCrop || '').split(',').map(Number); return (isFinite(a[0]) && a.length > 1 ? a[0] : 50) + '% ' + (isFinite(a[1]) && a.length > 1 ? a[1] : 50) + '%'; })(), coverZoom: (() => { const z = Number(String(x.coverCrop || '').split(',')[2]); return isFinite(z) && z >= 1 ? z : 1; })(), name: x.title || x.street, hasStreet: !!(x.title && x.street), street: x.street, city: x.city,
         price: money(sold ? (x.soldPrice || x.price) : x.price), facts, hasBadge: !!rep, badge: rep, cta: es ? 'Ver Propiedad' : 'View Property',
         on: on ? 1 : 0,
         enter: () => this.setState({ notableHover: x.slug }), leave: () => this.setState({ notableHover: '' }),
