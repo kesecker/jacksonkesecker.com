@@ -186,18 +186,23 @@
       </div>
       <input ref="{{ photoInputRef }}" type="file" accept="image/jpeg,image/png,image/webp" multiple="true" onChange="{{ onPhotoFiles }}" style="display: none;">
       <sc-if value="{{ hasPhotos }}" hint-placeholder-val="{{ false }}">
-        <div style="display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start; padding: 4px 0 28px; border-bottom: 1px solid #e6e6e6;">
-          <div onPointerDown="{{ cropDown }}" onPointerMove="{{ cropMove }}" onPointerUp="{{ cropUp }}" onPointerCancel="{{ cropUp }}" style="position: relative; width: 240px; aspect-ratio: 4 / 5; overflow: hidden; background: #eeeeee; cursor: grab; touch-action: none; flex: none; user-select: none;">
-            <img src="{{ cropSrc }}" alt="" draggable="false" style="width: 100%; height: 100%; object-fit: cover; object-position: {{ cropPos }}; transform: scale({{ cropZoom }}); transform-origin: {{ cropPos }}; display: block; pointer-events: none;">
+        <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; padding: 4px 0 28px; border-bottom: 1px solid #e6e6e6;">
+          <div tabIndex="0" aria-label="Listing card photo framing. Drag to move, arrow keys to nudge, plus and minus to zoom." onKeyDown="{{ cropKey }}" onPointerDown="{{ cropDown }}" onPointerMove="{{ cropMove }}" onPointerUp="{{ cropUp }}" onPointerCancel="{{ cropUp }}" style="position: relative; width: min(100%, 320px); aspect-ratio: 4 / 5; overflow: hidden; background: #eeeeee; cursor: grab; touch-action: none; flex: none; user-select: none; outline: none; box-shadow: 0 0 0 1px #d9d9d9;">
+            <img src="{{ cropSrc }}" alt="" draggable="false" onLoad="{{ cropLoad }}" style="position: absolute; left: {{ cropL }}; top: {{ cropT }}; width: {{ cropW }}; height: {{ cropH }}; max-width: none; max-height: none; display: block; pointer-events: none;">
+            <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(to right, transparent calc(33.333% - 0.5px), rgba(255,255,255,0.55) calc(33.333% - 0.5px), rgba(255,255,255,0.55) calc(33.333% + 0.5px), transparent calc(33.333% + 0.5px), transparent calc(66.666% - 0.5px), rgba(255,255,255,0.55) calc(66.666% - 0.5px), rgba(255,255,255,0.55) calc(66.666% + 0.5px), transparent calc(66.666% + 0.5px)), linear-gradient(to bottom, transparent calc(33.333% - 0.5px), rgba(255,255,255,0.55) calc(33.333% - 0.5px), rgba(255,255,255,0.55) calc(33.333% + 0.5px), transparent calc(33.333% + 0.5px), transparent calc(66.666% - 0.5px), rgba(255,255,255,0.55) calc(66.666% - 0.5px), rgba(255,255,255,0.55) calc(66.666% + 0.5px), transparent calc(66.666% + 0.5px)); opacity: {{ cropGrid }}; transition: opacity .25s ease;"></div>
           </div>
-          <div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 14px; max-width: 420px;">
+          <div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 16px; max-width: 440px;">
             <h3 style="margin: 0; font-size: 20px; font-weight: 300; line-height: 1.3;">Listing Card Photo</h3>
-            <span style="font-size: 14px; color: #666666; line-height: 1.6;">This is how the cover photo appears on the curated listing card on your homepage. Drag the photo to reposition it, and use the slider to zoom in.</span>
+            <span style="font-size: 14px; color: #666666; line-height: 1.6;">This frame is exactly how the cover photo appears on the curated listing card on your homepage. Drag the photo to move it anywhere, zoom in to frame it tighter, and use the grid to line things up.</span>
             <label style="display: flex; flex-direction: column; gap: 8px;">
-              <span style="font-size: 12px; color: #777777;">Zoom</span>
-              <input type="range" min="1" max="3" step="0.05" value="{{ cropZoom }}" onInput="{{ onCropZoom }}" onChange="{{ onCropZoom }}" style="width: 100%; height: 20px; padding: 0; border: none; background: transparent; accent-color: #000000;">
+              <span style="display: flex; justify-content: space-between; font-size: 12px; color: #777777;"><span>Zoom</span><span>{{ cropZoomPct }}</span></span>
+              <input type="range" min="1" max="4" step="0.01" value="{{ cropZoom }}" onInput="{{ onCropZoom }}" onChange="{{ onCropZoom }}" style="width: 100%; height: 20px; padding: 0; border: none; background: transparent; accent-color: #000000;">
             </label>
-            <button onClick="{{ resetCrop }}" style="align-self: flex-start; height: 36px; padding: 0 18px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 13px; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">Reset Framing</button>
+            <span style="font-size: 12px; color: #999999; line-height: 1.6;">Tip: click the photo, then use the arrow keys to nudge it (hold Shift for bigger steps) and + or − to zoom.</span>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button onClick="{{ centerCrop }}" style="height: 36px; padding: 0 18px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 13px; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">Center</button>
+              <button onClick="{{ resetCrop }}" style="height: 36px; padding: 0 18px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 13px; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">Reset Framing</button>
+            </div>
           </div>
         </div>
       </sc-if>
@@ -415,11 +420,14 @@ class Component extends DCLogic {
       if (was && now && was.id !== now.id && prevState.f.coverCrop === this.state.f.coverCrop && this.state.f.coverCrop) this.setF('coverCrop', '');
     }
   }
-  cropVals() { const a = String(this.state.f.coverCrop || '').split(',').map(Number); return { x: isFinite(a[0]) ? a[0] : 50, y: isFinite(a[1]) ? a[1] : 50, z: isFinite(a[2]) && a[2] >= 1 ? a[2] : 1 }; }
-  setCrop(x, y, z) { const c = (v, lo, hi) => Math.round(Math.max(lo, Math.min(hi, v)) * 10) / 10; this.setF('coverCrop', [c(x, 0, 100), c(y, 0, 100), c(z, 1, 3)].join(',')); }
-  cropDown = (e) => { const r = e.currentTarget.getBoundingClientRect(); const v = this.cropVals(); this.cropDrag = { sx: e.clientX, sy: e.clientY, x: v.x, y: v.y, z: v.z, w: r.width, h: r.height }; try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) {} e.preventDefault(); };
-  cropMove = (e) => { const d = this.cropDrag; if (!d) return; const k = 120 / d.z; this.setCrop(d.x - (e.clientX - d.sx) / d.w * k, d.y - (e.clientY - d.sy) / d.h * k, d.z); };
-  cropUp = () => { this.cropDrag = null; };
+  cropVals() { const a = String(this.state.f.coverCrop || '').split(',').map(Number); const ok = (v) => isFinite(v) && String(this.state.f.coverCrop || '').trim() !== ''; return { x: ok(a[0]) ? a[0] : 50, y: ok(a[1]) ? a[1] : 50, z: ok(a[2]) && a[2] >= 1 ? a[2] : 1, a: ok(a[3]) && a[3] > 0 ? a[3] : (this.state.coverAspect || 1.5) }; }
+  cropGeom(v) { const Fa = 0.8, ia = v.a; let bw, bh; if (ia > Fa) { bh = 100; bw = ia / Fa * 100; } else { bw = 100; bh = Fa / ia * 100; } const W = bw * v.z, H = bh * v.z; const L = Math.min(0, Math.max(100 - W, 50 - v.x / 100 * W)), T = Math.min(0, Math.max(100 - H, 50 - v.y / 100 * H)); return { W, H, L, T }; }
+  setCrop(x, y, z) { const v = this.cropVals(); const zz = Math.max(1, Math.min(4, z)); const a = this.state.coverAspect || v.a; const g = this.cropGeom({ x, y, z: zz, a }); const nx = (50 - g.L) / g.W * 100, ny = (50 - g.T) / g.H * 100; const r = (n, d) => Math.round(n * d) / d; this.setF('coverCrop', [r(nx, 10), r(ny, 10), r(zz, 100), r(a, 1000)].join(',')); }
+  cropDown = (e) => { const r = e.currentTarget.getBoundingClientRect(); const v = this.cropVals(); const g = this.cropGeom(v); this.cropDrag = { sx: e.clientX, sy: e.clientY, g, z: v.z, w: r.width, h: r.height }; this.setState({ cropDragging: true }); try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) {} try { e.currentTarget.focus(); } catch (_) {} e.preventDefault(); };
+  cropMove = (e) => { const d = this.cropDrag; if (!d) return; const L = d.g.L + (e.clientX - d.sx) / d.w * 100, T = d.g.T + (e.clientY - d.sy) / d.h * 100; this.setCrop((50 - L) / d.g.W * 100, (50 - T) / d.g.H * 100, d.z); };
+  cropUp = () => { this.cropDrag = null; if (this.state.cropDragging) this.setState({ cropDragging: false }); };
+  cropKey = (e) => { const v = this.cropVals(), g = this.cropGeom(v), st = e.shiftKey ? 5 : 1; let L = g.L, T = g.T, z = v.z; if (e.key === 'ArrowLeft') L -= st; else if (e.key === 'ArrowRight') L += st; else if (e.key === 'ArrowUp') T -= st; else if (e.key === 'ArrowDown') T += st; else if (e.key === '+' || e.key === '=') z += 0.1; else if (e.key === '-' || e.key === '_') z -= 0.1; else return; e.preventDefault(); this.setCrop((50 - L) / g.W * 100, (50 - T) / g.H * 100, z); };
+  cropLoad = (e) => { const im = e.target; if (im && im.naturalWidth && im.naturalHeight) { const a = Math.round(im.naturalWidth / im.naturalHeight * 1000) / 1000; if (a !== this.state.coverAspect) this.setState({ coverAspect: a }); } };
   movePhoto = (id, to) => this.setState((s) => { const a = s.photos.slice(); const i = a.findIndex((p) => p.id === id); if (i < 0) return null; const [it] = a.splice(i, 1); a.splice(Math.max(0, Math.min(a.length, to)), 0, it); return { photos: a }; });
 
   rowsHandlers(key) {
@@ -1001,9 +1009,9 @@ class Component extends DCLogic {
     return {
       ksLogoSrc: this.ksLogoSrc,
       groups, photoItems,
-      cropSrc: (s.photos[0] || {}).url || '', cropPos: (() => { const v = this.cropVals(); return v.x + '% ' + v.y + '%'; })(), cropZoom: this.cropVals().z,
-      cropDown: this.cropDown, cropMove: this.cropMove, cropUp: this.cropUp,
-      onCropZoom: (e) => { const v = this.cropVals(); this.setCrop(v.x, v.y, Number(e.target.value)); }, resetCrop: () => this.setF('coverCrop', ''),
+      cropSrc: (s.photos[0] || {}).url || '', ...(() => { const v = this.cropVals(), g = this.cropGeom(v); return { cropL: g.L + '%', cropT: g.T + '%', cropW: g.W + '%', cropH: g.H + '%', cropZoom: v.z, cropZoomPct: Math.round(v.z * 100) + '%' }; })(),
+      cropGrid: s.cropDragging ? 1 : 0.35, cropDown: this.cropDown, cropMove: this.cropMove, cropUp: this.cropUp, cropKey: this.cropKey, cropLoad: this.cropLoad,
+      onCropZoom: (e) => { const v = this.cropVals(); this.setCrop(v.x, v.y, Number(e.target.value)); }, resetCrop: () => this.setF('coverCrop', ''), centerCrop: () => { const v = this.cropVals(); this.setCrop(50, 50, v.z); },
       photoSummary: n ? n + ' photo' + (n === 1 ? '' : 's') + ' added' : 'no photos yet',
       zoneBorder: s.zoneHot ? '#000000' : '#bbbbbb',
       zoneOver: (e) => { e.preventDefault(); if (!s.zoneHot) this.setState({ zoneHot: true }); },
