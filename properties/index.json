@@ -33,6 +33,7 @@
   "sqft": "2732",
   "lot": "5.04",
   "lotUnit": "Acres",
-  "cover": "/properties/846-river-road-salinas-ca-93908/photos/01-rge3j0.jpg"
+  "cover": "/properties/846-river-road-salinas-ca-93908/photos/01-rge3j0.jpg",
+  "coverCrop": "32.1,50,1,1.499"
  }
 ]
