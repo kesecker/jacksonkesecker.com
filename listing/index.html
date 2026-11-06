@@ -1287,13 +1287,18 @@ findAllMatches('Share').filter((s) => !s.closest('[data-ihf-own], [data-ihf-acti
       ld = document.createElement('div');
       ld.id = 'ks-listing-loader';
       ld.setAttribute('aria-hidden', 'true');
-      ld.style.cssText = 'position:fixed;left:0;right:0;bottom:0;top:92px;z-index:900;background:#ffffff;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .35s ease;pointer-events:none;will-change:opacity;transform:translateZ(0);contain:strict;';
+      ld.style.cssText = 'position:fixed;left:0;right:0;bottom:0;top:92px;z-index:900;background:#ffffff;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .35s ease;pointer-events:none;';
       const v = document.createElement('video');
       v.src = '/assets/listing-loader-v2.mp4';
       v.muted = true; v.defaultMuted = true; v.autoplay = true; v.loop = true; v.playsInline = true;
       v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('preload', 'auto');
-      v.style.cssText = 'width:min(780px,90vw);height:auto;display:block;background:#ffffff;transform:translateZ(0);will-change:transform;backface-visibility:hidden;';
-      ld.appendChild(v);
+      // The video sits inside a clipping frame, slightly oversized, so the GPU video layer can never show a dark seam at its edges.
+      const fw = Math.round(Math.min(780, window.innerWidth * 0.9)), fh = Math.round(fw * 9 / 16);
+      const frame = document.createElement('div');
+      frame.style.cssText = 'position:relative;width:' + fw + 'px;height:' + fh + 'px;overflow:hidden;background:#ffffff;border-radius:1px;';
+      v.style.cssText = 'position:absolute;left:-4px;top:-4px;width:' + (fw + 8) + 'px;height:' + (fh + 8) + 'px;object-fit:cover;display:block;background:#ffffff;border:0;outline:0;';
+      frame.appendChild(v);
+      ld.appendChild(frame);
       document.body.appendChild(ld);
       requestAnimationFrame(() => { ld.style.opacity = '1'; });
       try { const p = v.play(); if (p && p.catch) p.catch(() => {}); } catch (e) {}
