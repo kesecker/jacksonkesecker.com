@@ -856,6 +856,16 @@ class Component extends DCLogic {
         add(im.getAttribute('data-src') || ''); add((im.getAttribute('srcset') || '').split(',').pop().trim().split(' ')[0]); add(im.currentSrc || im.getAttribute('src') || '');
       });
       qa(roots, '.listing-photo-carousel [style*="background-image"], [class*="gallery" i] [style*="background-image"]').forEach((el) => { const m = (el.getAttribute('style') || '').match(/url\(["']?([^"')]+)/); if (m) add(m[1]); });
+      // The carousel only loads the first few photos (the rest are blank placeholders whose alt text is "Number N for listing").
+      // MLS photo URLs end in the photo's number, so build the full list 1..N from one real URL.
+      let total = 0;
+      qa(roots, 'img[alt]').forEach((im) => { const m = (im.getAttribute('alt') || '').match(/^\s*Number\s+(\d+)\b/i); if (m) total = Math.max(total, +m[1]); });
+      const sample = out.find((u) => /\/\d+(\?[^/]*)?$/.test(u));
+      if (sample && total > 1) {
+        const m = sample.match(/^(.*\/)(\d+)(\?[^/]*)?$/);
+        const same = out.filter((u) => u.indexOf(m[1]) === 0).length;
+        if (total > same && same * 2 >= out.length) { const all = []; for (let k = 1; k <= Math.min(total, 80); k++) all.push(m[1] + k + (m[3] || '')); return all; }
+      }
       // Looping carousels put a copy of the LAST photo first. MLS photo URLs end in a sequence number: sort by it when every URL has one; otherwise drop a leading clone.
       const seq = out.map((s) => { const m = s.split('?')[0].match(/(\d+)\.(jpe?g|png|webp)$/i); return m ? +m[1] : null; });
       if (out.length > 1 && seq.every((n) => n !== null) && new Set(seq).size === out.length) {
