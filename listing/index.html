@@ -1292,14 +1292,23 @@ findAllMatches('Share').filter((s) => !s.closest('[data-ihf-own], [data-ihf-acti
       v.src = '/assets/listing-loader-v2.mp4';
       v.muted = true; v.defaultMuted = true; v.autoplay = true; v.loop = true; v.playsInline = true;
       v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('preload', 'auto');
-      // The video sits inside a clipping frame, slightly oversized, so the GPU video layer can never show a dark seam at its edges.
-      const fw = Math.round(Math.min(780, window.innerWidth * 0.9)), fh = Math.round(fw * 9 / 16);
-      const frame = document.createElement('div');
-      frame.style.cssText = 'position:relative;width:' + fw + 'px;height:' + fh + 'px;overflow:hidden;background:#ffffff;border-radius:1px;';
-      v.style.cssText = 'position:absolute;left:-4px;top:-4px;width:' + (fw + 8) + 'px;height:' + (fh + 8) + 'px;object-fit:cover;display:block;background:#ffffff;border:0;outline:0;';
-      frame.appendChild(v);
-      ld.appendChild(frame);
+      // The video is never put on the page: its frames are painted onto a canvas (edges trimmed), so the
+      // graphics card's separate video layer, which showed a dark seam on some screens, is never used.
+      const fw = Math.round(Math.min(780, window.innerWidth * 0.9)), fh = Math.round(fw * 9 / 16), dpr = Math.min(2, window.devicePixelRatio || 1);
+      const cv = document.createElement('canvas');
+      cv.width = Math.round(fw * dpr); cv.height = Math.round(fh * dpr);
+      cv.style.cssText = 'width:' + fw + 'px;height:' + fh + 'px;display:block;background:#ffffff;';
+      const cx = cv.getContext('2d', { alpha: false });
+      cx.fillStyle = '#ffffff'; cx.fillRect(0, 0, cv.width, cv.height);
+      ld.appendChild(cv);
       document.body.appendChild(ld);
+      const paint = () => {
+        if (!ld.isConnected) { try { v.pause(); v.removeAttribute('src'); v.load(); } catch (e) {} return; }
+        if (v.readyState >= 2 && v.videoWidth) { const t = 8; cx.drawImage(v, t, t, v.videoWidth - 2 * t, v.videoHeight - 2 * t, 0, 0, cv.width, cv.height); }
+        requestAnimationFrame(paint);
+      };
+      requestAnimationFrame(paint);
+      v.addEventListener('loadeddata', () => { if (v.readyState >= 2 && ld.isConnected) { const t = 8; cx.drawImage(v, t, t, v.videoWidth - 2 * t, v.videoHeight - 2 * t, 0, 0, cv.width, cv.height); } }, { once: true });
       requestAnimationFrame(() => { ld.style.opacity = '1'; });
       try { const p = v.play(); if (p && p.catch) p.catch(() => {}); } catch (e) {}
     }
