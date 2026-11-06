@@ -76,6 +76,7 @@ wait();})();</script>
       [data-ks-agent] { flex-direction: column !important; align-items: center !important; text-align: center; } [data-ks-agent] > div, [data-ks-agent] > div > div { align-items: center !important; justify-content: center !important; } [data-ks-agent] a[href="#"] { align-self: center !important; }
     }
   </style>
+<style data-ks-tour>@keyframes ks-fade-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }</style>
 <style>[data-ks-ul]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--ks-line,1px);background:var(--ks-ul,currentColor);transform:scaleX(var(--ks-on,0));transform-origin:var(--ks-ul-o,left) center;transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none;will-change:transform;}</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;600&display=swap"><style data-ks-type>:root{--ks-line:1px}@media (min-resolution:1.1dppx) and (max-resolution:1.35dppx){:root{--ks-line:0.8px}}@media (min-resolution:1.4dppx) and (max-resolution:1.6dppx){:root{--ks-line:0.6667px}}@media (min-resolution:1.7dppx) and (max-resolution:1.8dppx){:root{--ks-line:0.5715px}} html:root:not([data-ks-none]) body h1, html:root:not([data-ks-none]) body h1 *, html:root:not([data-ks-none]) body h2, html:root:not([data-ks-none]) body h2 *, html:root:not([data-ks-none]) body h3, html:root:not([data-ks-none]) body h3 * { font-weight: 300 !important; } html:root:not([data-ks-none]) body [data-ks-regions-list] h2, html:root:not([data-ks-none]) body [data-ks-regions-list] h2 * { font-weight: 200 !important; } html:root:not([data-ks-none]) body button, html:root:not([data-ks-none]) body button *, html:root:not([data-ks-none]) body a[style*="border-radius: 8px"], html:root:not([data-ks-none]) body a[style*="border-radius: 8px"] *, html:root:not([data-ks-none]) body span[style*="border-radius: 8px"] *, html:root:not([data-ks-none]) body [data-ks-cta] a span, html:root:not([data-ks-none]) body [data-ks-cta] a span *, html:root:not([data-ks-none]) body input[type="submit"] { font-weight: 300 !important; } html:root:not([data-ks-none]) body #hero-heading, html:root:not([data-ks-none]) body #hero-heading * { font-weight: 600 !important; } @media (max-width: 760px) { [data-ks-foot-grid] > * { padding-left: 0 !important; } } /*ks-unbold*/html:root:not([data-ks-none]) body :is(b, strong, th, [style*="font-weight: 600"], [style*="font-weight:600"], [style*="font-weight: 700"], [style*="font-weight:700"], [style*="font-weight: 800"], [style*="font-weight:800"], [style*="font-weight: bold"], [style*="font-weight:bold"]):not([data-ks-bold]):not([class*="ihf"]):not([class*="ihf"] *) { font-weight: 400 !important; }</style>
 </helmet>
@@ -435,6 +436,47 @@ wait();})();</script>
     </div>
   </sc-if>
 
+  <sc-if value="{{ showTour }}" hint-placeholder-val="{{ false }}">
+  <div data-ks-tour-wrap="1" style="position: fixed; right: 96px; bottom: 24px; z-index: 2147482990;">
+    <button onClick="{{ openTourModal }}" style="height: 56px; padding: 0 22px; border-radius: 999px; background: #1a1a1a; color: #ffffff; border: none; cursor: pointer; font-family: 'Montserrat', system-ui, sans-serif; font-weight: 600; font-size: 14px; white-space: nowrap; transition: background 0.2s ease, color 0.2s ease, box-shadow .3s ease;" style-hover="background: #ffffff; color: #1a1a1a;">Schedule a Tour</button>
+  </div>
+
+  <sc-if value="{{ tourOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeTour }}" style="position: fixed; inset: 0; z-index: 2147483005; background: rgba(0,0,0,0.55); overflow-y: auto; padding: 32px 20px; box-sizing: border-box; display: flex; opacity: {{ tourOpacity }}; transition: opacity 0.25s ease;">
+      <div onClick="{{ stopTourProp }}" style="position: relative; margin: auto; width: 100%; max-width: 780px; background: #ffffff; border-radius: 14px; box-shadow: 0 24px 60px rgba(0,0,0,0.25); padding: 36px 36px 30px; box-sizing: border-box; font-family: 'Montserrat', system-ui, sans-serif; color: #1a1a1a;">
+        <button data-ks-x="1" type="button" onClick="{{ closeTour }}" aria-label="Close" style="position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #1a1a1a; transition: color 0.2s ease, opacity 0.2s ease;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </button>
+        <h2 style="margin: 0 0 28px; font-size: 28px; font-weight: 700; letter-spacing: -0.01em;">Schedule a Tour</h2>
+        <sc-if value="{{ tourSent }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 14px; padding: 12px 0 8px; animation: ks-fade-in 0.35s ease;">
+            <p style="margin: 0; font-size: 18px; font-weight: 600;">Thank you! Your tour request was sent.</p>
+            <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #444444;">Jackson will reach out to find a time that works. For faster service, call or text (831) 821-0398.</p>
+            <button type="button" onClick="{{ closeTour }}" style="margin-top: 8px; height: 44px; padding: 0 24px; border-radius: 8px; border: none; background: #1a1a1a; color: #ffffff; font-size: 14px; font-weight: 600; font-family: 'Montserrat', system-ui, sans-serif; cursor: pointer; transition: background 0.2s ease, color 0.2s ease, box-shadow .3s ease;">Done</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ tourFormVisible }}" hint-placeholder-val="{{ true }}">
+          <form onSubmit="{{ submitTour }}" style="display: flex; flex-direction: column; gap: 28px; animation: ks-fade-in 0.35s ease;">
+            <div style="display: flex; flex-direction: column; gap: 22px;">
+              <div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 13px; font-weight: 600; color: #666666;">Property</span><p style="margin: 0; padding: 8px 2px; font-size: 15px; font-weight: 600; color: #1a1a1a; border-bottom: 1px solid #eeeeee;">{{ tourListingLabel }}</p></div>
+              <label style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 13px; font-weight: 600; color: #666666;">Full Name *</span><input type="text" name="name" required="{{ true }}" autocomplete="name" style="width: 100%; box-sizing: border-box; padding: 8px 2px; font-size: 15px; font-family: 'Montserrat', system-ui, sans-serif; color: #1a1a1a; background: transparent; border: none; border-bottom: 1px solid #cccccc; border-radius: 0; outline: none; transition: border-color 0.2s ease;" style-focus="border-bottom-color: #1a1a1a;"></label>
+              <label style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 13px; font-weight: 600; color: #666666;">Phone *</span><input type="tel" name="phone" required="{{ true }}" autocomplete="tel" inputmode="tel" onInput="{{ tourPhoneInput }}" style="width: 100%; box-sizing: border-box; padding: 8px 2px; font-size: 15px; font-family: 'Montserrat', system-ui, sans-serif; color: #1a1a1a; background: transparent; border: none; border-bottom: 1px solid #cccccc; border-radius: 0; outline: none; transition: border-color 0.2s ease;" style-focus="border-bottom-color: #1a1a1a;"><span style="display: block; font-size: 12px; line-height: 1.4; color: #c62828; overflow: hidden; max-height: {{ tourPhoneErrH }}; opacity: {{ tourPhoneErrOp }}; transition: opacity 0.25s ease, max-height 0.25s ease;">{{ tourPhoneErrText }}</span></label>
+              <label style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 13px; font-weight: 600; color: #666666;">Email *</span><input type="email" name="email" required="{{ true }}" autocomplete="email" style="width: 100%; box-sizing: border-box; padding: 8px 2px; font-size: 15px; font-family: 'Montserrat', system-ui, sans-serif; color: #1a1a1a; background: transparent; border: none; border-bottom: 1px solid #cccccc; border-radius: 0; outline: none; transition: border-color 0.2s ease;" style-focus="border-bottom-color: #1a1a1a;"></label>
+              <label style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 13px; font-weight: 600; color: #666666;">Details</span><textarea name="message" rows="3" placeholder="Your preferred time &amp; date, additional details, etc." style="width: 100%; box-sizing: border-box; padding: 12px 14px; font-size: 15px; font-family: 'Montserrat', system-ui, sans-serif; color: #1a1a1a; background: #fafafa; border: 1px solid #dddddd; border-radius: 6px; resize: vertical; outline: none;" style-focus="border-color: #1a1a1a;"></textarea></label>
+            </div>
+            <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0;">
+            <p style="margin: 0; font-size: 14px; color: #c62828; overflow: hidden; max-height: {{ tourErrH }}; opacity: {{ tourErrOp }}; transition: opacity 0.25s ease, max-height 0.25s ease;">{{ tourErrText }}</p>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px;">
+              <button type="submit" disabled="{{ tourSending }}" style="height: 48px; padding: 0 32px; border-radius: 8px; border: none; background: #1a1a1a; color: #ffffff; font-size: 14px; font-weight: 600; font-family: 'Montserrat', system-ui, sans-serif; cursor: pointer; transition: background 0.2s ease, color 0.2s ease, box-shadow .3s ease;" style-hover="background: #ffffff; color: #1a1a1a;">{{ tourSubmitLabel }}</button>
+              <p style="margin: 0; flex: 1 1 260px; font-size: 11px; line-height: 1.5; color: #999999;">By submitting, you agree to our <a href="https://jacksonkesecker.com/privacy/" style="color: inherit; text-decoration: underline;">Privacy Policy</a>. This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy" target="_blank" style="color: #666666; text-decoration: underline;">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" style="color: #666666; text-decoration: underline;">Terms of Service</a> apply.</p>
+            </div>
+          </form>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+  </sc-if>
+
   <sc-if value="{{ isPhoneOpen }}" hint-placeholder-val="{{ false }}">
     <div onClick="{{ onPhoneClose }}" style="position: fixed; inset: 0; z-index: 2147483009; background: transparent;"></div>
   </sc-if>
@@ -473,6 +515,84 @@ class Component extends DCLogic {
   };
 
   data() { return window.KS_PROPERTY || Component.DEMO; }
+  _ksSubmit = (data) => new Promise((resolve) => {
+    const KEY = '6Ldt-s0tAAAAAHKHMZoNKfYDRnjbYp7jfkhix9MQ';
+    const URL = 'https://script.google.com/macros/s/AKfycbz-txrCbgzj4U78dBOSrFZMrT9qN3D0XV2ZcEua_6g_LB3VLNKkSk-NoUJHxEOvapY9ww/exec';
+    let done = false;
+    const send = (token) => {
+      if (done) return;
+      done = true;
+      fetch(URL, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({}, data, { token: token || '', url: location.href })) })
+        .then((r) => r.json()).then(resolve).catch(() => resolve({ ok: false, error: 'network' }));
+    };
+    const go = () => { try { window.grecaptcha.ready(() => window.grecaptcha.execute(KEY, { action: data.form || 'contact' }).then(send, () => send(''))); } catch (e) { send(''); } };
+    if (!document.querySelector('style[data-ks-badge]')) { const st = document.createElement('style'); st.dataset.ksBadge = '1'; st.textContent = '.grecaptcha-badge{visibility:hidden !important;}'; document.head.appendChild(st); }
+    if (window.grecaptcha && window.grecaptcha.execute) { go(); return; }
+    let s = document.querySelector('script[data-ks-recaptcha]');
+    if (!s) { s = document.createElement('script'); s.src = 'https://www.google.com/recaptcha/api.js?render=' + KEY; s.dataset.ksRecaptcha = '1'; document.head.appendChild(s); }
+    s.addEventListener('load', go);
+    setTimeout(() => { if (!done && window.grecaptcha && window.grecaptcha.execute) go(); }, 1500);
+    setTimeout(() => send(''), 8000);
+  });
+  _tourFade = (hide) => {
+    document.querySelectorAll('button[aria-label="Menu"]').forEach((b) => {
+      b.style.setProperty('transition', 'opacity 0.3s ease', 'important');
+      b.style.setProperty('opacity', hide ? '0' : '1', 'important');
+      if (hide) b.style.setProperty('pointer-events', 'none', 'important'); else b.style.removeProperty('pointer-events');
+    });
+  };
+  _ksPhone = (prefix) => (e) => {
+    const el = e.target;
+    const raw = el.value;
+    const bad = /[^\d\s()+.\-]/.test(raw);
+    let d = raw.replace(/\D/g, '');
+    if (d.length === 11 && d[0] === '1') d = d.slice(1);
+    d = d.slice(0, 10);
+    let f = '';
+    if (d.length) f = '(' + d.slice(0, 3);
+    if (d.length >= 4) f += ') ' + d.slice(3, 6);
+    if (d.length >= 7) f += '-' + d.slice(6);
+    if (el.value !== f) el.value = f;
+    if (bad) {
+      clearTimeout(this['_' + prefix + 'PhT']);
+      this.setState({ [prefix + 'PhoneErr']: 'Please enter numbers only.', [prefix + 'PhoneErrOn']: true });
+      this['_' + prefix + 'PhT'] = setTimeout(() => this.setState({ [prefix + 'PhoneErrOn']: false }), 2500);
+    } else if (this.state[prefix + 'PhoneErrOn'] && this.state[prefix + 'PhoneErr'] === 'Please enter a 10-digit phone number.' && d.length === 10) {
+      this.setState({ [prefix + 'PhoneErrOn']: false });
+    }
+  };
+  _tourListing = () => {
+    const d = this.data() || {};
+    const addr = [d.street, [d.city, d.state || 'CA'].filter(Boolean).join(', ')].filter(Boolean).join(', ');
+    return [addr || d.title || '', d.mls ? 'MLS# ' + String(d.mls).replace(/_\d+$/, '') : ''].filter(Boolean).join(' — ');
+  };
+  _tourVals = () => {
+    const s = this.state || {}, d = this.data() || {};
+    const listing = s.tourListing || this._tourListing();
+    const close = () => { this._tourFade(false); this.setState({ tourShown: false }); setTimeout(() => this.setState({ tourOpen: false, tourSent: false, tourError: '', tourSending: false }), 260); };
+    return {
+      showTour: !d.status || /^(active|for sale)$/i.test(String(d.status).trim()),
+      tourOpen: !!s.tourOpen, tourOpacity: s.tourShown ? 1 : 0,
+      openTourModal: (e) => { if (e && e.preventDefault) e.preventDefault(); this._tourFade(true); this.setState({ tourOpen: true, tourShown: false, tourSent: false, tourError: '', tourListing: this._tourListing() }); setTimeout(() => this.setState({ tourShown: true }), 20); },
+      closeTour: close, stopTourProp: (e) => e.stopPropagation(),
+      tourListingLabel: listing.replace(/\s+—\s+MLS#.*$/, ''),
+      tourSent: !!s.tourSent, tourFormVisible: !s.tourSent,
+      tourError: s.tourError || '', tourErrText: (s.tourError && (this._lastTourErr = s.tourError)) || this._lastTourErr || '', tourErrOp: s.tourError ? 1 : 0, tourErrH: s.tourError ? '60px' : '0px',
+      tourPhoneInput: this._ksPhone('tour'), tourPhoneErrText: s.tourPhoneErr || '', tourPhoneErrOp: s.tourPhoneErrOn ? 1 : 0, tourPhoneErrH: s.tourPhoneErrOn ? '20px' : '0px',
+      tourSending: !!s.tourSending, tourSubmitLabel: s.tourSending ? 'Sending…' : 'Request Tour',
+      submitTour: (e) => {
+        e.preventDefault();
+        if (s.tourSending) return;
+        const fd = new FormData(e.currentTarget);
+        if (String(fd.get('phone') || '').replace(/\D/g, '').length !== 10) { this.setState({ tourPhoneErr: 'Please enter a 10-digit phone number.', tourPhoneErrOn: true }); return; }
+        this.setState({ tourSending: false, tourSent: true, tourError: '' });
+        this._ksSubmit({ form: 'tour', name: fd.get('name'), phone: fd.get('phone'), email: fd.get('email'), message: fd.get('message'), website: fd.get('website'), listing }).then((r) => {
+          if (r && r.ok) return;
+          this.setState({ tourSending: false, tourSent: false, tourError: 'Something went wrong. Please call or text (831) 821-0398.' });
+        });
+      },
+    };
+  };
   photos() { return (this.data().photos || []).filter(Boolean); }
 
   money(v) { const n = Number(String(v || '').replace(/[^\d.]/g, '')); return n ? '$' + n.toLocaleString('en-US') : ''; }
@@ -597,6 +717,7 @@ class Component extends DCLogic {
     const ohs = (d.openHouses || []).filter((o) => o && o.date).map((o) => ({ date: this.longDate(o.date), time: [this.time12(o.start), this.time12(o.end)].filter(Boolean).join(' – ') }));
     const paras = String(d.description || '').split(/\n\s*\n|\r\n\s*\r\n/).map((s) => s.trim()).filter(Boolean);
     return {
+      ...this._tourVals(),
       ksEmail: ['kesecker', 'kw.com'].join(String.fromCharCode(64)), ksMailto: 'mai' + 'lto:' + ['kesecker', 'kw.com'].join(String.fromCharCode(64)),
       ...this._navVals(),
       openContactModal: this.openContactModal,
