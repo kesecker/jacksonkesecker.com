@@ -187,7 +187,7 @@
         <span style="font-size: 14px; color: #666666; line-height: 1.6;">JPG, PNG or WebP · {{ photoSummary }}</span>
       </div>
       <input ref="{{ photoInputRef }}" type="file" accept="image/jpeg,image/png,image/webp" multiple="true" onChange="{{ onPhotoFiles }}" style="display: none;">
-      <sc-if value="{{ hasPhotos }}" hint-placeholder-val="{{ false }}">
+      <sc-if value="{{ showCardCrop }}" hint-placeholder-val="{{ false }}">
         <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; padding: 4px 0 28px; border-bottom: 1px solid #e6e6e6;">
           <div tabIndex="0" aria-label="Listing card photo framing. Drag to move, arrow keys to nudge, plus and minus to zoom." onKeyDown="{{ cropKey }}" onPointerDown="{{ cropDown }}" onPointerMove="{{ cropMove }}" onPointerUp="{{ cropUp }}" onPointerCancel="{{ cropUp }}" style="position: relative; width: min(100%, 320px); aspect-ratio: 4 / 5; overflow: hidden; background: #eeeeee; cursor: grab; touch-action: none; flex: none; user-select: none; outline: none; box-shadow: 0 0 0 1px #d9d9d9;">
             <img src="{{ cropSrc }}" alt="" draggable="false" onLoad="{{ cropLoad }}" style="position: absolute; left: {{ cropL }}; top: {{ cropT }}; width: {{ cropW }}; height: {{ cropH }}; max-width: none; max-height: none; display: block; pointer-events: none;">
@@ -1196,7 +1196,7 @@ class Component extends DCLogic {
       hasGuard: !!s.guard, guardTitle: s.guard ? s.guard.title : '', guardBody: s.guard ? s.guard.body : '', guardProceed: s.guard ? s.guard.proceedLabel : '', guardSaveLabel: s.draftBusy ? 'Saving\u2026' : 'Save As Draft',
       guardSave: async () => { const g = s.guard; if (!g) return; const ok = await this.saveAsDraft(); if (ok) { this.setState({ guard: null }); g.go(); } },
       guardLeave: () => { const g = s.guard; this.setState({ guard: null }); if (g) g.go(); }, guardCancel: () => { const g = s.guard; this.setState({ guard: null }); if (g && g.cancel) g.cancel(); },
-      preview: this.preview, resetAll: this.resetAll, importAnother: this.importAnother, backToTop: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+      showCardCrop: s.photos.length > 0 && /sold/i.test(s.f.status || ''), preview: this.preview, resetAll: this.resetAll, importAnother: this.importAnother, backToTop: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
       importQ: s.importQ || '', onImportQ: (e) => this.setState({ importQ: e.target.value }),
       onImportKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.importMls(); } },
       importMls: this.importMls, importing: !!s.importing, importOpacity: s.importing ? 0.5 : 1, importBtn: s.importing ? 'Importing…' : 'Import',
