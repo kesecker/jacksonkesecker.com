@@ -92,5 +92,25 @@
   "lotUnit": "Sq ft",
   "cover": "/properties/338-geil-street-salinas-ca-93901/photos/01-1gs7s7.jpg",
   "coverCrop": "47.7,50,1,1.5"
+ },
+ {
+  "slug": "820-vasquez-drive-soledad-ca-93960",
+  "title": "Affordable Soledad Living",
+  "street": "820 Vasquez Drive",
+  "city": "Soledad",
+  "state": "CA",
+  "status": "Active",
+  "price": "350000",
+  "soldPrice": "",
+  "represented": "None",
+  "notable": "No",
+  "featured": "Yes",
+  "beds": "1",
+  "baths": "1",
+  "sqft": "633",
+  "lot": "551",
+  "lotUnit": "Sq ft",
+  "cover": "/properties/820-vasquez-drive-soledad-ca-93960/photos/01-jzoio7.jpg",
+  "coverCrop": "48.7,50,1,1.506"
  }
 ]
