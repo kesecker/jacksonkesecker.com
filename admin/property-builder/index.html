@@ -75,13 +75,15 @@
 
     <div data-ks-reveal="1" style="padding: 20px 0 44px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px;">
       <label style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 6px;">
-        <span style="font-size: 12px; font-weight: 600; color: #777777;">Edit a property you already published</span>
+        <span style="font-size: 12px; font-weight: 600; color: #777777;">Open a draft or a published property</span>
         <select value="{{ loadSlug }}" onChange="{{ onPickExisting }}" style="height: 44px; padding: 0 2px; border: none; border-bottom: 1px solid #cfcfcf; border-radius: 0; background: transparent; box-sizing: border-box; width: 100%; color: #1a1a1a; transition: border-color .3s ease;">
           <option value="">{{ existingPlaceholder }}</option>
           <sc-for list="{{ existingOpts }}" as="o" hint-placeholder-count="2"><option value="{{ o.slug }}">{{ o.label }}</option></sc-for>
         </select>
       </label>
+      <button onClick="{{ saveDraftBtn }}" style="height: 44px; padding: 0 22px; border-radius: 8px; border: 1px solid #000000; background: #000000; color: #ffffff; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .3s ease;" style-hover="background: #333333;">{{ draftBtnLabel }}</button>
       <button onClick="{{ resetAll }}" style="height: 44px; padding: 0 22px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">Clear All Fields</button>
+      <sc-if value="{{ hasDraftMsg }}" hint-placeholder-val="{{ false }}"><span style="flex: 1 1 100%; font-size: 13px; line-height: 1.6; color: {{ draftMsgColor }};">{{ draftMsg }}</span></sc-if>
     </div>
 
     </sc-if>
@@ -300,6 +302,7 @@
       </label>
       <div style="display: flex; flex-wrap: wrap; gap: 12px;">
         <button onClick="{{ publish }}" disabled="{{ busy }}" style="height: 50px; padding: 0 28px; border-radius: 8px; border: 1px solid #ffffff; background: #ffffff; color: #000000; font-size: 14px; font-weight: 600; cursor: pointer; opacity: {{ busyOpacity }}; transition: background .3s ease, color .3s ease;" style-hover="background: transparent; color: #ffffff;">Publish To Website</button>
+        <button onClick="{{ saveDraftBtn }}" style="height: 50px; padding: 0 28px; border-radius: 8px; border: 1px solid #ffffff; background: transparent; color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #ffffff; color: #000000;">{{ draftBtnLabel }}</button>
         <sc-if value="{{ showSettingsToggle }}" hint-placeholder-val="{{ true }}"><button onClick="{{ toggleSettings }}" data-ks-ul="1" style="align-self: center; height: auto; padding: 0 0 8px; border: none; border-radius: 0; background-color: transparent; --ks-ul: #ffffff; background-repeat: no-repeat; background-position: left bottom; --ks-on: 0; transition: background-size .45s cubic-bezier(.16,1,.3,1); color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; position: relative;" style-hover="--ks-on: 1;">{{ settingsLabel }}</button></sc-if>
       </div>
       <sc-if value="{{ showSettings }}" hint-placeholder-val="{{ false }}">
@@ -334,6 +337,19 @@
     </div>
     </sc-if>
   </div>
+  <sc-if value="{{ hasGuard }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 5000; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
+      <div role="dialog" aria-modal="true" style="width: min(100%, 440px); background: #ffffff; border-radius: 12px; padding: 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 24px 60px rgba(0,0,0,0.25);">
+        <h3 style="margin: 0; font-size: 22px; font-weight: 300; line-height: 1.3; color: #000000;">{{ guardTitle }}</h3>
+        <span style="font-size: 14px; color: #555555; line-height: 1.6;">{{ guardBody }}</span>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;">
+          <button onClick="{{ guardSave }}" style="height: 46px; border-radius: 8px; border: 1px solid #000000; background: #000000; color: #ffffff; font-size: 14px; cursor: pointer;">{{ guardSaveLabel }}</button>
+          <button onClick="{{ guardLeave }}" style="height: 46px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-size: 14px; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">{{ guardProceed }}</button>
+          <button onClick="{{ guardCancel }}" style="height: 40px; border: none; background: transparent; color: #555555; font-size: 13px; cursor: pointer;">Keep Editing</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
@@ -352,7 +368,7 @@ class Component extends DCLogic {
   constructor(p) {
     super(p);
     let draft = null;
-    try { draft = JSON.parse(localStorage.getItem('ks-builder-draft') || 'null'); } catch (e) {}
+    try { localStorage.removeItem('ks-builder-draft'); } catch (e) {}
     const rows = (labels) => labels.map((l) => ({ id: Math.random().toString(36).slice(2), label: l, value: '' }));
     this.state = {
       f: Object.assign({}, Component.FIELDS, draft && draft.f),
@@ -361,12 +377,73 @@ class Component extends DCLogic {
       oh: (draft && draft.oh) || [],
       photos: [], dls: [], comm: null,
       zoneHot: false, dragId: null, busy: false, log: [], live: false, showSettings: false, loadSlug: '',
+      drafts: [], draftId: '', draftMsg: '', draftErr: false, draftBusy: false, guard: null,
       token: localStorage.getItem('ks-gh-token') || '', repo: localStorage.getItem('ks-gh-repo') || 'kesecker/jacksonkesecker.com', branch: localStorage.getItem('ks-gh-branch') || 'main',
     };
   }
 
   base() { return /jacksonkesecker\.com$/.test(location.hostname) ? '/' : 'export/'; }
-  saveDraft = () => { clearTimeout(this._dt); this._dt = setTimeout(() => { try { localStorage.setItem('ks-builder-draft', JSON.stringify({ f: this.state.f, interior: this.state.interior, exterior: this.state.exterior, oh: this.state.oh })); } catch (e) {} }, 400); };
+  saveDraft = () => { this.postDirty(); };
+  sig() { const s = this.state; return JSON.stringify([s.f, (s.interior || []).map((r) => [r.label, r.value]), (s.exterior || []).map((r) => [r.label, r.value]), (s.oh || []).map((o) => [o.date, o.start, o.end]), (s.photos || []).map((x) => x.id), (s.dls || []).map((d) => [d.id, d.label]), s.comm ? s.comm.url : '']); }
+  setBaseline = () => { this.baseSig = this.sig(); this.postDirty(true); };
+  isDirty() { return this.baseSig !== undefined && this.sig() !== this.baseSig; }
+  postDirty(force) { const d = this.isDirty(); if (!force && d === this._lastDirty) return; this._lastDirty = d; try { if (window.parent && window.parent !== window) window.parent.postMessage({ type: 'ks-builder-dirty', dirty: d }, location.origin); } catch (e) {} }
+  onBeforeUnload = (e) => { if (this._allowLeave || !this.isDirty()) return; e.preventDefault(); e.returnValue = ''; };
+  draftApi = (path, opts) => fetch('/admin/api/drafts' + path, Object.assign({ credentials: 'same-origin', cache: 'no-store' }, opts || {}));
+  loadDraftList = async () => { if (!this.viaWorker) return; try { const r = await this.draftApi(''); if (!r.ok) return; const a = await r.json(); this.setState({ drafts: (Array.isArray(a) ? a : []).sort((x, y) => (y.savedAt || 0) - (x.savedAt || 0)) }); } catch (e) {} };
+  draftName() { const f = this.state.f; return [f.title, f.street, f.city].filter(Boolean).join(' · ') || 'Untitled property'; }
+  fidOf(it) { return String((it && it.id) || 'comm').replace(/[^a-z0-9]/gi, '') || 'comm'; }
+  saveAsDraft = async () => {
+    if (!this.viaWorker) { this.setState({ draftMsg: 'Drafts save from jacksonkesecker.com/admin.', draftErr: true }); return false; }
+    if (this.state.draftBusy) return false;
+    this.setState({ draftBusy: true, draftMsg: 'Saving draft…', draftErr: false });
+    try {
+      const s = this.state, id = s.draftId || ('d' + Date.now().toString(36));
+      this._uploaded = this._uploaded || {};
+      const up = this._uploaded[id] = this._uploaded[id] || new Set();
+      const items = [].concat(s.photos || [], s.dls || [], s.comm ? [s.comm] : []);
+      const files = [];
+      for (const it of items) {
+        if (it.kind !== 'new' || !it.file) continue;
+        const fid = this.fidOf(it); files.push(fid); if (up.has(fid)) continue;
+        const r = await this.draftApi('/' + id + '/files/' + fid, { method: 'PUT', headers: { 'content-type': it.file.type || 'application/octet-stream' }, body: it.file });
+        if (r.status === 401) throw new Error('Your admin sign-in expired. Reload the page and sign in again.');
+        if (!r.ok) throw new Error('A photo didn’t upload (' + r.status + '). Try again.');
+        up.add(fid);
+      }
+      const ref = (it) => it.kind === 'new' ? { id: it.id, kind: 'draft', fid: this.fidOf(it), name: it.name || (it.file && it.file.name) || '', label: it.label || '', type: it.file ? it.file.type : '' } : { id: it.id, kind: it.kind, path: it.path, url: it.url, label: it.label, href: it.href, name: it.name };
+      const data = { v: 1, name: this.draftName(), f: s.f, interior: s.interior, exterior: s.exterior, oh: s.oh, photos: (s.photos || []).map(ref), dls: (s.dls || []).map(ref), comm: s.comm ? ref(s.comm) : null, files };
+      const r = await this.draftApi('/' + id, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(data) });
+      if (r.status === 401) throw new Error('Your admin sign-in expired. Reload the page and sign in again.');
+      if (!r.ok) throw new Error('The draft didn’t save (' + r.status + '). Try again.');
+      const tm = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      this.setState({ draftId: id, loadSlug: 'draft:' + id, draftBusy: false, draftMsg: 'Draft saved at ' + tm + '.', draftErr: false }, () => { this.setBaseline(); this.loadDraftList(); });
+      return true;
+    } catch (e) { this.setState({ draftBusy: false, draftMsg: String(e.message || e), draftErr: true }); return false; }
+  };
+  loadDraft = async (id) => {
+    this.setState({ draftMsg: 'Opening draft…', draftErr: false });
+    try {
+      const r = await this.draftApi('/' + id);
+      if (!r.ok) throw new Error(r.status === 404 ? 'That draft no longer exists.' : 'Couldn’t open the draft (' + r.status + ').');
+      const d = await r.json();
+      this._uploaded = this._uploaded || {}; const up = this._uploaded[id] = new Set();
+      const back = async (it) => {
+        if (!it) return null; if (it.kind !== 'draft') return it;
+        const fr = await this.draftApi('/' + id + '/files/' + it.fid); if (!fr.ok) return null;
+        const blob = await fr.blob(); const file = new File([blob], it.name || (it.fid + '.jpg'), { type: it.type || blob.type });
+        up.add(it.fid);
+        return { id: it.id || this.uid(), kind: 'new', file, url: URL.createObjectURL(file), name: it.name, label: it.label };
+      };
+      const photos = (await Promise.all((d.photos || []).map(back))).filter(Boolean);
+      const dls = (await Promise.all((d.dls || []).map(back))).filter(Boolean);
+      const comm = await back(d.comm);
+      this.setState({ f: Object.assign({}, Component.FIELDS, d.f), interior: d.interior || [], exterior: d.exterior || [], oh: d.oh || [], photos, dls, comm, log: [], live: false, draftId: id, loadSlug: 'draft:' + id, draftMsg: 'Draft opened. Click Save As Draft to keep your changes, or Publish To Website when it’s ready.', draftErr: false }, this.setBaseline);
+    } catch (e) { this.setState({ draftMsg: String(e.message || e), draftErr: true }); }
+  };
+  guardThen = (title, body, proceedLabel, go) => { if (!this.isDirty()) { go(); return; } this.setState({ guard: { title, body, proceedLabel, go } }); };
+  leaveTitle = 'Are you sure you want to leave?';
+  leaveBody = 'You have unsaved changes.';
   setF = (k, v) => { this.setState((s) => ({ f: Object.assign({}, s.f, { [k]: v }) }), this.saveDraft); };
   slugify(s) { return String(s || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80); }
   autoSlug() { const f = this.state.f; if (!f.street) return ''; const st = String(f.street).replace(/\s*(#|unit|apt|suite|ste)\s*/i, ' unit '); return this.slugify([st, f.city, f.state || 'CA', f.zip].filter(Boolean).join(' ')); }
@@ -578,6 +655,8 @@ class Component extends DCLogic {
       } catch (e) { this.log('Notable Sales list not updated: ' + e.message); }
       await this.commitTree(tree, 'Property page: ' + slug);
       this.log('Published. The page goes live in about 1–2 minutes.', 'ok');
+      if (this.state.draftId) { try { await this.draftApi('/' + this.state.draftId, { method: 'DELETE' }); } catch (e) {} this.setState({ draftId: '', draftMsg: '' }, this.loadDraftList); }
+      setTimeout(this.setBaseline, 0);
       this.setState((s) => ({ live: true, loadSlug: slug, existing: (s.existing || []).some((x) => x.slug === slug) ? s.existing : (s.existing || []).concat([{ slug, label: s.f.title || s.f.street || slug }]) }));
     } catch (e) { this.log(String(e.message || e), 'err'); }
     this.setState({ busy: false });
@@ -710,9 +789,9 @@ class Component extends DCLogic {
         photos: (d.photos || []).map((p) => ({ id: this.uid(), kind: 'existing', path: p, url: dir + p })),
         dls: (d.downloads || []).map((x) => ({ id: this.uid(), kind: 'existing', label: x.label, href: x.href, name: x.href.split('/').pop() })),
         comm: d.communityImage ? { kind: 'existing', path: d.communityImage, url: dir + d.communityImage } : null,
-        log: [], live: false,
-      }, this.saveDraft);
-    } catch (e) { alert('Could not load "' + slug + '": ' + e.message); }
+        log: [], live: false, draftId: '', draftMsg: '', draftErr: false,
+      }, this.setBaseline);
+    } catch (e) { this.setState({ draftMsg: 'Couldn\u2019t open "' + slug + '": ' + e.message, draftErr: true }); }
   };
 
   // ---- MLS import: load our own /listing page (iHomefinder) in a hidden same-origin frame and read the rendered details ----
@@ -894,15 +973,21 @@ class Component extends DCLogic {
   }
 
   async applyImport(d) {
+    const s0 = this.state, had = !!(s0.f.street || s0.f.title || (s0.photos || []).length || (s0.dls || []).length);
+    if (had) {
+      const ok = await new Promise((res) => { if (!this.isDirty()) { res(true); return; } this.setState({ guard: { title: 'Replace the current property?', body: 'Importing ' + (d.f.street || 'this listing') + ' starts a fresh form, so your unsaved changes will be lost.', proceedLabel: 'Replace Without Saving', go: () => res(true), cancel: () => res(false) } }); });
+      if (!ok) { this.setState({ importMsg: 'Import cancelled.' }); return; }
+      const rows = (labels) => labels.map((l) => ({ id: this.uid(), label: l, value: '' }));
+      await new Promise((r) => this.setState({ f: Object.assign({}, Component.FIELDS), interior: rows(Component.INTERIOR), exterior: rows(Component.EXTERIOR), oh: [], photos: [], dls: [], comm: null, log: [], live: false, loadSlug: '', draftId: '', draftMsg: '' }, r));
+    }
     const cur = this.state.f;
-    if (cur.street && cur.street.trim().toLowerCase() !== d.f.street.toLowerCase() && !confirm('Replace the current form (' + cur.street + ') with ' + d.f.street + '?')) { this.setState({ importMsg: 'Import cancelled.' }); return; }
     const f = Object.assign({}, cur);
     Object.keys(d.f).forEach((k) => { if (d.f[k] !== '' && d.f[k] != null) f[k] = String(d.f[k]); });
     if (!cur.communityName && f.city) f.communityName = f.city;
     const merge = (rows, add) => { rows = rows.map((r) => Object.assign({}, r)); add.forEach((a) => { const hit = rows.find((r) => r.label.trim().toLowerCase() === a.label.toLowerCase()); if (hit && !hit.value) hit.value = a.value; else if (!hit) rows.push({ id: this.uid(), label: a.label, value: a.value }); }); return rows; };
     const next = { f, interior: merge(this.state.interior, d.interior), exterior: merge(this.state.exterior, d.exterior) };
     let photos = this.state.photos, copied = 0, linked = 0;
-    if (d.photos.length && (!photos.length || confirm('Replace the ' + photos.length + ' photos already added with the ' + d.photos.length + ' MLS photos?'))) {
+    if (d.photos.length) {
       photos = [];
       for (let i = 0; i < d.photos.length; i++) {
         const u = d.photos[i];
@@ -932,9 +1017,15 @@ class Component extends DCLogic {
     const d = this.dataFor({ photos: this.state.photos.map((p) => p.url), downloads: this.state.dls.map((x) => ({ label: x.label || x.name, href: x.kind === 'existing' ? this.base() + 'properties/' + this.slug() + '/' + x.href : x.url })), comm: this.state.comm ? this.state.comm.url : '' });
     try { w.postMessage({ type: 'ks-property', data: d }, location.origin); } catch (e) {}
   };
-  onMsg = (e) => { if (e.origin === location.origin && e.data && e.data.type === 'ks-preview-ready') { this._readyFired = true; this.sendPreview(e.source); } };
+  onMsg = (e) => {
+    if (e.origin !== location.origin || !e.data) return;
+    if (e.data.type === 'ks-preview-ready') { this._readyFired = true; this.sendPreview(e.source); }
+    if (e.data.type === 'ks-builder-save-draft') { this.saveAsDraft().then((ok) => { try { e.source.postMessage({ type: 'ks-builder-draft-saved', ok }, location.origin); } catch (x) {} }); }
+    if (e.data.type === 'ks-builder-allow-leave') { this._allowLeave = true; }
+  };
   componentDidMount() {
-    this.loadExistingList();
+    this.loadExistingList(); this.loadDraftList(); this.setBaseline();
+    window.addEventListener('beforeunload', this.onBeforeUnload);
     if (this.adminView === 'properties') setTimeout(this.loadProps, 300);
     try { const ls = new URLSearchParams(location.search).get('load'); if (ls && this.adminView !== 'properties') this.setState({ loadSlug: ls }, () => setTimeout(this.loadExisting, 200)); } catch (e) {}
     window.addEventListener('message', this.onMsg);
@@ -942,13 +1033,12 @@ class Component extends DCLogic {
     const scan = () => document.querySelectorAll('[data-ks-reveal]:not(.ks-in)').forEach((el) => this._io.observe(el));
     scan(); this._mo = new MutationObserver(() => { cancelAnimationFrame(this._raf); this._raf = requestAnimationFrame(scan); }); this._mo.observe(document.body, { childList: true, subtree: true });
   }
-  componentWillUnmount() { window.removeEventListener('message', this.onMsg); this._io && this._io.disconnect(); this._mo && this._mo.disconnect(); }
+  componentWillUnmount() { window.removeEventListener('beforeunload', this.onBeforeUnload); window.removeEventListener('message', this.onMsg); this._io && this._io.disconnect(); this._mo && this._mo.disconnect(); }
 
-  resetAll = () => {
-    if (!confirm('Clear the form and start a new property?')) return;
-    localStorage.removeItem('ks-builder-draft');
+  resetAll = () => { this.guardThen('Clear all fields?', 'This empties the form. Anything you haven\u2019t saved will be lost.', 'Clear Without Saving', this.doReset); };
+  doReset = () => {
     const rows = (labels) => labels.map((l) => ({ id: this.uid(), label: l, value: '' }));
-    this.setState({ f: Object.assign({}, Component.FIELDS), interior: rows(Component.INTERIOR), exterior: rows(Component.EXTERIOR), oh: [], photos: [], dls: [], comm: null, log: [], live: false, loadSlug: '' });
+    this.setState({ f: Object.assign({}, Component.FIELDS), interior: rows(Component.INTERIOR), exterior: rows(Component.EXTERIOR), oh: [], photos: [], dls: [], comm: null, log: [], live: false, loadSlug: '' , draftId: '', draftMsg: '', draftErr: false }, this.setBaseline);
   };
 
   get ksLogoSrc() { return this.base() + 'assets/key-landing-logo.png'; }
@@ -993,6 +1083,7 @@ class Component extends DCLogic {
       ] },
     ];
     const n = s.photos.length;
+    this.postDirty();
     if (!this.thumbBusy && s.photos.some((x) => x.url && this.thumbs[x.id] === undefined)) setTimeout(this.makeThumbs, 0);
     const photoItems = s.photos.map((p, i) => ({
       url: p.url, thumb: this.thumbs[p.id] || p.url, badge: i === 0 ? 'Cover' : String(i + 1),
@@ -1064,8 +1155,13 @@ class Component extends DCLogic {
         };
       }),
       loadSlug: s.loadSlug, onLoadSlug: (e) => this.setState({ loadSlug: e.target.value }), loadExisting: this.loadExisting,
-      existingOpts: s.existing || [], existingPlaceholder: (s.existing || []).length ? 'Choose a property\u2026' : 'No published properties yet',
-      onPickExisting: (e) => { const v = e.target.value; this.setState({ loadSlug: v }, () => { if (v) this.loadExisting(); }); },
+      existingOpts: (s.drafts || []).map((d) => ({ slug: 'draft:' + d.id, label: 'Draft \u00b7 ' + (d.name || 'Untitled property') + (d.savedAt ? ' \u00b7 saved ' + new Date(d.savedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '') })).concat(s.existing || []),
+      existingPlaceholder: ((s.existing || []).length || (s.drafts || []).length) ? 'Choose a draft or a property\u2026' : 'No drafts or published properties yet',
+      onPickExisting: (e) => { const v = e.target.value; if (!v || v === s.loadSlug) return; this.guardThen(this.leaveTitle, this.leaveBody, 'Leave Without Saving', () => { if (v.indexOf('draft:') === 0) this.loadDraft(v.slice(6)); else this.setState({ loadSlug: v }, this.loadExisting); }); },
+      saveDraftBtn: () => this.saveAsDraft(), draftBtnLabel: s.draftBusy ? 'Saving\u2026' : 'Save As Draft', draftMsg: s.draftMsg, hasDraftMsg: !!s.draftMsg, draftMsgColor: s.draftErr ? '#b3261e' : '#2e7d32',
+      hasGuard: !!s.guard, guardTitle: s.guard ? s.guard.title : '', guardBody: s.guard ? s.guard.body : '', guardProceed: s.guard ? s.guard.proceedLabel : '', guardSaveLabel: s.draftBusy ? 'Saving\u2026' : 'Save As Draft',
+      guardSave: async () => { const g = s.guard; if (!g) return; const ok = await this.saveAsDraft(); if (ok) { this.setState({ guard: null }); g.go(); } },
+      guardLeave: () => { const g = s.guard; this.setState({ guard: null }); if (g) g.go(); }, guardCancel: () => { const g = s.guard; this.setState({ guard: null }); if (g && g.cancel) g.cancel(); },
       preview: this.preview, resetAll: this.resetAll,
       importQ: s.importQ || '', onImportQ: (e) => this.setState({ importQ: e.target.value }),
       onImportKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.importMls(); } },

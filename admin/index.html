@@ -38,7 +38,7 @@
     </div>
     <div style="display: flex; flex-direction: {{ navDir }}; gap: {{ itemGap }}; flex: none;">
       <a href="https://jacksonkesecker.com/" target="_blank" rel="noopener" data-ks-ul="1" style="--ks-ul: #ffffff; --ks-on: 0; position: relative; align-self: flex-start; padding-bottom: 8px; font-size: 13px; color: rgba(255,255,255,0.7); white-space: nowrap;" style-hover="--ks-on: 1; color: #ffffff;">View website</a>
-      <a href="/logout" data-ks-ul="1" style="--ks-ul: #ffffff; --ks-on: 0; position: relative; align-self: flex-start; padding-bottom: 8px; font-size: 13px; color: rgba(255,255,255,0.7); white-space: nowrap;" style-hover="--ks-on: 1; color: #ffffff;">Sign out</a>
+      <a href="/logout" onClick="{{ signOut }}" data-ks-ul="1" style="--ks-ul: #ffffff; --ks-on: 0; position: relative; align-self: flex-start; padding-bottom: 8px; font-size: 13px; color: rgba(255,255,255,0.7); white-space: nowrap;" style-hover="--ks-on: 1; color: #ffffff;">Sign out</a>
     </div>
   </nav>
 
@@ -64,6 +64,20 @@
       <iframe src="{{ toolSrc }}" title="{{ toolTitle }}" style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; background: #ffffff;"></iframe>
     </sc-if>
   </main>
+  <sc-if value="{{ hasLeave }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 5000; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
+      <div role="dialog" aria-modal="true" style="width: min(100%, 440px); background: #ffffff; border-radius: 12px; padding: 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 24px 60px rgba(0,0,0,0.25);">
+        <h3 style="margin: 0; font-size: 22px; font-weight: 300; line-height: 1.3; color: #000000;">Are you sure you want to leave?</h3>
+        <span style="font-size: 14px; color: #555555; line-height: 1.6;">You have unsaved changes.</span>
+        <sc-if value="{{ hasLeaveErr }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: #b3261e; line-height: 1.6;">{{ leaveErr }}</span></sc-if>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;">
+          <button onClick="{{ leaveSave }}" style="height: 46px; border-radius: 8px; border: 1px solid #000000; background: #000000; color: #ffffff; font-family: inherit; font-size: 14px; cursor: pointer;">{{ leaveSaveLabel }}</button>
+          <button onClick="{{ leaveGo }}" style="height: 46px; border-radius: 8px; border: 1px solid #1a1a1a; background: #ffffff; color: #1a1a1a; font-family: inherit; font-size: 14px; cursor: pointer; transition: background .3s ease, color .3s ease;" style-hover="background: #000000; color: #ffffff;">Leave Without Saving</button>
+          <button onClick="{{ leaveStay }}" style="height: 40px; border: none; background: transparent; color: #555555; font-family: inherit; font-size: 13px; cursor: pointer;">Keep Editing</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
@@ -72,14 +86,20 @@ class Component extends DCLogic {
     { id: 'builder', label: 'Property Builder', desc: 'Build a new property page, or edit one you already published.', path: '/admin/property-builder/?embed=1&view=builder' },
     { id: 'properties', label: 'My Properties', desc: 'Change status, mark a sale, and choose what shows in Notable Sales.', path: '/admin/property-builder/?embed=1&view=properties' },
   ];
-  state = { page: this.fromHash(), narrow: typeof window !== 'undefined' && window.innerWidth < 760, hover: '' };
+  state = { page: this.fromHash(), narrow: typeof window !== 'undefined' && window.innerWidth < 760, hover: '', builderDirty: false, leave: null, leaveBusy: false, leaveErr: '' };
   fromHash() { const h = (typeof location !== 'undefined' ? location.hash : '').replace('#', ''); return Component.TOOLS.some((t) => t.id === h) ? h : 'dashboard'; }
   onHash = () => this.setState({ page: this.fromHash() });
-  onMsg = (e) => { if (e.origin !== location.origin || !e.data || e.data.type !== 'ks-admin-open') return; const id = e.data.tool; if (!Component.TOOLS.some((t) => t.id === id)) return; history.replaceState(null, '', '#' + id); this.setState({ page: id, loadSlug: String(e.data.slug || ''), loadKey: Date.now() }); };
+  onMsg = (e) => { if (e.origin !== location.origin || !e.data) return; if (e.data.type === 'ks-builder-dirty') { if (!!e.data.dirty !== this.state.builderDirty) this.setState({ builderDirty: !!e.data.dirty }); return; } if (e.data.type === 'ks-builder-draft-saved') { const w = this._saveWait; this._saveWait = null; if (w) w(!!e.data.ok); return; } if (e.data.type !== 'ks-admin-open') return; const id = e.data.tool; if (!Component.TOOLS.some((t) => t.id === id)) return; history.replaceState(null, '', '#' + id); this.setState({ page: id, loadSlug: String(e.data.slug || ''), loadKey: Date.now() }); };
   onResize = () => { const n = window.innerWidth < 760; if (n !== this.state.narrow) this.setState({ narrow: n }); };
   componentDidMount() { window.addEventListener('hashchange', this.onHash); window.addEventListener('resize', this.onResize); window.addEventListener('message', this.onMsg); }
   componentWillUnmount() { window.removeEventListener('hashchange', this.onHash); window.removeEventListener('resize', this.onResize); window.removeEventListener('message', this.onMsg); }
-  go = (id) => (e) => { if (e && (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) return; if (e) e.preventDefault(); history.replaceState(null, '', id === 'dashboard' ? location.pathname : '#' + id); this.setState({ page: id, loadSlug: '' }); };
+  go = (id) => (e) => { if (e && (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) return; if (e) e.preventDefault(); if (id === this.state.page) return; if (this.state.builderDirty && this.state.page === 'builder') { this.setState({ leave: { run: () => this.doGo(id) }, leaveErr: '' }); return; } this.doGo(id); };
+  doGo = (id) => { history.replaceState(null, '', id === 'dashboard' ? location.pathname : '#' + id); this.setState({ page: id, loadSlug: '', builderDirty: false }); };
+  frame() { return document.querySelector('main iframe'); }
+  signOut = (e) => { if (!(this.state.builderDirty && this.state.page === 'builder')) return; e.preventDefault(); this.setState({ leave: { run: () => { location.href = '/logout'; } }, leaveErr: '' }); };
+  leaveSave = () => { const l = this.state.leave, f = this.frame(); if (!l || this.state.leaveBusy) return; if (!f || !f.contentWindow) { this.setState({ leaveErr: 'The builder isn\u2019t open, so there\u2019s nothing to save.' }); return; } this.setState({ leaveBusy: true, leaveErr: '' }); const t = setTimeout(() => { if (this._saveWait) { this._saveWait = null; this.setState({ leaveBusy: false, leaveErr: 'Saving took too long. Try again.' }); } }, 120000); this._saveWait = (ok) => { clearTimeout(t); if (ok) { this.setState({ leave: null, leaveBusy: false, builderDirty: false }); try { f.contentWindow.postMessage({ type: 'ks-builder-allow-leave' }, location.origin); } catch (x) {} l.run(); } else this.setState({ leaveBusy: false, leaveErr: 'The draft didn\u2019t save. The builder shows what went wrong.' }); }; f.contentWindow.postMessage({ type: 'ks-builder-save-draft' }, location.origin); };
+  leaveGo = () => { const l = this.state.leave, f = this.frame(); try { if (f && f.contentWindow) f.contentWindow.postMessage({ type: 'ks-builder-allow-leave' }, location.origin); } catch (x) {} this.setState({ leave: null, builderDirty: false }); if (l) setTimeout(l.run, 30); };
+  leaveStay = () => this.setState({ leave: null, leaveErr: '', leaveBusy: false });
   src(t) { return this.live ? t.path : 'Property Builder.dc.html' + t.path.slice(t.path.indexOf('?')); }
   live = typeof location !== 'undefined' && /jacksonkesecker\.com$/.test(location.hostname);
   renderVals() {
@@ -89,7 +109,8 @@ class Component extends DCLogic {
     return {
       layoutDir: n ? 'column' : 'row', navWidth: n ? '100%' : '232px', navDir: n ? 'row' : 'column', navAlign: n ? 'center' : 'stretch',
       navGap: n ? '24px' : '48px', itemGap: n ? '20px' : '18px', navPad: n ? '0 20px' : '32px 28px', navListFlex: n ? '1 1 auto' : '1 1 auto',
-      goDash: this.go('dashboard'),
+      goDash: this.go('dashboard'), signOut: this.signOut,
+      hasLeave: !!s.leave, leaveSave: this.leaveSave, leaveGo: this.leaveGo, leaveStay: this.leaveStay, leaveSaveLabel: s.leaveBusy ? 'Saving\u2026' : 'Save As Draft', leaveErr: s.leaveErr, hasLeaveErr: !!s.leaveErr,
       navItems: nav.map((t) => ({ label: t.label, href: t.path ? (this.live ? t.path.slice(0, t.path.indexOf('?')) + '?view=' + t.id : '#' + t.id) : '/admin/', go: this.go(t.id), on: s.page === t.id ? 1 : 0, opacity: s.page === t.id ? 1 : 0.7 })),
       isDash: !tool, isTool: !!tool, toolTitle: tool ? tool.label : '',
       toolSrc: tool ? this.src(tool) + (tool.id === 'builder' && s.loadSlug ? '&load=' + encodeURIComponent(s.loadSlug) + '&k=' + s.loadKey : '') : '',
