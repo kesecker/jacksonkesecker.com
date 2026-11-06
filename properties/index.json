@@ -54,5 +54,24 @@
   "lotUnit": "Sq ft",
   "cover": "/properties/1829-delancey-drive-salinas-ca-93906/photos/01-9p76kq.jpg",
   "coverCrop": "45,50,1,1.5"
+ },
+ {
+  "slug": "1388-boles-court-seaside-ca-93955",
+  "title": "Remodeled Seaside Gem",
+  "street": "1388 Boles Court",
+  "city": "Seaside",
+  "state": "CA",
+  "status": "Sold",
+  "price": "1000000",
+  "soldPrice": "1000000",
+  "represented": "None",
+  "notable": "No",
+  "beds": "3",
+  "baths": "2",
+  "sqft": "1352",
+  "lot": "7291",
+  "lotUnit": "Sq ft",
+  "cover": "/properties/1388-boles-court-seaside-ca-93955/photos/01-kttkrw.jpg",
+  "coverCrop": "36.8,50,1.22,1.5"
  }
 ]
