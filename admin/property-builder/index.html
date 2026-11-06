@@ -327,13 +327,14 @@
       <sc-if value="{{ hasProg }}" hint-placeholder-val="{{ false }}">
         <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ progPct }}" aria-label="Publishing progress" style="border-top: 1px solid rgba(255,255,255,0.18); padding: 18px 0 0; display: flex; flex-direction: column; gap: 10px;">
           <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px;">
-            <span style="font-size: 12px; font-weight: 500; letter-spacing: 0.04em; color: rgba(255,255,255,0.55);">{{ progLabel }}</span>
-            <span style="font-size: 22px; font-weight: 300; color: #ffffff; font-variant-numeric: tabular-nums;">{{ progPct }}%</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; color: rgba(255,255,255,0.55);">{{ progLabel }}<sc-if value="{{ progDone }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if></span>
+            <sc-if value="{{ progNotDone }}" hint-placeholder-val="{{ true }}"><span style="font-size: 22px; font-weight: 300; color: #ffffff; font-variant-numeric: tabular-nums;">{{ progPct }}%</span></sc-if>
+            <sc-if value="{{ progDone }}" hint-placeholder-val="{{ false }}"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9be7a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Published"><path d="M4.5 12.5l5 5L19.5 7"></path></svg></sc-if>
           </div>
           <div style="height: 4px; border-radius: 2px; background: rgba(255,255,255,0.15); overflow: hidden;">
             <div style="height: 100%; width: {{ progPct }}%; background: {{ progColor }}; border-radius: 2px; transition: width .35s ease, background .3s ease;"></div>
           </div>
-          <span style="font-size: 13px; line-height: 1.5; color: {{ progTextColor }};">{{ progText }}</span>
+          <sc-if value="{{ progNotDone }}" hint-placeholder-val="{{ true }}"><span style="font-size: 13px; line-height: 1.5; color: {{ progTextColor }};">{{ progText }}</span></sc-if>
         </div>
       </sc-if>
       <sc-if value="{{ hasLog }}" hint-placeholder-val="{{ false }}">
@@ -1156,7 +1157,7 @@ class Component extends DCLogic {
       repoValue: s.repo, onRepo: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-repo', v); this.setState({ repo: v }); },
       branchValue: s.branch, onBranch: (e) => { const v = e.target.value; localStorage.setItem('ks-gh-branch', v); this.setState({ branch: v }); },
       hasLog: s.log.length > 0 || (s.live && !!s.prog), logLines: s.log, hasLiveLink: s.live,
-      hasProg: !!s.prog, progPct: s.prog ? s.prog.pct : 0, progText: s.prog ? s.prog.text : '', progLabel: s.prog ? (s.prog.err ? 'Not Published' : s.prog.done ? 'Published' : 'Publishing') : '',
+      hasProg: !!s.prog, progDone: !!(s.prog && s.prog.done), progNotDone: !(s.prog && s.prog.done), progPct: s.prog ? s.prog.pct : 0, progText: s.prog ? s.prog.text : '', progLabel: s.prog ? (s.prog.err ? 'Not Published' : s.prog.done ? 'Published' : 'Publishing') : '',
       progColor: s.prog && s.prog.err ? '#ff8a80' : s.prog && s.prog.done ? '#9be7a8' : '#ffffff', progTextColor: s.prog && s.prog.err ? '#ff8a80' : s.prog && s.prog.done ? '#9be7a8' : 'rgba(255,255,255,0.8)',
       logBorder: s.prog ? 'none' : '1px solid rgba(255,255,255,0.18)', logPad: s.prog ? '0' : '18px 0 0',
       needTokenHere: !this.viaWorker && this.adminView === 'properties' && !!s.tokenEditing, showChrome: !this.adminEmbed, showForm: this.adminView !== 'properties', showPropsPanel: this.adminView !== 'builder',
