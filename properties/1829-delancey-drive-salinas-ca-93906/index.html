@@ -39,6 +39,7 @@ wait();})();</script>
   html body [data-ks-foot-grid] { grid-template-columns: max-content max-content !important; justify-content: center !important; column-gap: 22px !important; row-gap: 28px !important; margin-top: 28px !important; }
   html body [data-ks-foot-grid] > [data-ks-foot-links] { grid-column: 1 / -1; order: 0; flex-direction: column !important; flex-wrap: nowrap !important; gap: 16px !important; }
   html body [data-ks-foot-grid] > [data-ks-foot-links] { display: grid !important; grid-template-rows: repeat(3, auto); grid-auto-flow: column; justify-content: center !important; justify-items: center; column-gap: 28px !important; row-gap: 10px !important; } /* data-ks-foot-2col */
+  html body [data-ks-foot-grid] > [data-ks-foot-links] > :nth-child(-n+3) { justify-self: start !important; padding-left: 0 !important; } html body [data-ks-foot-grid] > [data-ks-foot-links] > :nth-child(n+4) { justify-self: end !important; padding-right: 0 !important; } /* data-ks-foot-2col-al */
   html body [data-ks-foot-links] a { font-size: 15px !important; padding: 2px 8px; }
   html body [data-ks-fcomp] { order: 1; gap: 12px !important; padding: 0 !important; justify-self: end !important; }
   html body [data-ks-fcomp] img { height: 22px !important; }
@@ -99,11 +100,33 @@ wait();})();</script>
 <style data-ks-tour>@keyframes ks-fade-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }</style>
 <style>[data-ks-ul]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--ks-line,1px);background:var(--ks-ul,currentColor);transform:scaleX(var(--ks-on,0));transform-origin:var(--ks-ul-o,left) center;transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none;will-change:transform;}</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;600&display=swap"><style data-ks-type>:root{--ks-line:1px}@media (min-resolution:1.1dppx) and (max-resolution:1.35dppx){:root{--ks-line:0.8px}}@media (min-resolution:1.4dppx) and (max-resolution:1.6dppx){:root{--ks-line:0.6667px}}@media (min-resolution:1.7dppx) and (max-resolution:1.8dppx){:root{--ks-line:0.5715px}} html:root:not([data-ks-none]) body h1, html:root:not([data-ks-none]) body h1 *, html:root:not([data-ks-none]) body h2, html:root:not([data-ks-none]) body h2 *, html:root:not([data-ks-none]) body h3, html:root:not([data-ks-none]) body h3 * { font-weight: 300 !important; } html:root:not([data-ks-none]) body [data-ks-regions-list] h2, html:root:not([data-ks-none]) body [data-ks-regions-list] h2 * { font-weight: 200 !important; } html:root:not([data-ks-none]) body button, html:root:not([data-ks-none]) body button *, html:root:not([data-ks-none]) body a[style*="border-radius: 8px"], html:root:not([data-ks-none]) body a[style*="border-radius: 8px"] *, html:root:not([data-ks-none]) body span[style*="border-radius: 8px"] *, html:root:not([data-ks-none]) body [data-ks-cta] a span, html:root:not([data-ks-none]) body [data-ks-cta] a span *, html:root:not([data-ks-none]) body input[type="submit"] { font-weight: 300 !important; } html:root:not([data-ks-none]) body #hero-heading, html:root:not([data-ks-none]) body #hero-heading * { font-weight: 600 !important; } @media (max-width: 760px) { [data-ks-foot-grid] > * { padding-left: 0 !important; } } /*ks-unbold*/html:root:not([data-ks-none]) body :is(b, strong, th, [style*="font-weight: 600"], [style*="font-weight:600"], [style*="font-weight: 700"], [style*="font-weight:700"], [style*="font-weight: 800"], [style*="font-weight:800"], [style*="font-weight: bold"], [style*="font-weight:bold"]):not([data-ks-bold]):not([class*="ihf"]):not([class*="ihf"] *) { font-weight: 400 !important; }</style>
+<style data-ks-phead-css>
+html body [data-ks-phead] { transition: background-color .35s ease; }
+html:not(.ks-head-solid) body [data-ks-phead] { background: transparent !important; }
+html body [data-ks-hero] { margin-top: -92px !important; height: 100svh !important; max-height: 1192px !important; min-height: 612px !important; }
+html body [data-ks-hero]::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 170px; background: linear-gradient(rgba(0,0,0,.42), rgba(0,0,0,0)); pointer-events: none; }
+@media (max-width: 760px) { html body [data-ks-hero] { height: calc(78svh + 92px) !important; min-height: 552px !important; } }
+</style>
+<script data-ks-phead-js>
+(function () {
+  if (window.__ksPhead) return; window.__ksPhead = 1;
+  var de = document.documentElement, io = null, cur = null;
+  function set(s) { de.classList.toggle('ks-head-solid', s); }
+  function hook() {
+    var h = document.querySelector('[data-ks-hero]');
+    if (h === cur) return; cur = h; if (io) { io.disconnect(); io = null; }
+    if (!h || !('IntersectionObserver' in window)) { set(!!document.querySelector('[data-ks-phead]') && !h); return; }
+    io = new IntersectionObserver(function (es) { set(!es[es.length - 1].isIntersecting); }, { rootMargin: '-92px 0px 0px 0px', threshold: 0 });
+    io.observe(h);
+  }
+  hook(); setInterval(hook, 400);
+})();
+</script>
 </helmet>
 
 <div style="font-family: 'Montserrat', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; width: 100%; min-height: 100vh; display: flex; flex-direction: column;">
 
-  <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 clamp(20px, 4vw, 48px) 0 clamp(8px, 1.5vw, 18px); height: 92px; background: #000000; flex-shrink: 0; position: sticky; top: 0; z-index: 1000;">
+  <div data-ks-phead="1" style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 clamp(20px, 4vw, 48px) 0 clamp(8px, 1.5vw, 18px); height: 92px; background: #000000; flex-shrink: 0; position: sticky; top: 0; z-index: 1000;">
     <a href="https://jacksonkesecker.com/" target="_self" style="display: flex; align-items: center; flex-shrink: 0;">
       <img src="/uploads/JKR-key-white.png" alt="Jackson Kesecker Realtor" style="height: 34px; width: auto;">
     </a>
