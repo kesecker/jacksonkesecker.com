@@ -29,6 +29,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&amp;display=block">
 <script src="./support.js"></script>
 <style data-ks-sb-mobile>@media (max-width:767px){input[placeholder^="Search Address"],input[placeholder^="Busca Direcci"]{font-size:13px !important;}input[placeholder^="Search Address"]::placeholder,input[placeholder^="Busca Direcci"]::placeholder{font-size:13px !important;}div:has(> div > input[placeholder^="Search Address"]) > a,div:has(> div > input[placeholder^="Busca Direcci"]) > a{font-size:13px !important;}div:has(> div > input[placeholder^="Search Address"]) > div > :first-child,div:has(> div > input[placeholder^="Busca Direcci"]) > div > :first-child{font-size:20px !important;}}</style>
+<style data-ks-copy-fit>@media (max-width: 760px) { html body [data-ks-copy-bar], html body #footer-bottom-bar { height: auto !important; } html body [data-ks-copy], html body #footer-bottom-copyright { position: static !important; transform: none !important; width: auto !important; max-width: none !important; white-space: normal !important; padding: 16px 16px 76px !important; font-size: clamp(11px, 3vw, 12px) !important; line-height: 1.75 !important; } [data-ks-copy-a] { display: block; max-width: 300px; margin: 0 auto; text-wrap: balance; } [data-ks-copy-sep] { display: none; } [data-ks-copy-b] { display: block; margin-top: 8px; text-wrap: balance; } [data-ks-copy-b] a { display: inline-block; padding: 4px 2px; } }</style>
 </head>
 <body>
 <x-dc>
@@ -161,9 +162,7 @@
       #listings-viewport, #testimonials-viewport, #notable-viewport { padding-left: 24px !important; padding-right: 24px !important; }
       #hero-logo { font-size: 60px !important; }
       #hero-search-bar { padding: 14px 20px !important; }
-      #footer-bottom-bar { height: 60px !important; }
       #footer-legal-secondary-row { gap: 28px !important; margin-top: 18px !important; }
-      #footer-bottom-copyright { white-space: normal !important; width: 90% !important; }
     }
     ::-webkit-scrollbar { width: 10px !important; height: 10px !important; }
     ::-webkit-scrollbar-track { background: transparent !important; }
@@ -541,7 +540,7 @@
     <p style="width: 0; min-width: 100%; justify-self: center; font-size: 11px; line-height: 1.7; color: rgba(255,255,255,0.55); text-align: center; max-width: 720px; margin: 32px 0 36px;">{{ t.legalDisclaimer }}</p>
   </div>
   <div id="footer-bottom-bar" style="height: 60px; background: #000000; position: relative; box-sizing: border-box;">
-    <div id="footer-bottom-copyright" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 12px; color: rgba(255,255,255,0.55); text-align: center; white-space: nowrap;">{{ t.footerCopyright }} | <a href="https://jacksonkesecker.com/privacy/" style="color: rgba(255,255,255,0.75); text-decoration: underline;">Privacy Policy</a> | <a href="https://jacksonkesecker.com/terms/" style="color: rgba(255,255,255,0.75); text-decoration: underline;">Terms of Use</a> | <a href="https://jacksonkesecker.com/privacy/#cookie-preferences" style="color: rgba(255,255,255,0.75); text-decoration: underline;">Cookie Preferences</a></div>
+    <div id="footer-bottom-copyright" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 12px; color: rgba(255,255,255,0.55); text-align: center; white-space: nowrap;"><span data-ks-copy-a="1">{{ t.footerCopyright }}</span><span data-ks-copy-sep="1"> | </span><span data-ks-copy-b="1"><a href="https://jacksonkesecker.com/privacy/" style="color: rgba(255,255,255,0.75); text-decoration: underline;">Privacy Policy</a> | <a href="https://jacksonkesecker.com/terms/" style="color: rgba(255,255,255,0.75); text-decoration: underline;">Terms of Use</a> | <a href="https://jacksonkesecker.com/privacy/#cookie-preferences" style="color: rgba(255,255,255,0.75); text-decoration: underline;">Cookie Preferences</a></span></div>
   </div>
   <div id="footer-search-spacer" aria-hidden="true" style="height: 84px; background: #000000;"></div>
 
